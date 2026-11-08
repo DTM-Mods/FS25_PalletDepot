@@ -4,6 +4,8 @@ Sources (read as data only):
   * the game's data/maps/maps_fillTypes.xml: every fill type with a <pallet> entry
   * the FedMods packs in the mods folder (standard and ProEdition): their pallet fill types; a Fed
     building only gets Fed products that BOTH editions define, so it works with either edition
+  * the Beans & Alpacas DLC (pdlc_beansAndAlpacasPack): its .dlc is encrypted, so DLC_FILLTYPES lists its
+    products by hand (from the game log, "Mod 'pdlc_beansAndAlpacasPack': 30 fill type(s) requested")
 
 tools/product_map.csv is the reviewable mapping table: one row per pallet fill type with its building
 (food = Food & Drinks, goods = Textiles & Goods, or exclude) and an English name. The English name is only the sort key (lines are listed A-Z
@@ -29,9 +31,18 @@ FED_EDITIONS = {
     "standard": ["FS25_Fed_Mods_Pack.zip", "FS25_Fed_Produktions_Pack.zip"],
     "pro": ["Fed_Mods_Pack_ProEdition.zip", "Fed_Produktions_Pack_ProEdition.zip"],
 }
+# Beans & Alpacas products (no live animals) plus the fill types of its two crops. Which of them come on pallets
+# cannot be read from the encrypted DLC: at load the depots drop every product without a pallet
+# (PalletDepotOptionalProducts.lua), so bulk ones (ores, coffee cherries?) simply do not appear.
+DLC_FILLTYPES = [
+    "BANANA", "BANANABOX", "BANANAFRIEDBOX", "BANANACHIPS", "BANANACANDY", "BANANACAKE", "BANANAJAM", "BANANAMILK",
+    "COFFEECHERRIES", "COFFEEBAGS", "COFFEEPACKED", "COFFEECAPSULES", "COFFEEYOGURT", "COFFEEBEVERAGE", "TIRAMISU",
+    "ALPACAWOOL", "ALPACAFLEECE", "ALPACASOCKS", "ALPACAPILLOW", "ALPACAPLUSH", "ALPACACHAIR", "ALPACAARMCHAIR",
+    "IRONORE", "COPPERORE", "PIGMENTS", "RESIN", "PAINTBUCKETS", "FUNGICIDE",
+]
 MAX_LINES = 255
-BUILDINGS = {   # store item -> (building of the mapping table, includes Fed products); Fed lines are
-    "food": ("food", True),     # dropped at load when the Fed packs are missing (PalletDepotOptionalProducts.lua)
+BUILDINGS = {   # store item -> (building of the mapping table, includes Fed/DLC products); those lines are
+    "food": ("food", True),     # dropped at load when their mod is missing (PalletDepotOptionalProducts.lua)
     "goods": ("goods", True),
 }
 
@@ -52,17 +63,18 @@ def load_sources():
         editions[edition] = types
     shared = set.intersection(*(set(t) for t in editions.values()))
     fed = {n: editions["standard"][n] for n in sorted(shared - set(base))}
-    return base, fed
+    dlc = {n: None for n in DLC_FILLTYPES if n not in base and n not in fed}
+    return base, fed, dlc
 
 
 def main():
-    base, fed = load_sources()
+    base, fed, dlc = load_sources()
     rows = list(csv.DictReader(open(os.path.join(HERE, "product_map.csv"), encoding="utf-8")))
     table = {r["fillType"]: r for r in rows}
     errors = []
     if len(table) != len(rows):
         errors.append("duplicate rows in product_map.csv")
-    for source, types in (("base", base), ("fed", fed)):
+    for source, types in (("base", base), ("fed", fed), ("dlc", dlc)):
         for name in types:
             row = table.get(name)
             if row is None:
@@ -70,7 +82,7 @@ def main():
             elif row["source"] != source:
                 errors.append("%s: source should be %s" % (name, source))
     for name, row in table.items():
-        if name not in base and name not in fed:
+        if name not in base and name not in fed and name not in dlc:
             errors.append("%s is in product_map.csv but in no source (game update or Fed edition change?)" % name)
         if row["building"] not in ("food", "goods", "exclude"):
             errors.append("%s: unknown building %r" % (name, row["building"]))
@@ -81,7 +93,7 @@ def main():
         for name, row in table.items():
             if row["building"] != building or (row["source"] == "fed" and not with_fed):
                 continue
-            title = (base if row["source"] == "base" else fed).get(name)
+            title = {"base": base, "fed": fed, "dlc": dlc}[row["source"]].get(name)
             lines.append({"fillType": name, "title": title, "english": row["english"], "source": row["source"]})
         lines.sort(key=lambda l: (l["english"].casefold(), l["fillType"]))
         if len(lines) > MAX_LINES:

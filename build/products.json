@@ -31,6 +31,54 @@
    "source": "fed"
   },
   {
+   "fillType": "BANANACAKE",
+   "title": null,
+   "english": "Banana cake",
+   "source": "dlc"
+  },
+  {
+   "fillType": "BANANACANDY",
+   "title": null,
+   "english": "Banana candy",
+   "source": "dlc"
+  },
+  {
+   "fillType": "BANANACHIPS",
+   "title": null,
+   "english": "Banana chips",
+   "source": "dlc"
+  },
+  {
+   "fillType": "BANANAJAM",
+   "title": null,
+   "english": "Banana jam",
+   "source": "dlc"
+  },
+  {
+   "fillType": "BANANAMILK",
+   "title": null,
+   "english": "Banana milk",
+   "source": "dlc"
+  },
+  {
+   "fillType": "BANANABOX",
+   "title": null,
+   "english": "Bananas",
+   "source": "dlc"
+  },
+  {
+   "fillType": "BANANA",
+   "title": null,
+   "english": "Bananas (crop)",
+   "source": "dlc"
+  },
+  {
+   "fillType": "BANANAFRIEDBOX",
+   "title": null,
+   "english": "Bananas fried",
+   "source": "dlc"
+  },
+  {
    "fillType": "BARLEYBEER_BOTTLE",
    "title": "$l10n_fillType_barleyBeer_bottle",
    "english": "Barley bottled beer",
@@ -239,6 +287,42 @@
    "title": "$l10n_fillType_codFillet",
    "english": "Cod fillet",
    "source": "fed"
+  },
+  {
+   "fillType": "COFFEEBAGS",
+   "title": null,
+   "english": "Coffee bags",
+   "source": "dlc"
+  },
+  {
+   "fillType": "COFFEEBEVERAGE",
+   "title": null,
+   "english": "Coffee beverage",
+   "source": "dlc"
+  },
+  {
+   "fillType": "COFFEECAPSULES",
+   "title": null,
+   "english": "Coffee capsules",
+   "source": "dlc"
+  },
+  {
+   "fillType": "COFFEECHERRIES",
+   "title": null,
+   "english": "Coffee cherries",
+   "source": "dlc"
+  },
+  {
+   "fillType": "COFFEEPACKED",
+   "title": null,
+   "english": "Coffee packed",
+   "source": "dlc"
+  },
+  {
+   "fillType": "COFFEEYOGURT",
+   "title": null,
+   "english": "Coffee yogurt",
+   "source": "dlc"
   },
   {
    "fillType": "MAIZE_OIL",
@@ -1003,6 +1087,12 @@
    "source": "base"
   },
   {
+   "fillType": "TIRAMISU",
+   "title": null,
+   "english": "Tiramisu",
+   "source": "dlc"
+  },
+  {
    "fillType": "TOMATO",
    "title": "$l10n_fillType_tomato",
    "english": "Tomato",
@@ -1106,6 +1196,48 @@
   }
  ],
  "goods": [
+  {
+   "fillType": "ALPACAARMCHAIR",
+   "title": null,
+   "english": "Alpaca armchair",
+   "source": "dlc"
+  },
+  {
+   "fillType": "ALPACACHAIR",
+   "title": null,
+   "english": "Alpaca chair",
+   "source": "dlc"
+  },
+  {
+   "fillType": "ALPACAFLEECE",
+   "title": null,
+   "english": "Alpaca fleece",
+   "source": "dlc"
+  },
+  {
+   "fillType": "ALPACAPILLOW",
+   "title": null,
+   "english": "Alpaca pillow",
+   "source": "dlc"
+  },
+  {
+   "fillType": "ALPACAPLUSH",
+   "title": null,
+   "english": "Alpaca plush",
+   "source": "dlc"
+  },
+  {
+   "fillType": "ALPACASOCKS",
+   "title": null,
+   "english": "Alpaca socks",
+   "source": "dlc"
+  },
+  {
+   "fillType": "ALPACAWOOL",
+   "title": null,
+   "english": "Alpaca wool",
+   "source": "dlc"
+  },
   {
    "fillType": "BALE_NET",
    "title": "$l10n_fillType_baleNet",
@@ -1215,6 +1347,12 @@
    "source": "base"
   },
   {
+   "fillType": "COPPERORE",
+   "title": null,
+   "english": "Copper ore",
+   "source": "dlc"
+  },
+  {
    "fillType": "CURB",
    "title": "$l10n_fillType_curb",
    "english": "Curb",
@@ -1275,6 +1413,12 @@
    "source": "fed"
   },
   {
+   "fillType": "FUNGICIDE",
+   "title": null,
+   "english": "Fungicide",
+   "source": "dlc"
+  },
+  {
    "fillType": "FURNITURE",
    "title": "$l10n_fillType_furniture",
    "english": "Furniture",
@@ -1303,6 +1447,12 @@
    "title": "$l10n_fillType_insulation",
    "english": "Insulation",
    "source": "fed"
+  },
+  {
+   "fillType": "IRONORE",
+   "title": null,
+   "english": "Iron ore",
+   "source": "dlc"
   },
   {
    "fillType": "LAVENDER_OIL",
@@ -1353,6 +1503,12 @@
    "source": "fed"
   },
   {
+   "fillType": "PAINTBUCKETS",
+   "title": null,
+   "english": "Paint buckets",
+   "source": "dlc"
+  },
+  {
    "fillType": "PAPERROLL",
    "title": "$l10n_fillType_paperRoll",
    "english": "Paper roll",
@@ -1363,6 +1519,12 @@
    "title": "$l10n_fillType_pavingStone",
    "english": "Paving stone",
    "source": "fed"
+  },
+  {
+   "fillType": "PIGMENTS",
+   "title": null,
+   "english": "Pigments",
+   "source": "dlc"
   },
   {
    "fillType": "PLANKS",
@@ -1399,6 +1561,12 @@
    "title": "$l10n_fillType_redPavingStone",
    "english": "Red paving stone",
    "source": "fed"
+  },
+  {
+   "fillType": "RESIN",
+   "title": null,
+   "english": "Resin",
+   "source": "dlc"
   },
   {
    "fillType": "RICESAPLINGS",

@@ -1,14 +1,16 @@
--- Pallet Depot: lets both depots load with or without the FedMods packs.
+-- Pallet Depot: lets both depots load with or without the FedMods packs and the Beans & Alpacas DLC.
 --
--- The depots list the base products and the FedMods products. Before a depot's production point reads its
--- XML, this removes every line, storage capacity and trigger fill type whose product the game does not
--- know, so without the Fed packs the depot simply offers the base products.
+-- The depots list the base products, the FedMods products and the Beans & Alpacas products. Before a depot's
+-- production point reads its XML, this removes every line, storage capacity and trigger fill type whose product
+-- the game does not know or that has no pallet, so without those mods the depot simply offers the base products.
+-- The pallet check matters for the DLC: its files are encrypted, so its list may hold bulk goods (ores, crops).
 
 PalletDepotOptionalProducts = {}
 PalletDepotOptionalProducts.modName = g_currentModName
 
 function PalletDepotOptionalProducts.isKnown(fillTypeName)
-    return fillTypeName ~= nil and g_fillTypeManager:getFillTypeIndexByName(fillTypeName) ~= nil
+    local fillType = fillTypeName ~= nil and g_fillTypeManager:getFillTypeByName(fillTypeName) or nil
+    return fillType ~= nil and fillType.palletFilename ~= nil
 end
 
 -- removes the elements at path(i) whose fill type (path(i) .. attribute) is unknown; returns how many
@@ -49,7 +51,8 @@ function PalletDepotOptionalProducts.load(productionPoint, superFunc, components
             PalletDepotOptionalProducts.removeUnknown(xmlFile, key .. ".storage.capacity", "#fillType")
             PalletDepotOptionalProducts.filterLists(xmlFile, key .. ".sellingStation.unloadTrigger")
             PalletDepotOptionalProducts.filterLists(xmlFile, key .. ".sellingStation.palletTrigger")
-            Logging.info("Pallet Depot: %d products skipped, their mods (FedMods packs) are not loaded", skipped)
+            Logging.info("Pallet Depot: %d products skipped (FedMods packs or Beans & Alpacas not loaded, or no pallet)",
+                skipped)
         end
     end
     return superFunc(productionPoint, components, xmlFile, key, customEnvironment, ...)

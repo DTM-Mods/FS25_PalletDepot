@@ -284,3 +284,31 @@ WOODPELLETS,fed,goods,Wood pellets,
 WOODSHOES,fed,goods,Wooden shoes,
 YEAST,fed,food,Yeast,
 YOGURT,fed,food,Yogurt,
+BANANA,dlc,food,Bananas (crop),Beans & Alpacas crop; dropped at load if it has no pallet
+BANANABOX,dlc,food,Bananas,Beans & Alpacas
+BANANAFRIEDBOX,dlc,food,Bananas fried,Beans & Alpacas
+BANANACHIPS,dlc,food,Banana chips,Beans & Alpacas
+BANANACANDY,dlc,food,Banana candy,Beans & Alpacas
+BANANACAKE,dlc,food,Banana cake,Beans & Alpacas
+BANANAJAM,dlc,food,Banana jam,Beans & Alpacas
+BANANAMILK,dlc,food,Banana milk,Beans & Alpacas
+COFFEECHERRIES,dlc,food,Coffee cherries,Beans & Alpacas crop; dropped at load if it has no pallet
+COFFEEBAGS,dlc,food,Coffee bags,Beans & Alpacas
+COFFEEPACKED,dlc,food,Coffee packed,Beans & Alpacas
+COFFEECAPSULES,dlc,food,Coffee capsules,Beans & Alpacas
+COFFEEYOGURT,dlc,food,Coffee yogurt,Beans & Alpacas
+COFFEEBEVERAGE,dlc,food,Coffee beverage,Beans & Alpacas
+TIRAMISU,dlc,food,Tiramisu,Beans & Alpacas
+ALPACAWOOL,dlc,goods,Alpaca wool,Beans & Alpacas
+ALPACAFLEECE,dlc,goods,Alpaca fleece,Beans & Alpacas
+ALPACASOCKS,dlc,goods,Alpaca socks,Beans & Alpacas
+ALPACAPILLOW,dlc,goods,Alpaca pillow,Beans & Alpacas
+ALPACAPLUSH,dlc,goods,Alpaca plush,Beans & Alpacas
+ALPACACHAIR,dlc,goods,Alpaca chair,Beans & Alpacas
+ALPACAARMCHAIR,dlc,goods,Alpaca armchair,Beans & Alpacas
+IRONORE,dlc,goods,Iron ore,Beans & Alpacas; dropped at load if it has no pallet
+COPPERORE,dlc,goods,Copper ore,Beans & Alpacas; dropped at load if it has no pallet
+PIGMENTS,dlc,goods,Pigments,Beans & Alpacas
+RESIN,dlc,goods,Resin,Beans & Alpacas
+PAINTBUCKETS,dlc,goods,Paint buckets,Beans & Alpacas
+FUNGICIDE,dlc,goods,Fungicide,Beans & Alpacas (liquid tank pallet)

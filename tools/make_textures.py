@@ -228,7 +228,7 @@ def tex_brand(brand):
     squeeze = ((y1 - y0) / (x1 - x0)) * ((L.SIGN_X[1] - L.SIGN_X[0]) / (L.SIGN_Y[1] - L.SIGN_Y[0]))
     squeeze = 1.0 / squeeze
     draw_text_fit(img, (x0, y0 + 30, x1, y1 - 100), L.BRANDS[brand]["word"], (250, 250, 250), squeeze, 0.8)
-    draw_text_fit(img, (x0, y1 - 118, x1, y1 - 40), "PALLET DEPOT", (235, 240, 235), squeeze, 0.62)
+    draw_text_fit(img, (x0, y1 - 118, x1, y1 - 40), "LOGISTICS HUB", (235, 240, 235), squeeze, 0.62)
     grain = fbm(h, w, [30, 5])
     arr = np.asarray(img, float) * (0.95 + 0.07 * grain)[..., None]
     return to_img(arr)

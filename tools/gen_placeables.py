@@ -111,8 +111,8 @@ def autodrive():
              come first or "waypoints.x" would be looked up in this empty marker -->
         <wayPoints/>
         <mapmarker>
-            <mm1><id>%d</id><name>Depot unload</name></mm1>
-            <mm2><id>%d</id><name>Depot pickup</name></mm2>
+            <mm1><id>%d</id><name>Hub unload</name></mm1>
+            <mm2><id>%d</id><name>Hub pickup</name></mm2>
         </mapmarker>
     </AutoDrive>
 """ % (",".join(fmt(x) for x, _ in pts), ",".join("0" for _ in pts), ",".join(fmt(z) for _, z in pts),
