@@ -3,7 +3,7 @@
 Sources (read as data only):
   * the game's data/maps/maps_fillTypes.xml: every fill type with a <pallet> entry
   * the FedMods packs in the mods folder (standard and ProEdition): their pallet fill types; a Fed
-    building only gets Fed products that BOTH editions define, so it works with either edition
+    building gets the Fed products of EITHER edition (lines of the edition that is not loaded are dropped at load)
   * the Beans & Alpacas DLC (pdlc_beansAndAlpacasPack): its .dlc is encrypted, so DLC_FILLTYPES lists its
     products by hand (from the game log, "Mod 'pdlc_beansAndAlpacasPack': 30 fill type(s) requested")
 
@@ -61,8 +61,8 @@ def load_sources():
             with zipfile.ZipFile(os.path.join(MODS, name)) as zf:
                 types.update(pallet_types(zf.read("fillTypes.xml")))
         editions[edition] = types
-    shared = set.intersection(*(set(t) for t in editions.values()))
-    fed = {n: editions["standard"][n] for n in sorted(shared - set(base))}
+    titles = {n: t for types in editions.values() for n, t in types.items()}
+    fed = {n: titles[n] for n in sorted(set(titles) - set(base))}
     dlc = {n: None for n in DLC_FILLTYPES if n not in base and n not in fed}
     return base, fed, dlc
 

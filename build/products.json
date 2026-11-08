@@ -163,6 +163,12 @@
    "source": "fed"
   },
   {
+   "fillType": "BUFFALOBUTTER",
+   "title": "$l10n_fillType_buffaloButter",
+   "english": "Buffalo butter",
+   "source": "fed"
+  },
+  {
    "fillType": "BUFFALOMOZZARELLA",
    "title": "$l10n_fillType_buffaloMozzarella",
    "english": "Buffalo mozzarella",
@@ -443,6 +449,12 @@
    "title": "$l10n_fillType_garlic",
    "english": "Garlic",
    "source": "base"
+  },
+  {
+   "fillType": "GOATBUTTER",
+   "title": "$l10n_fillType_goatButter",
+   "english": "Goat butter",
+   "source": "fed"
   },
   {
    "fillType": "GOATCHEESE",

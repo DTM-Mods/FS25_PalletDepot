@@ -61,7 +61,8 @@ jobs:
             echo "::error::tag ${GITHUB_REF_NAME} does not match modDesc.xml version ${VERSION}"
             exit 1
           fi
-          changes=$(grep -m1 "^${VERSION//./\\.} - " modDesc.xml | sed "s/^${VERSION//./\\.} - //")
+          # every English changelog line of this version (the German ones follow in the <de> block)
+          changes=$(sed -n '/^<en><!\[CDATA\[/,/^\]\]><\/en>/p' modDesc.xml | grep "^${VERSION//./\\.} - " | sed "s/^${VERSION//./\\.} - /- /")
           cat > notes.md <<EOF
           ${changes}
 

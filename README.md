@@ -8,7 +8,7 @@
 
 [![Build](https://github.com/chrisdfennell/FS25_PalletDepot/actions/workflows/build.yml/badge.svg)](https://github.com/chrisdfennell/FS25_PalletDepot/actions/workflows/build.yml)
 ![Farming Simulator 25](https://img.shields.io/badge/Farming%20Simulator-25-2e7d32)
-![Version](https://img.shields.io/badge/version-1.0.0.27-1565c0)
+![Version](https://img.shields.io/badge/version-1.1.0.1-1565c0)
 ![Multiplayer](https://img.shields.io/badge/multiplayer-supported-2e7d32)
 ![Languages](https://img.shields.io/badge/languages-EN%20%7C%20DE-555)
 ![Upkeep](https://img.shields.io/badge/daily%20upkeep-none-555)
@@ -109,7 +109,7 @@ Multiplayer works; the server and every player need the same zip.
 ## Installation
 
 1. Download a zip from [Releases](https://github.com/chrisdfennell/FS25_PalletDepot/releases). Both zips are the same build:
-   - `FS25_PalletDepot.zip`: for savegames that already have the mod. It was called Pallet Depot until 1.0.0.27, and only the old file name keeps the buildings you already own.
+   - `FS25_PalletDepot.zip`: for savegames that already have the mod. It was called Pallet Depot until 1.1.0.1, and only the old file name keeps the buildings you already own.
    - `FS25_LogisticsHub.zip`: the new name, for a new map or savegame.
 
    Use only **one** of them, never both.

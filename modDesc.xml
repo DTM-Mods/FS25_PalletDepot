@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="115">
     <author>Fennell</author>
-    <version>1.0.0.27</version>
+    <version>1.1.0.1</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -24,8 +24,9 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
-1.0.0.27 - New name: Pallet Depot is now Logistics Hub (title, shop, sign and menus). Nothing else changes: buildings you already own, their stock and settings stay as they are.
-1.0.0.26 - Beans & Alpacas: with the pack loaded, Food & Drinks also takes the banana and coffee products (bananas, fried bananas, banana chips, candy, cake, jam and milk, coffee bags, packed coffee, capsules, coffee yogurt and drinks, tiramisu) and Textiles & Goods the alpaca products (wool, fleece, socks, pillows, plush, chairs, armchairs), pigments, resin, paint buckets and fungicide. Products that do not come on pallets are left out.
+1.1.0.1 - New name: Pallet Depot is now Logistics Hub (title, shop, sign and menus). Nothing else changes: buildings you already own, their stock and settings stay as they are.
+1.1.0.1 - Beans & Alpacas: with the pack loaded, Food & Drinks also takes the banana and coffee products (bananas, fried bananas, banana chips, candy, cake, jam and milk, coffee bags, packed coffee, capsules, coffee yogurt and drinks, tiramisu) and Textiles & Goods the alpaca products (wool, fleece, socks, pillows, plush, chairs, armchairs), pigments, resin, paint buckets and fungicide. Products that do not come on pallets are left out.
+1.1.0.0 - The game's production menu (Esc, Productions) is shorter for a depot: its products list shows only the products a factory of your farm makes or that the depot has in stock (C shows everything again). New products from the Fed Produktions Pack: buffalo butter and goat butter.
 1.0.0.25 - Your own pallets for every production: on the Settings page (Right Shift + P, select a production, Enter) each production with pickup lanes can spawn the game's or mod's pallets, or your own pallets of 1,000 L or 5,000 L for every product it puts on pallets (depots: every product they store). Your pallets take any product of any map or mod, and they now come out full (before, a 5,000 L depot pallet could come out with only the game pallet's amount in it).
 1.0.0.24 - Fixes: depot capacity and pallet options, production schedules and lines paused by the auto-management are kept again after the game or server restarts (they were read before the buildings had loaded), and running costs per month on the Finances page are now a whole month, not one day.
 1.0.0.23 - The three roller doors (back, left, right) open and close: stand next to a door, inside or outside, and press the door key (as on base-game garages). An open door lets you walk and drive through; the door state is saved.
@@ -67,8 +68,9 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
-1.0.0.27 - Neuer Name: Palettendepot heißt jetzt Logistikzentrum (Titel, Shop, Schild und Menüs). Sonst ändert sich nichts: bereits gekaufte Gebäude, ihr Lager und ihre Einstellungen bleiben erhalten.
-1.0.0.26 - Beans & Alpacas: mit geladenem Pack nimmt Lebensmittel und Getränke auch die Bananen- und Kaffeeprodukte an (Bananen, frittierte Bananen, Bananenchips, -bonbons, -kuchen, -marmelade und -milch, Kaffeesäcke, verpackter Kaffee, Kapseln, Kaffeejoghurt und -getränke, Tiramisu) und Textilien und Waren die Alpaka-Produkte (Wolle, Vlies, Socken, Kissen, Plüschtiere, Stühle, Sessel), Pigmente, Harz, Farbeimer und Fungizid. Produkte, die nicht auf Paletten kommen, werden ausgelassen.
+1.1.0.1 - Neuer Name: Palettendepot heißt jetzt Logistikzentrum (Titel, Shop, Schild und Menüs). Sonst ändert sich nichts: bereits gekaufte Gebäude, ihr Lager und ihre Einstellungen bleiben erhalten.
+1.1.0.1 - Beans & Alpacas: mit geladenem Pack nimmt Lebensmittel und Getränke auch die Bananen- und Kaffeeprodukte an (Bananen, frittierte Bananen, Bananenchips, -bonbons, -kuchen, -marmelade und -milch, Kaffeesäcke, verpackter Kaffee, Kapseln, Kaffeejoghurt und -getränke, Tiramisu) und Textilien und Waren die Alpaka-Produkte (Wolle, Vlies, Socken, Kissen, Plüschtiere, Stühle, Sessel), Pigmente, Harz, Farbeimer und Fungizid. Produkte, die nicht auf Paletten kommen, werden ausgelassen.
+1.1.0.0 - Das Produktionsmenü des Spiels (Esc, Produktionen) ist für ein Depot kürzer: die Produktliste zeigt nur Produkte, die eine Fabrik deines Hofs herstellt oder die das Depot auf Lager hat (C zeigt wieder alles). Neue Produkte aus dem Fed Produktions Pack: Büffelbutter und Ziegenbutter.
 1.0.0.25 - Eigene Paletten für jede Produktion: auf der Einstellungsseite (Rechte Umschalttaste + P, Produktion wählen, Enter) kann jede Produktion mit Abholspuren die Paletten des Spiels oder Mods ausgeben, oder eigene Paletten mit 1.000 L oder 5.000 L für jedes Produkt, das sie auf Paletten gibt (Depots: jedes gelagerte Produkt). Die eigenen Paletten nehmen jedes Produkt jeder Karte und jedes Mods und kommen jetzt voll heraus (vorher konnte eine 5.000-L-Depotpalette nur mit der Menge der Spielpalette kommen).
 1.0.0.24 - Fehlerbehebungen: Kapazitäts- und Palettenoptionen der Depots, Produktionszeitpläne und von der Automatik pausierte Linien bleiben nach einem Neustart von Spiel oder Server wieder erhalten (sie wurden gelesen, bevor die Gebäude geladen waren), und die laufenden Kosten pro Monat auf der Finanzseite gelten jetzt für einen ganzen Monat statt einen Tag.
 1.0.0.23 - Die drei Rolltore (hinten, links, rechts) lassen sich öffnen und schließen: neben dem Tor stehen, innen oder außen, und die Tor-Taste drücken (wie bei den Garagen im Grundspiel). Durch ein offenes Tor kann man gehen und fahren; der Zustand wird gespeichert.
