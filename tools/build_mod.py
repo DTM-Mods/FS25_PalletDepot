@@ -1,17 +1,25 @@
-"""Validates the mod and zips it to build/FS25_PalletDepot.zip.
+"""Validates the mod and zips it to build/FS25_PalletDepot.zip and build/FS25_LogisticsHub.zip (same content).
 
-Runs tools/products.py and tools/gen_placeables.py first, then checks: every XML parses; every i3dMapping
+The mod is shown as "Logistics Hub" but keeps the zip name FS25_PalletDepot.zip: a new zip name would remove every
+building already placed on the current map. FS25_LogisticsHub.zip is the same build under the new name, for the next
+map. Never load both at once (same scripts, store items and key binding).
+
+Runs tools/products.py, tools/gen_placeables.py and tools/gen_pallets.py first, then checks: every XML parses; every i3dMapping
 resolves to a node of that name; no duplicate nodeIds; every referenced file exists; every $l10n_ key exists
 in English and German; at most 255 production lines; Lua syntax and block structure; GIANTS limits
 (at most 128 files, Lua files at most 0.5 MB).
 
-    python tools/build_mod.py [--bump]      --bump raises the last version number in modDesc.xml first
+    python tools/build_mod.py [--bump] [--ci]
+        --bump  raises the last version number in modDesc.xml first
+        --ci    skips products.py (it reads the game install and the FedMods zips); the committed
+                build/products.json is used instead (GitHub Actions, .github/workflows/build.yml)
 
 Model and textures are built separately (make_textures.py, build_warehouse.py in Blender, finish_i3d.py,
 render_store.py in Blender).
 """
 import os
 import re
+import shutil
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -19,8 +27,8 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-MOD_NAME = "FS25_PalletDepot"
-ZIP = os.path.join(ROOT, "build", MOD_NAME + ".zip")
+ZIP_NAMES = ["FS25_PalletDepot", "FS25_LogisticsHub"]     # current map's name first; see the docstring
+ZIP = os.path.join(ROOT, "build", ZIP_NAMES[0] + ".zip")
 SHIP = ["modDesc.xml", "icon_palletDepot.dds", "i3d/depot_food.i3d", "i3d/depot_goods.i3d", "i3d/depot.i3d.shapes"]
 SHIP_DIRS = {"gui": (".xml",), "placeables": (".xml",), "scripts": (".lua",), "store": (".dds",), "textures": (".dds",),
              "vehicles": (".xml", ".i3d", ".shapes")}
@@ -156,7 +164,9 @@ def lua_ok(rel):
 def main():
     if "--bump" in sys.argv:
         bump_version()
-    for script in ("products.py", "gen_placeables.py", "gen_pallets.py"):
+    scripts = ["gen_placeables.py", "gen_pallets.py"] if "--ci" in sys.argv else ["products.py", "gen_placeables.py",
+                                                                                     "gen_pallets.py"]
+    for script in scripts:
         r = subprocess.run([sys.executable, os.path.join(HERE, script)], capture_output=True, text=True)
         print(r.stdout.strip())
         if r.returncode != 0:
@@ -196,7 +206,11 @@ def main():
             zf.write(os.path.join(ROOT, f), f)            # arcname with forward slashes
     print("version", mod.findtext("version"), "| files", len(ship), "| lines",
           ", ".join("%s %d" % (os.path.basename(k)[6:-4], v) for k, v in lines.items()))
-    print("built", ZIP, os.path.getsize(ZIP), "bytes")
+    for name in ZIP_NAMES[1:]:
+        shutil.copyfile(ZIP, os.path.join(os.path.dirname(ZIP), name + ".zip"))
+    for name in ZIP_NAMES:
+        path = os.path.join(os.path.dirname(ZIP), name + ".zip")
+        print("built", path, os.path.getsize(path), "bytes")
 
 
 if __name__ == "__main__":

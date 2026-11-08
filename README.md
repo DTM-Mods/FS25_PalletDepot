@@ -1,20 +1,21 @@
 <div align="center">
 
-<img src="docs/images/banner.jpg" alt="Pallet Depot" width="100%">
+<img src="docs/images/banner.jpg" alt="Logistics Hub" width="100%">
 
-# Pallet Depot
+# Logistics Hub
 
 **A pallet hall for Farming Simulator 25 that stores your products and sends them on.**
 
+[![Build](https://github.com/chrisdfennell/FS25_PalletDepot/actions/workflows/build.yml/badge.svg)](https://github.com/chrisdfennell/FS25_PalletDepot/actions/workflows/build.yml)
 ![Farming Simulator 25](https://img.shields.io/badge/Farming%20Simulator-25-2e7d32)
-![Version](https://img.shields.io/badge/version-1.0.0.25-1565c0)
+![Version](https://img.shields.io/badge/version-1.0.0.27-1565c0)
 ![Multiplayer](https://img.shields.io/badge/multiplayer-supported-2e7d32)
 ![Languages](https://img.shields.io/badge/languages-EN%20%7C%20DE-555)
 ![Upkeep](https://img.shields.io/badge/daily%20upkeep-none-555)
 
 </div>
 
-Drop pallets on the unload pad at the front, then choose per product where it goes next. One depot can hold up to **1,000,000 L of every product** it takes.
+Drop pallets on the unload pad at the front, then choose per product where it goes next. One hub can hold up to **1,000,000 L of every product** it takes.
 
 ```mermaid
 flowchart LR
@@ -28,12 +29,12 @@ flowchart LR
 
 Pallets only: bulk goods, field crops and bales are not accepted.
 
-## Two depots
+## Two hubs
 
 <table>
 <tr>
-<td width="50%"><img src="docs/images/hero_food.jpg" alt="Food & Drinks depot"></td>
-<td width="50%"><img src="docs/images/hero_goods.jpg" alt="Textiles & Goods depot"></td>
+<td width="50%"><img src="docs/images/hero_food.jpg" alt="Food & Drinks hub"></td>
+<td width="50%"><img src="docs/images/hero_goods.jpg" alt="Textiles & Goods hub"></td>
 </tr>
 <tr>
 <td><b>Food &amp; Drinks</b> (green sign)<br/>Dairy, bread and cakes, oils, flour, sugar, honey, vegetables, fruit, juices, canned and preserved food, rice products, soups.</td>
@@ -41,18 +42,23 @@ Pallets only: bulk goods, field crops and bales are not accepted.
 </tr>
 </table>
 
-Both cost 50,000 and have no daily upkeep. With the **FedMods** packs loaded (standard or ProEdition) they also take the Fed products: 184 products in Food & Drinks, 68 in Textiles & Goods. Without the packs they offer the base-game products.
+Both cost 50,000 and have no daily upkeep. They also take the products of:
+
+- the **FedMods** packs (standard or ProEdition)
+- the **Beans & Alpacas** pack: bananas and banana products, coffee and coffee products, and tiramisu go into Food & Drinks; alpaca goods, pigments, resin, paint buckets and fungicide go into Textiles & Goods.
+
+With everything loaded that is up to 199 products in Food & Drinks and 81 in Textiles & Goods. Without these packs the hubs offer the base-game products.
 
 ## Features
 
 - **Per-product routing**: store, spawn as pallets, deliver to your productions, or sell every full hour.
-- **Capacity option** per depot: 100,000 / 500,000 / 1,000,000 L per product.
+- **Capacity option** per hub: 100,000 / 500,000 / 1,000,000 L per product.
 - **Your own pallets for every production**: any production with pickup lanes can spawn the game's pallets or this mod's **1,000 L / 5,000 L pallets**, which take any product of any map or mod.
 - **Racks that fill up**: 84 pallet places that show the stock as it grows.
 - **Working roller doors** on three sides. Open and close them like a garage door; their state is saved.
-- **Daily report at 06:00**: what came in, went out, was delivered and was sold at each depot.
-- **Hide empty materials** in the game's production menu (C), so a depot doesn't list 180 rows of 0 L.
-- **AutoDrive route** imported when the depot is placed.
+- **Daily report at 06:00**: what came in, went out, was delivered and was sold at each hub.
+- **Hide empty materials** in the game's production menu (C), so a hub doesn't list 180 rows of 0 L.
+- **AutoDrive route** imported when the hub is placed.
 
 <table>
 <tr>
@@ -67,7 +73,7 @@ Both cost 50,000 and have no daily upkeep. With the **FedMods** packs loaded (st
 
 ## Productions window
 
-Press **Right Shift + P** for one table of **all** your productions, not only the depots, with their inputs (five per line), recipes, finances and logistics.
+Press **Right Shift + P** for one table of **all** your productions, not only the hubs, with their inputs (five per line), recipes, finances and logistics.
 
 | Key | Main page | Logistics page |
 |:---:|---|---|
@@ -84,7 +90,7 @@ The **settings** page has:
 
 - **Auto-management**: pauses stuck lines so they stop costing money, and restarts them when they can run again.
 - **Alerts** for paused or restarted lines, low inputs and nearly full outputs.
-- **Building options** for the selected production: the depot's capacity, and which pallets it spawns.
+- **Building options** for the selected production: the hub's capacity, and which pallets it spawns.
 
 Settings, schedules and options are saved with the savegame and shared with all players on a server.
 
@@ -92,16 +98,21 @@ Settings, schedules and options are saved with the savegame and shared with all 
 
 | Mod | Needed? | What it adds |
 |---|---|---|
-| FedMods (standard or ProEdition) | optional | Fed products in both depots |
+| FedMods (standard or ProEdition) | optional | Fed products in both hubs |
+| Beans & Alpacas (DLC) | optional | banana, coffee, alpaca and paint products in both hubs |
 | Production Storage Control | optional | "Spawn goods" opens its spawn window with the product already selected; without it the button is hidden |
-| AutoDrive | optional | imports the depot's route when it is placed |
-| Price Ticker | optional | the depots are taken out of its station list (its files are not changed) |
+| AutoDrive | optional | imports the hub's route when it is placed |
+| Price Ticker | optional | the hubs are taken out of its station list (its files are not changed) |
 
 Multiplayer works; the server and every player need the same zip.
 
 ## Installation
 
-1. Get `FS25_PalletDepot.zip` (or build it, see below).
+1. Download a zip from [Releases](https://github.com/chrisdfennell/FS25_PalletDepot/releases). Both zips are the same build:
+   - `FS25_PalletDepot.zip`: for savegames that already have the mod. It was called Pallet Depot until 1.0.0.27, and only the old file name keeps the buildings you already own.
+   - `FS25_LogisticsHub.zip`: the new name, for a new map or savegame.
+
+   Use only **one** of them, never both.
 2. Put it into your mods folder, e.g. `Documents\My Games\FarmingSimulator2025\mods\`.
 3. Don't rename the zip: savegames would treat it as a different mod.
 
@@ -128,10 +139,12 @@ python tools/finish_i3d.py                                               # check
 blender --background --factory-startup --python tools/build_pallets.py   # pallets -> vehicles/*.i3d
 python tools/gen_pallets.py                                              # vehicles/depotPallet*.xml
 blender --background build/depot.blend --python tools/render_store.py    # shop images and mod icon -> store/
-python tools/build_mod.py                                                # validate and zip -> build/FS25_PalletDepot.zip
+python tools/build_mod.py                                                # validate and zip -> build/FS25_PalletDepot.zip + FS25_LogisticsHub.zip
 ```
 
 `build_mod.py` regenerates the product lists (`products.py`, from the game data, [`tools/product_map.csv`](tools/product_map.csv) and the FedMods packs in your mods folder) and the placeable XMLs (`gen_placeables.py`) before it validates and zips the mod. `--bump` raises the version in `modDesc.xml` first. It checks XML, i3d mappings, file references, translations, Lua syntax and the GIANTS limits (at most 128 files, Lua files at most 0.5 MB).
+
+GitHub Actions ([`.github/workflows/build.yml`](.github/workflows/build.yml)) runs `build_mod.py --ci` on every push: it skips `products.py` (which needs the game and the FedMods zips) and uses the committed `build/products.json`. A tag `vX.Y.Z.W` matching the version in `modDesc.xml` publishes a release with both zips.
 
 For script or XML changes only, `build_mod.py` alone is enough; rerun the earlier steps only when the model, textures or layout change. The README images come from `blender --background build/depot.blend --python tools/render_readme.py`.
 

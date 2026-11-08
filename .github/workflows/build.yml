@@ -1,0 +1,75 @@
+# Builds the mod on every push and pull request: validates it and zips it under both names
+# (FS25_PalletDepot.zip for the current map, FS25_LogisticsHub.zip for the next one; same content).
+# A tag vX.Y.Z.W that matches <version> in modDesc.xml also publishes a GitHub release with both zips.
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write     # create releases on tags
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Lua checker
+        run: pip install lupa
+
+      # products.py needs the game install and the FedMods zips, so CI uses the committed build/products.json
+      - name: Validate and zip
+        run: python tools/build_mod.py --ci
+
+      - name: Generated files are committed
+        run: |
+          git diff --exit-code -- placeables vehicles || {
+            echo "::error::placeables/ or vehicles/ differ from what the generators write; run tools/build_mod.py and commit"
+            exit 1
+          }
+
+      - name: Read version
+        id: version
+        run: |
+          version=$(python -c "import xml.etree.ElementTree as ET; print(ET.parse('modDesc.xml').getroot().findtext('version'))")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LogisticsHub-${{ steps.version.outputs.version }}
+          path: |
+            build/FS25_PalletDepot.zip
+            build/FS25_LogisticsHub.zip
+          if-no-files-found: error
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if [ "${GITHUB_REF_NAME}" != "v${VERSION}" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match modDesc.xml version ${VERSION}"
+            exit 1
+          fi
+          changes=$(grep -m1 "^${VERSION//./\\.} - " modDesc.xml | sed "s/^${VERSION//./\\.} - //")
+          cat > notes.md <<EOF
+          ${changes}
+
+          **Which zip?** Both are the same build.
+          - \`FS25_PalletDepot.zip\`: use this on the current map. It keeps the old file name, so the hubs you already own stay.
+          - \`FS25_LogisticsHub.zip\`: the new name, for a new map or a new savegame.
+
+          Put only **one** of them into the mods folder, never both.
+          EOF
+          gh release create "${GITHUB_REF_NAME}" build/FS25_PalletDepot.zip build/FS25_LogisticsHub.zip \
+            --title "Logistics Hub ${VERSION}" --notes-file notes.md
