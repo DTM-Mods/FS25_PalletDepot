@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://github.com/DTM-Mods"><img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/dtm-header.jpg" alt="DTM Mods by PropaineX & Fennell" width="100%"></a>
+</p>
+
 <div align="center">
 
 <img src="docs/images/banner.jpg" alt="Logistics Hub" width="100%">
@@ -6,7 +10,7 @@
 
 **A pallet hall for Farming Simulator 25 that stores your products and sends them on.**
 
-[![Build](https://github.com/chrisdfennell/FS25_PalletDepot/actions/workflows/build.yml/badge.svg)](https://github.com/chrisdfennell/FS25_PalletDepot/actions/workflows/build.yml)
+[![Build](https://github.com/DTM-Mods/FS25_PalletDepot/actions/workflows/build.yml/badge.svg)](https://github.com/DTM-Mods/FS25_PalletDepot/actions/workflows/build.yml)
 ![Farming Simulator 25](https://img.shields.io/badge/Farming%20Simulator-25-2e7d32)
 ![Version](https://img.shields.io/badge/version-1.1.0.1-1565c0)
 ![Multiplayer](https://img.shields.io/badge/multiplayer-supported-2e7d32)
@@ -48,6 +52,10 @@ Both cost 50,000 and have no daily upkeep. They also take the products of:
 - the **Beans & Alpacas** pack: bananas and banana products, coffee and coffee products, and tiramisu go into Food & Drinks; alpaca goods, pigments, resin, paint buckets and fungicide go into Textiles & Goods.
 
 With everything loaded that is up to 199 products in Food & Drinks and 81 in Textiles & Goods. Without these packs the hubs offer the base-game products.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/features.jpg" alt="Features" width="100%">
+</p>
 
 ## Features
 
@@ -108,7 +116,7 @@ Multiplayer works; the server and every player need the same zip.
 
 ## Installation
 
-1. Download a zip from [Releases](https://github.com/chrisdfennell/FS25_PalletDepot/releases). Both zips are the same build:
+1. Download a zip from [Releases](https://github.com/DTM-Mods/FS25_PalletDepot/releases). Both zips are the same build:
    - `FS25_PalletDepot.zip`: for savegames that already have the mod. It was called Pallet Depot until 1.1.0.1, and only the old file name keeps the buildings you already own.
    - `FS25_LogisticsHub.zip`: the new name, for a new map or savegame.
 
@@ -163,6 +171,19 @@ For script or XML changes only, `build_mod.py` alone is enough; rerun the earlie
 
 </details>
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/patch-notes.jpg" alt="Patch notes" width="100%">
+</p>
+
+The full changelog is at the end of the description in [`modDesc.xml`](modDesc.xml). Builds are on the [releases page](https://github.com/DTM-Mods/FS25_PalletDepot/releases).
+
 ## Credits
 
 Building, textures and scripts by Fennell. Sign lettering set in Inter (SIL Open Font License).
+
+---
+
+<p align="center">
+  <a href="https://github.com/DTM-Mods"><img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/dtm-intro.gif" alt="DTM Mods by PropaineX & Fennell" width="420"></a><br>
+  <sub>Part of <a href="https://github.com/DTM-Mods">DTM Mods</a> (Dead To Me) by PropaineX & Fennell</sub>
+</p>
