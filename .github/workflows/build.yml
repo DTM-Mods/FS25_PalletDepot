@@ -1,84 +1,44 @@
-# Builds the mod on every push and pull request: validates it and zips it under both names
-# (FS25_PalletDepot.zip for the current map, FS25_LogisticsHub.zip for the next one; same content).
-# A tag vX.Y.Z.W that matches <version> in modDesc.xml also publishes a GitHub release with both zips.
+# Checks the mod on every push and pull request, and publishes a release when you push a tag
+# v<version in modDesc.xml>. The steps live in DTM-Mods/.github (.github/workflows/fs25-mod.yml).
+# This file is the same in every DTM mod repository; only the settings under "with:" differ.
+#
+# Try a release without publishing it: Actions > Build > Run workflow, enter the tag (v1.2.0.0).
 name: Build
 
 on:
   push:
-    branches: [main]
+    branches: ["**"]
     tags: ["v*"]
   pull_request:
   workflow_dispatch:
+    inputs:
+      test-tag:
+        description: "Try a release without publishing it: the tag, e.g. v1.2.0.0 (leave empty to just build)"
+        type: string
+        default: ""
 
 permissions:
-  contents: write     # create releases on tags
-  actions: write     # start the Discord release post
+  contents: write     # publish releases on tags
+  actions: write      # start the Discord release post
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
+  mod:
+    uses: DTM-Mods/.github/.github/workflows/fs25-mod.yml@main
+    with:
+      test-tag: ${{ inputs.test-tag || '' }}
+      # Settings for this mod (see DTM-Mods/.github ci/README.md):
+      # Logistics Hub ships the same build under two names: FS25_LogisticsHub.zip (new name) and
+      # FS25_PalletDepot.zip (old name, so savegames that already have it keep their buildings).
+      # products.py needs the game install and the FedMods zips, so CI uses the committed build/products.json.
+      zip-name: FS25_LogisticsHub
+      zips: FS25_LogisticsHub FS25_PalletDepot
+      build-command: |
+        python tools/build_mod.py --ci
+        cp build/FS25_LogisticsHub.zip build/FS25_PalletDepot.zip dist/
+        git diff --exit-code -- placeables vehicles || { echo "::error::placeables/ or vehicles/ differ from what the generators write; run tools/build_mod.py and commit"; exit 1; }
+      install-note: |
+        **Which zip?** Both are the same build.
+        - `FS25_PalletDepot.zip`: for a savegame that already has the mod. It keeps the old file name, so the hubs you already own stay.
+        - `FS25_LogisticsHub.zip`: the new name, for a new map or a new savegame.
 
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-
-      - name: Install Lua checker
-        run: pip install lupa
-
-      # products.py needs the game install and the FedMods zips, so CI uses the committed build/products.json
-      - name: Validate and zip
-        run: python tools/build_mod.py --ci
-
-      - name: Generated files are committed
-        run: |
-          git diff --exit-code -- placeables vehicles || {
-            echo "::error::placeables/ or vehicles/ differ from what the generators write; run tools/build_mod.py and commit"
-            exit 1
-          }
-
-      - name: Read version
-        id: version
-        run: |
-          version=$(python -c "import xml.etree.ElementTree as ET; print(ET.parse('modDesc.xml').getroot().findtext('version'))")
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - uses: actions/upload-artifact@v7
-        with:
-          name: LogisticsHub-${{ steps.version.outputs.version }}
-          path: |
-            build/FS25_PalletDepot.zip
-            build/FS25_LogisticsHub.zip
-          if-no-files-found: error
-
-      - name: Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          if [ "${GITHUB_REF_NAME}" != "v${VERSION}" ]; then
-            echo "::error::tag ${GITHUB_REF_NAME} does not match modDesc.xml version ${VERSION}"
-            exit 1
-          fi
-          # every English changelog line of this version (the German ones follow in the <de> block)
-          changes=$(sed -n '/^<en><!\[CDATA\[/,/^\]\]><\/en>/p' modDesc.xml | grep "^${VERSION//./\\.} - " | sed "s/^${VERSION//./\\.} - /- /")
-          cat > notes.md <<EOF
-          ${changes}
-
-          **Which zip?** Both are the same build.
-          - \`FS25_PalletDepot.zip\`: use this on the current map. It keeps the old file name, so the hubs you already own stay.
-          - \`FS25_LogisticsHub.zip\`: the new name, for a new map or a new savegame.
-
-          Put only **one** of them into the mods folder, never both.
-          EOF
-          gh release create "${GITHUB_REF_NAME}" build/FS25_PalletDepot.zip build/FS25_LogisticsHub.zip \
-            --title "Logistics Hub ${VERSION}" --notes-file notes.md
-
-      - name: Announce on Discord
-        if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: gh workflow run discord-release.yml -f tag="$GITHUB_REF_NAME"
+        Put only **one** of them into the mods folder, never both.
