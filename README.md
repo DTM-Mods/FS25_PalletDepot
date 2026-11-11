@@ -57,7 +57,6 @@ With everything loaded that is up to 199 products in Food & Drinks and 81 in Tex
   <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/features.jpg" alt="Features" width="100%">
 </p>
 
-## Features
 
 - **Per-product routing**: store, spawn as pallets, deliver to your productions, or sell every full hour.
 - **Capacity option** per hub: 100,000 / 500,000 / 1,000,000 L per product.
@@ -102,7 +101,9 @@ The **settings** page has:
 
 Settings, schedules and options are saved with the savegame and shared with all players on a server.
 
-## Compatibility
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/compatibility.jpg" alt="Compatibility" width="100%">
+</p>
 
 | Mod | Needed? | What it adds |
 |---|---|---|
@@ -114,7 +115,9 @@ Settings, schedules and options are saved with the savegame and shared with all 
 
 Multiplayer works; the server and every player need the same zip.
 
-## Installation
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/installation.jpg" alt="Installation" width="100%">
+</p>
 
 1. Download a zip from [Releases](https://github.com/DTM-Mods/FS25_PalletDepot/releases). Both zips are the same build:
    - `FS25_PalletDepot.zip`: for savegames that already have the mod. It was called Pallet Depot until 1.1.0.1, and only the old file name keeps the buildings you already own.
@@ -177,7 +180,9 @@ For script or XML changes only, `build_mod.py` alone is enough; rerun the earlie
 
 The full changelog is at the end of the description in [`modDesc.xml`](modDesc.xml). Builds are on the [releases page](https://github.com/DTM-Mods/FS25_PalletDepot/releases).
 
-## Credits
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/credits.jpg" alt="Credits" width="100%">
+</p>
 
 Building, textures and scripts by Fennell. Sign lettering set in Inter (SIL Open Font License).
 
