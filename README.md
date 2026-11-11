@@ -115,6 +115,24 @@ Settings, schedules and options are saved with the savegame and shared with all 
 
 Multiplayer works; the server and every player need the same zip.
 
+<!-- dtm-screenshots -->
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/screenshots.jpg" alt="Screenshots" width="100%">
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/screens/FS25_PalletDepot/1_food_hub.jpg" alt="The Food & Drinks hub" width="49%">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/screens/FS25_PalletDepot/2_goods_hub.jpg" alt="The Goods hub" width="49%">
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/screens/FS25_PalletDepot/3_inside_aisle.jpg" alt="Inside: the racks and the pallet lane" width="49%">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/screens/FS25_PalletDepot/4_inside_racks.jpg" alt="Inside: racks full of stored pallets" width="49%">
+</p>
+
+<!-- /dtm-screenshots -->
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/installation.jpg" alt="Installation" width="100%">
 </p>
