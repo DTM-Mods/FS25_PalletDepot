@@ -204,6 +204,12 @@ The full changelog is at the end of the description in [`modDesc.xml`](modDesc.x
 
 Building, textures and scripts by Fennell. Sign lettering set in Inter (SIL Open Font License).
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DTM-Mods/.github/main/assets/license.jpg" alt="License" width="100%">
+</p>
+
+MIT, see [LICENSE](LICENSE).
+
 ---
 
 <p align="center">
