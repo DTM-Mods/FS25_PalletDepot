@@ -3,6 +3,8 @@
      Left: a preview of the product and the pallet. Right: the five choices. Bottom: what you get.
      Uses the styles of gui/PalletDepotOverviewProfiles.xml. -->
 <GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <!-- a layer of its own: drawn over the window below it, texts included -->
+    <GuiElement profile="newLayer"/>
     <Bitmap profile="dialogFullscreenBg" id="dialogBg"/>
     <GuiElement profile="fs25_dialogBg" id="dialogElement" size="1040px 690px">
         <Bitmap profile="pdWindow" size="1040px 690px"/>

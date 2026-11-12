@@ -2,6 +2,8 @@
 <!-- Pallet Depot productions window (scripts/PalletDepotOverview.lua): title bar with summary, page strip, one table of all
      the farm's productions. Columns are placed per page in Lua, measured against the 100 px reference cell "pxRef". -->
 <GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <!-- a layer of its own: drawn over the window below it, texts included -->
+    <GuiElement profile="newLayer"/>
     <Bitmap profile="dialogFullscreenBg" id="dialogBg"/>
     <GuiElement profile="fs25_dialogBg" id="dialogElement" size="1760px 880px">
         <Bitmap profile="pdWindow" size="1760px 880px"/>

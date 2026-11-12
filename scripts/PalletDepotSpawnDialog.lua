@@ -472,8 +472,14 @@ function PalletDepotSpawnDialog:updatePreview()
         return
     end
     local rest = product.liters - amount
-    self:setSummary(string.format(text("pdo_spawnSummary"), self.count, liters(amount), product.title,
-        farm ~= nil and farm.name or "?"),
+    local farmName = farm ~= nil and farm.name or "?"
+    local summary
+    if self.count == 1 then
+        summary = string.format(text("pdo_spawnSummaryOne"), liters(amount), product.title, farmName)
+    else
+        summary = string.format(text("pdo_spawnSummary"), self.count, liters(amount), product.title, farmName)
+    end
+    self:setSummary(summary,
         rest >= 1 and string.format(text("pdo_spawnRest"), liters(rest)) or text("pdo_spawnAllOut"))
 end
 

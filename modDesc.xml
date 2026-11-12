@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="115">
     <author>Fennell</author>
-    <version>1.3.0.0</version>
+    <version>1.3.0.1</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -24,6 +24,7 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.3.0.1 - The Spawn goods and schedule windows are drawn on a layer of their own: the productions window behind them no longer shows through (its numbers and buttons were drawn over them). "1 pallet" instead of "1 pallets".
 1.3.0.0 - Storing without other mods: a new Storing output for every product (Logistics page, Enter: Storing -> Spawning -> Distributing -> Selling). Stored products stay in the building until you spawn, deliver or sell them; Spawning puts them on pallets by itself. Hubs store by default (with Production Storage Control installed its own Storing stays in charge). Spawn goods remembers your last choice for each building, E picks all pallets, and it warns before spawning when the pallet limit would be reached or pallets still stand at the pickup lanes. Our 1,000 L and 5,000 L pallets have their own shop pictures; a pallet without a picture shows ours with the product's icon. Highlands Fishing: roof shingles and coal in Textiles & Goods; its fish and onion products were already taken.
 1.2.5.0 - Part-filled product pallets (e.g. 1,000 L carrot bags) stack right on top of each other instead of floating a full pallet height above.
 1.2.4.0 - Spawn goods has its own window now (no other mod needed, Production Storage Control is not used any more): pick the product in stock, the pallet (the product's own pallet in its normal size, or in 1,000 L or 5,000 L; in a hub for every product), whether only full pallets come out or the last one takes the rest, the farm that gets the pallets and how many (up / down chooses a line, left / right or Enter / Backspace changes it, X / C 10 pallets less / more, Space spawns). The pallets come out at the building's pickup lanes.
@@ -79,6 +80,7 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.3.0.1 - Die Fenster Waren auslagern und Zeitplan liegen auf einer eigenen Ebene: das Produktionsfenster dahinter scheint nicht mehr durch (seine Zahlen und Tasten wurden darüber gezeichnet). "1 Palette" statt "1 Paletten".
 1.3.0.0 - Lagern ohne andere Mods: eine neue Ausgabe Lagern für jedes Produkt (Logistik-Seite, Enter: Lagern -> Auslagern -> Verteilen -> Verkaufen). Gelagerte Produkte bleiben im Gebäude, bis du sie auslagerst, lieferst oder verkaufst; Auslagern packt sie von selbst auf Paletten. Logistikzentren lagern standardmäßig (mit Production Storage Control bleibt dessen eigenes Lagern zuständig). Waren auslagern merkt sich die letzte Wahl je Gebäude, E wählt alle Paletten, und es warnt vor dem Auslagern, wenn das Palettenlimit erreicht würde oder noch Paletten an den Abholspuren stehen. Unsere 1.000-L- und 5.000-L-Paletten haben eigene Shopbilder; eine Palette ohne Bild zeigt unseres mit dem Symbol des Produkts. Highlands Fishing: Dachschindeln und Kohle in Textilien und Waren; seine Fisch- und Zwiebelprodukte wurden schon angenommen.
 1.2.5.0 - Teilbefüllte Produktpaletten (z. B. 1.000 L Karottensäcke) stapeln sich direkt aufeinander statt eine volle Palettenhöhe darüber zu schweben.
 1.2.4.0 - Waren auslagern hat jetzt ein eigenes Fenster (keine andere Mod nötig, Production Storage Control wird nicht mehr benutzt): Produkt auf Lager, Palette (die eigene Palette des Produkts in normaler Größe oder mit 1.000 L oder 5.000 L, im Logistikzentrum für jedes Produkt), ob nur volle Paletten kommen oder die letzte den Rest nimmt, den Hof, der die Paletten bekommt, und die Anzahl wählen (hoch / runter wählt eine Zeile, links / rechts oder Enter / Rücktaste ändert sie, X / C 10 Paletten weniger / mehr, Leertaste lagert aus). Die Paletten kommen an den Abholspuren des Gebäudes heraus.
@@ -282,6 +284,7 @@ Changelog:
         <text name="pdo_spawnPerPallet"><en>%s L per pallet</en><de>%s L pro Palette</de></text>
         <text name="pdo_spawnYourFarm"><en>Your farm</en><de>Dein Hof</de></text>
         <text name="pdo_spawnSummary"><en>%d pallets, %s L of %s for %s</en><de>%d Paletten, %s L %s für %s</de></text>
+        <text name="pdo_spawnSummaryOne"><en>1 pallet, %s L of %s for %s</en><de>1 Palette, %s L %s für %s</de></text>
         <text name="pdo_spawnRest"><en>%s L stays in stock</en><de>%s L bleiben auf Lager</de></text>
         <text name="pdo_spawnAllOut"><en>Everything in stock goes out</en><de>Der ganze Bestand geht raus</de></text>
         <text name="pdo_btnNext"><en>Next</en><de>Nächste</de></text>
