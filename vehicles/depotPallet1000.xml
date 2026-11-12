@@ -17,8 +17,8 @@
         <filename>vehicles/depotPallet1000.i3d</filename>
         <size width="1.2" length="1" height="1.15"/>
         <canBeReset>false</canBeReset>
-        <components maxMass="2.5">
-            <component centerOfMass="0 0.35 0" solverIterationCount="10" mass="0.035"/>
+        <components maxMass="200">
+            <component centerOfMass="0 0.35 0" solverIterationCount="10" mass="60"/>
         </components>
         <showInVehicleMenu>false</showInVehicleMenu>
         <mapHotspot available="false"/>

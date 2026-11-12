@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="115">
     <author>Fennell</author>
-    <version>1.1.0.1</version>
+    <version>1.1.0.2</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -24,6 +24,7 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.1.0.2 - Own pallets (1,000 L and 5,000 L) weigh like the NF Marsch pallets: 60 kg empty and at most 200 kg full, whatever the product. Before, a wrong unit made them weigh almost nothing (at most 9 kg).
 1.1.0.1 - New name: Pallet Depot is now Logistics Hub (title, shop, sign and menus). Nothing else changes: buildings you already own, their stock and settings stay as they are.
 1.1.0.1 - Beans & Alpacas: with the pack loaded, Food & Drinks also takes the banana and coffee products (bananas, fried bananas, banana chips, candy, cake, jam and milk, coffee bags, packed coffee, capsules, coffee yogurt and drinks, tiramisu) and Textiles & Goods the alpaca products (wool, fleece, socks, pillows, plush, chairs, armchairs), pigments, resin, paint buckets and fungicide. Products that do not come on pallets are left out.
 1.1.0.0 - The game's production menu (Esc, Productions) is shorter for a depot: its products list shows only the products a factory of your farm makes or that the depot has in stock (C shows everything again). New products from the Fed Produktions Pack: buffalo butter and goat butter.
@@ -68,6 +69,7 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.1.0.2 - Eigene Paletten (1.000 L und 5.000 L) wiegen wie die Paletten der NF Marsch: leer 60 kg und voll höchstens 200 kg, egal welches Produkt. Vorher wogen sie durch eine falsche Einheit fast nichts (höchstens 9 kg).
 1.1.0.1 - Neuer Name: Palettendepot heißt jetzt Logistikzentrum (Titel, Shop, Schild und Menüs). Sonst ändert sich nichts: bereits gekaufte Gebäude, ihr Lager und ihre Einstellungen bleiben erhalten.
 1.1.0.1 - Beans & Alpacas: mit geladenem Pack nimmt Lebensmittel und Getränke auch die Bananen- und Kaffeeprodukte an (Bananen, frittierte Bananen, Bananenchips, -bonbons, -kuchen, -marmelade und -milch, Kaffeesäcke, verpackter Kaffee, Kapseln, Kaffeejoghurt und -getränke, Tiramisu) und Textilien und Waren die Alpaka-Produkte (Wolle, Vlies, Socken, Kissen, Plüschtiere, Stühle, Sessel), Pigmente, Harz, Farbeimer und Fungizid. Produkte, die nicht auf Paletten kommen, werden ausgelassen.
 1.1.0.0 - Das Produktionsmenü des Spiels (Esc, Produktionen) ist für ein Depot kürzer: die Produktliste zeigt nur Produkte, die eine Fabrik deines Hofs herstellt oder die das Depot auf Lager hat (C zeigt wieder alles). Neue Produkte aus dem Fed Produktions Pack: Büffelbutter und Ziegenbutter.
