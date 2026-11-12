@@ -13,6 +13,10 @@
         <Preset name="pdBarBg" value="0.2 0.22 0.21 1"/>
         <Preset name="pdText" value="0.92 0.94 0.92 1"/>
         <Preset name="pdTextDim" value="0.6 0.64 0.61 1"/>
+        <Preset name="pdTile" value="0.14 0.155 0.148 1"/>
+        <Preset name="pdRowSelected" value="0.11 0.2 0.13 1"/>
+        <Preset name="pdSummaryBg" value="0.09 0.2 0.11 1"/>
+        <Preset name="pdGreenLight" value="0.42 0.86 0.47 1"/>
     </Presets>
 
     <!-- blocks -->
@@ -144,5 +148,68 @@
     </Profile>
     <Profile name="pdBarFill" extends="pdBlock">
         <imageColor value="$preset_pdGreen"/>
+    </Profile>
+
+    <!-- spawn goods window (gui/PalletDepotSpawn.xml) -->
+    <Profile name="pdSpawnRow" extends="baseReference" with="anchorTopStretchingX">
+        <height value="98px"/>
+        <imageColor value="$preset_pdRow"/>
+        <imageSelectedColor value="$preset_pdRowSelected"/>
+        <imageHighlightedColor value="$preset_pdRowAlt"/>
+    </Profile>
+    <Profile name="pdTile" extends="pdBlock">
+        <imageColor value="$preset_pdTile"/>
+    </Profile>
+    <Profile name="pdSummaryBg" extends="pdBlock">
+        <imageColor value="$preset_pdSummaryBg"/>
+    </Profile>
+    <Profile name="pdImage" extends="pdBlock">
+        <imageColor value="1 1 1 1"/>
+        <imageSliceId value="noSlice"/>
+    </Profile>
+    <Profile name="pdCaption" extends="pdText">
+        <textSize value="12px"/>
+        <textBold value="true"/>
+        <textUpperCase value="true"/>
+        <textColor value="$preset_pdTextDim"/>
+        <textSelectedColor value="$preset_pdGreenLight"/>
+        <textHighlightedColor value="$preset_pdTextDim"/>
+    </Profile>
+    <Profile name="pdDetail" extends="pdText">
+        <textSize value="14px"/>
+        <textAlignment value="right"/>
+        <textColor value="$preset_pdTextDim"/>
+        <textSelectedColor value="$preset_pdTextDim"/>
+        <textHighlightedColor value="$preset_pdTextDim"/>
+    </Profile>
+    <Profile name="pdValue" extends="pdText">
+        <textSize value="22px"/>
+        <textBold value="true"/>
+    </Profile>
+    <Profile name="pdArrow" extends="pdText">
+        <textSize value="26px"/>
+        <textBold value="true"/>
+        <textAlignment value="center"/>
+        <textColor value="$preset_pdTextDim"/>
+        <textSelectedColor value="$preset_pdGreenLight"/>
+        <textHighlightedColor value="$preset_pdTextDim"/>
+    </Profile>
+    <Profile name="pdHeroName" extends="pdText">
+        <textSize value="22px"/>
+        <textBold value="true"/>
+        <textAlignment value="center"/>
+    </Profile>
+    <Profile name="pdHeroInfo" extends="pdText">
+        <textSize value="15px"/>
+        <textAlignment value="center"/>
+        <textColor value="$preset_pdTextDim"/>
+    </Profile>
+    <Profile name="pdSummaryText" extends="pdText">
+        <textSize value="18px"/>
+        <textBold value="true"/>
+        <textColor value="$preset_pdGreenLight"/>
+    </Profile>
+    <Profile name="pdSummaryInfo" extends="pdDetail">
+        <textSize value="15px"/>
     </Profile>
 </GUIProfiles>

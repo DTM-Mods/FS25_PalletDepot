@@ -12,8 +12,8 @@
 --   Settings     farm settings (auto-manage, alerts), the selected production's pallets, the selected depot's
 --                capacity, personal settings;
 --                Enter changes the selected setting, Backspace back
--- Space exports a CSV, Esc closes. Spawn goods opens Production Storage Control's spawn window for the selected
--- production, as in the old depot. Changes go through the game's own events, so they work in multiplayer. Depots only
+-- Space exports a CSV, Esc closes. Spawn goods opens our own spawn window (scripts/PalletDepotSpawnDialog.lua) for
+-- the selected production. Changes go through the game's own events, so they work in multiplayer. Depots only
 -- list stocked products (they have up to 184).
 
 PalletDepotOverview = {}
@@ -117,11 +117,6 @@ end
 
 local function money(value)
     return g_i18n:formatMoney(value, 0, true, true)
-end
-
-local function getPSC()
-    local env = _G["FS25_ProductionStorageControl"]
-    return env ~= nil and env.productionStorageControl ~= nil and env or nil
 end
 
 local function hasStoreMode()
@@ -781,12 +776,11 @@ end
 
 -- --- buttons and keys ----------------------------------------------------------------------------------
 
--- as in the old depot: offered for the selected own production with pickup lanes while Production Storage Control is
--- installed
+-- offered for the selected own production with pickup lanes
 function PalletDepotOverview:getSpawnProductionPoint()
     local row = self:getSelectedRow()
     local productionPoint = row ~= nil and row.facility ~= nil and row.facility.productionPoint or nil
-    if getPSC() == nil or productionPoint == nil or productionPoint.palletSpawner == nil or productionPoint.activatable == nil
+    if productionPoint == nil or productionPoint.palletSpawner == nil or productionPoint.storage == nil
         or productionPoint:getOwnerFarmId() ~= g_currentMission:getFarmId() then
         return nil
     end
@@ -1052,25 +1046,11 @@ function PalletDepotOverview:onClickSpawnGoods()
     if productionPoint == nil then
         return
     end
-    -- remember the selected recipe's product to preselect it in the spawn dialog
+    -- the selected recipe's product is preselected
     local row = self:getSelectedRow()
-    local fillTypeIndex = row ~= nil and row.fillType or nil
-
-    productionPoint.activatable:run(true)       -- opens Production Storage Control's spawn dialog
-
-    if fillTypeIndex ~= nil then
-        local psc = getPSC()
-        local dialogClass = psc ~= nil and psc.ProductionStorageDialog or nil
-        local dialog = dialogClass ~= nil and dialogClass.INSTANCE or nil
-        if dialog ~= nil and dialog.options ~= nil and dialog.fillTypeElement ~= nil then
-            for i, option in ipairs(dialog.options) do
-                if option.fillTypeIndex == fillTypeIndex then
-                    dialog.fillTypeElement:setState(i, true)
-                    break
-                end
-            end
-        end
-    end
+    PalletDepotSpawnDialog.show(productionPoint, row ~= nil and row.fillType or nil, function()
+        self:rebuild()
+    end)
 end
 
 -- --- CSV export ----------------------------------------------------------------------------------------

@@ -33,6 +33,7 @@ SHIP = ["modDesc.xml", "icon_palletDepot.dds", "icon_palletDepot_clear.dds", "i3
 SHIP_DIRS = {"gui": (".xml",), "placeables": (".xml",), "scripts": (".lua",), "store": (".dds",), "textures": (".dds",),
              "vehicles": (".xml", ".i3d", ".shapes")}
 MAX_FILES, MAX_LUA, MAX_LINES = 128, 512 * 1024, 255
+BASE_TEXTS = {"typeDesc_pallet", "configuration_valueDefault", "unit_literShort"}     # the game's own texts
 
 errors = []
 
@@ -128,8 +129,8 @@ def check_vehicle(rel, keys):
               "%s: i3dMapping %s -> %s is %r" % (rel, m.get("id"), m.get("node"), paths.get(m.get("node"))))
     check(os.path.exists(os.path.join(ROOT, root.findtext("storeData/image"))), "%s: missing store image" % rel)
     for key in set(re.findall(r"\$l10n_([A-Za-z0-9_]+)", text)):
-        if key in ("typeDesc_pallet", "configuration_valueDefault", "unit_literShort"):
-            continue                    # base-game texts
+        if key in BASE_TEXTS:
+            continue
         check(keys.get(key, set()) >= {"en", "de"}, "%s: l10n key %s missing in en/de" % (rel, key))
 
 
@@ -137,7 +138,7 @@ def lua_texts(rel, keys):
     src = open(os.path.join(ROOT, rel), encoding="utf-8").read()
     # whole literal keys only; keys built with ".." (e.g. "pdo_month" .. period) are checked by their full names
     used = set(re.findall(r'getText\(\s*"([A-Za-z0-9_]+)"\s*[,)]', src)) | set(re.findall(r'"((?:depot|pdo)_[A-Za-z0-9_]+)"(?!\s*\.\.)', src))
-    for key in used:
+    for key in used - BASE_TEXTS:
         check(keys.get(key, set()) >= {"en", "de"}, "%s: l10n key %s missing in en/de" % (rel, key))
 
 

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<!-- Logistics Hub Spawn goods window (scripts/PalletDepotSpawnDialog.lua), opened over the productions window.
+     Left: a preview of the product and the pallet. Right: the five choices. Bottom: what you get.
+     Uses the styles of gui/PalletDepotOverviewProfiles.xml. -->
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg"/>
+    <GuiElement profile="fs25_dialogBg" id="dialogElement" size="1040px 690px">
+        <Bitmap profile="pdWindow" size="1040px 690px"/>
+
+        <Bitmap profile="pdTitleBar" size="1040px 88px">
+            <Bitmap profile="pdImage" position="22px -12px" size="64px 64px" id="titleIcon"/>
+            <Text profile="pdBrand" position="100px -14px" size="400px 24px" text="$l10n_pdo_spawnBrand"/>
+            <Text profile="pdTitle" position="100px -36px" size="910px 26px" id="titleText"/>
+            <Text profile="pdHeaderText" position="100px -62px" size="910px 20px" id="subtitleText"/>
+        </Bitmap>
+        <Bitmap profile="pdAccent" position="0px -88px" size="1040px 3px"/>
+
+        <!-- preview -->
+        <Bitmap profile="pdPanel" position="24px -107px" size="300px 412px">
+            <Bitmap profile="pdTile" position="85px -20px" size="130px 130px"/>
+            <Bitmap profile="pdImage" position="95px -30px" size="110px 110px" id="heroProductIcon"/>
+            <Text profile="pdHeroName" position="10px -158px" size="280px 30px" id="heroProductName"/>
+            <Text profile="pdHeroInfo" position="10px -186px" size="280px 22px" id="heroProductInfo"/>
+            <Bitmap profile="pdBarBg" position="50px -214px" size="200px 8px" id="heroStockBg"/>
+            <Bitmap profile="pdBarFill" position="50px -214px" size="100px 8px" id="heroStockFill"/>
+            <Bitmap profile="pdHeaderLine" position="30px -236px" size="240px 2px"/>
+            <Bitmap profile="pdTile" position="85px -250px" size="130px 130px"/>
+            <Bitmap profile="pdImage" position="90px -255px" size="120px 120px" id="heroPalletImage"/>
+            <Text profile="pdHeroInfo" position="10px -384px" size="280px 22px" id="heroPalletName"/>
+        </Bitmap>
+
+        <!-- choices -->
+        <Bitmap profile="pdPanel" position="340px -107px" size="676px 412px">
+            <SmoothList profile="pdList" id="rowList" position="6px -6px" size="664px 400px" focusInit="onOpen">
+                <ListItem profile="pdSpawnRow" name="rowTemplate" size="664px 80px">
+                    <Bitmap profile="pdAccent" position="0px 0px" size="6px 80px" name="stripe"/>
+                    <Bitmap profile="pdTile" position="22px -12px" size="56px 56px" name="tile"/>
+                    <Bitmap profile="pdImage" position="27px -17px" size="46px 46px" name="icon"/>
+                    <Bitmap profile="pdImage" position="27px -17px" size="46px 46px" name="farmIcon"/>
+                    <Text profile="pdCaption" position="100px -10px" size="250px 18px" name="caption"/>
+                    <Text profile="pdDetail" position="360px -10px" size="284px 18px" name="detail"/>
+                    <Text profile="pdArrow" position="92px -28px" size="26px 32px" name="arrowLeft" text="&lt;"/>
+                    <Text profile="pdValue" position="122px -28px" size="494px 32px" name="value"/>
+                    <Text profile="pdArrow" position="618px -28px" size="26px 32px" name="arrowRight" text="&gt;"/>
+                    <Bitmap profile="pdBarBg" position="122px -64px" size="494px 8px" name="barBg"/>
+                    <Bitmap profile="pdBarFill" position="122px -64px" size="247px 8px" name="barFill"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg1"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg2"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg3"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg4"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg5"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg6"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg7"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg8"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg9"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg10"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg11"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg12"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg13"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg14"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg15"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg16"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg17"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg18"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg19"/>
+                    <Bitmap profile="pdImage" position="122px -64px" size="20px 8px" name="seg20"/>
+                </ListItem>
+            </SmoothList>
+        </Bitmap>
+
+        <!-- what you get -->
+        <Bitmap profile="pdSummaryBg" position="24px -535px" size="992px 62px">
+            <Bitmap profile="pdAccent" position="0px 0px" size="6px 62px"/>
+            <Bitmap profile="pdImage" position="20px -9px" size="44px 44px" id="summaryIcon"/>
+            <Text profile="pdSummaryText" position="76px 0px" size="600px 62px" id="summaryText"/>
+            <Text profile="pdSummaryInfo" position="680px 0px" size="290px 62px" id="summaryInfo"/>
+        </Bitmap>
+
+        <BoxLayout profile="fs25_dialogButtonBox" size="992px 60px" id="buttonBox">
+            <Button profile="buttonOK" text="$l10n_pdo_btnNext" onClick="onClickNext" id="nextButton"/>
+            <Button profile="buttonOK" text="$l10n_pdo_btnPrevious" onClick="onClickPrevious" id="previousButton"/>
+            <Button profile="buttonOK" text="$l10n_pdo_btnMinus10" onClick="onClickMinus10" id="minusButton"/>
+            <Button profile="buttonOK" text="$l10n_pdo_btnPlus10" onClick="onClickPlus10" id="plusButton"/>
+            <Button profile="buttonOK" text="$l10n_pdo_btnSpawn" onClick="onClickSpawn" id="spawnButton"/>
+            <Button profile="buttonBack" text="$l10n_pdo_btnCancel" onClick="onClickBack" id="cancelButton"/>
+        </BoxLayout>
+    </GuiElement>
+</GUI>

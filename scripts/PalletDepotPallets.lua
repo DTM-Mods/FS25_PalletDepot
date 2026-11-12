@@ -61,13 +61,30 @@ FillUnit.onLoad = Utils.appendedFunction(FillUnit.onLoad, PalletDepotPallets.onF
 
 -- --- applying (server and clients) ---------------------------------------------------------------------
 
+-- our pallet of that size as a spawner entry; the spawner's own table is left as it was (loading a pallet would
+-- otherwise make it the pallet of every product)
 local function loadPallet(spawner, size)
     spawner.palletDepotPallets = spawner.palletDepotPallets or {}
     if spawner.palletDepotPallets[size] == nil then
         local filename = PalletDepot.modDirectory .. PalletDepotPallets.FILES[size]
+        local before = copy(spawner.fillTypeIdToPallet)
         spawner.palletDepotPallets[size] = spawner:loadPalletFromFilename(filename) or false
+        spawner.fillTypeIdToPallet = before
     end
     return spawner.palletDepotPallets[size] or nil
+end
+PalletDepotPallets.loadPallet = loadPallet
+
+-- the pallets the production had before any of ours: fill type -> spawner entry (the game's or the mod's pallet)
+function PalletDepotPallets.getGamePallets(productionPoint)
+    local spawner = productionPoint.palletSpawner
+    if spawner == nil or spawner.fillTypeIdToPallet == nil then
+        return {}
+    end
+    if productionPoint.palletDepotSpawnerPallets == nil then
+        productionPoint.palletDepotSpawnerPallets = copy(spawner.fillTypeIdToPallet)
+    end
+    return productionPoint.palletDepotSpawnerPallets
 end
 
 -- The product's own pallet file (its model and textures): the production's pallet for it, else the fill type's.
@@ -111,10 +128,8 @@ function PalletDepotPallets.apply(productionPoint)
     if spawner == nil or spawner.fillTypeIdToPallet == nil then
         return
     end
-    -- the game's tables, kept before our pallet is loaded (loading it adds it to the spawner's table)
-    if productionPoint.palletDepotSpawnerPallets == nil then
-        productionPoint.palletDepotSpawnerPallets = copy(spawner.fillTypeIdToPallet)
-    end
+    -- the game's tables, kept before our pallet is loaded
+    PalletDepotPallets.getGamePallets(productionPoint)
     if productionPoint.palletDepotOutputPallets == nil and productionPoint.outputFillTypeIdsToPallets ~= nil then
         productionPoint.palletDepotOutputPallets = copy(productionPoint.outputFillTypeIdsToPallets)
     end

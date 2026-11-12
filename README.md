@@ -12,7 +12,7 @@
 
 [![Build](https://github.com/DTM-Mods/FS25_PalletDepot/actions/workflows/build.yml/badge.svg)](https://github.com/DTM-Mods/FS25_PalletDepot/actions/workflows/build.yml)
 ![Farming Simulator 25](https://img.shields.io/badge/Farming%20Simulator-25-2e7d32)
-![Version](https://img.shields.io/badge/version-1.1.0.1-1565c0)
+![Version](https://img.shields.io/badge/version-1.2.4.0-1565c0)
 ![Multiplayer](https://img.shields.io/badge/multiplayer-supported-2e7d32)
 ![Languages](https://img.shields.io/badge/languages-EN%20%7C%20DE-555)
 ![Upkeep](https://img.shields.io/badge/daily%20upkeep-none-555)
@@ -61,6 +61,7 @@ With everything loaded that is up to 199 products in Food & Drinks and 81 in Tex
 - **Per-product routing**: store, spawn as pallets, deliver to your productions, or sell every full hour.
 - **Capacity option** per hub: 100,000 / 500,000 / 1,000,000 L per product.
 - **Your own pallets for every production**: any production with pickup lanes can spawn the game's pallets or this mod's **1,000 L / 5,000 L pallets**, which take any product of any map or mod.
+- **Spawn goods window** (no other mod needed): pick a product in stock, the pallet (the product's own pallet in its normal size, 1,000 L or 5,000 L), the farm that gets it and how many pallets; they come out at the pickup lanes.
 - **Racks that fill up**: 84 pallet places that show the stock as it grows.
 - **Working roller doors** on three sides. Open and close them like a garage door; their state is saved.
 - **Daily report at 06:00**: what came in, went out, was delivered and was sold at each hub.
@@ -109,7 +110,7 @@ Settings, schedules and options are saved with the savegame and shared with all 
 |---|---|---|
 | FedMods (standard or ProEdition) | optional | Fed products in both hubs |
 | Beans & Alpacas (DLC) | optional | banana, coffee, alpaca and paint products in both hubs |
-| Production Storage Control | optional | "Spawn goods" opens its spawn window with the product already selected; without it the button is hidden |
+| Production Storage Control | not needed | "Spawn goods" has its own window since 1.2.4.0. With PSC installed, its spawn window at a hub offers the 1,000 L / 5,000 L pallets too, and its extra "Storing" output mode is offered on the Logistics page |
 | AutoDrive | optional | imports the hub's route when it is placed |
 | Price Ticker | optional | the hubs are taken out of its station list (its files are not changed) |
 
