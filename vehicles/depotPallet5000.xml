@@ -17,7 +17,7 @@
         <filename>vehicles/depotPallet5000.i3d</filename>
         <size width="2.4" length="1.2" height="1.75"/>
         <canBeReset>false</canBeReset>
-        <components maxMass="200">
+        <components maxMass="400">
             <component centerOfMass="0 0.35 0" solverIterationCount="10" mass="60"/>
         </components>
         <showInVehicleMenu>false</showInVehicleMenu>

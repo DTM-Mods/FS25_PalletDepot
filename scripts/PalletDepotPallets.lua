@@ -1,9 +1,9 @@
 -- Pallet Depot: own pallets of 1,000 L and 5,000 L for every production (Settings page of the productions window).
 --
--- Each production with pickup lanes spawns either the game's pallet of each product (0) or our own pallet of 1,000 L
--- or 5,000 L (vehicles/depotPallet*.xml): for every product it already puts on pallets, and in a depot for every
--- product it stores. Our pallets take any product: their fill unit is opened to all fill types when they load, so
--- products of any map or mod fit. A production spawns once a whole pallet is in stock, so 5,000 L pallets come out
+-- Each production with pickup lanes spawns either the game's pallet of each product (0) or that same pallet (its
+-- own model and textures) holding 1,000 L or 5,000 L: for every product it already puts on pallets, and in a depot
+-- for every product it stores. Only a product without a pallet of its own gets our plain pallet
+-- (vehicles/depotPallet*.xml), whose fill unit is opened to all fill types when it loads. A production spawns once a whole pallet is in stock, so 5,000 L pallets come out
 -- full.
 -- The server owns the choice: it saves it with the savegame (palletDepotPallets.xml, keyed by the building's unique
 -- id), applies it and sends every change to all clients; joining clients get it with the production point's join data.
@@ -47,6 +47,7 @@ function PalletDepotPallets.onFillUnitLoad(vehicle, savegame)
         return
     end
     for _, fillUnit in ipairs(spec.fillUnits) do
+        fillUnit.ignoreFillLimit = true     -- maxMass caps the weight only, the pallet still takes its full litres
         for fillTypeIndex in pairs(g_fillTypeManager.indexToFillType) do
             if fillTypeIndex ~= FillType.UNKNOWN then
                 fillUnit.supportedFillTypes[fillTypeIndex] = true
@@ -69,8 +70,42 @@ local function loadPallet(spawner, size)
     return spawner.palletDepotPallets[size] or nil
 end
 
+-- The product's own pallet file (its model and textures): the production's pallet for it, else the fill type's.
+-- nil when the product has no pallet of its own (then our plain pallet is used).
+function PalletDepotPallets.getProductPalletFile(productionPoint, fillType)
+    local spawner = productionPoint.palletSpawner
+    local game = productionPoint.palletDepotSpawnerPallets or (spawner ~= nil and spawner.fillTypeIdToPallet) or {}
+    local entry = game[fillType]
+    if entry ~= nil and entry.filename ~= nil and entry.palletDepotCapacity == nil and not isOwnPallet(entry.filename) then
+        return entry.filename
+    end
+    local desc = g_fillTypeManager:getFillTypeByIndex(fillType)
+    return desc ~= nil and desc.palletFilename or nil
+end
+
+-- A spawner pallet entry of `size` liters for a product: it points at the product's own pallet file (nothing is
+-- copied) and carries palletDepotCapacity, which PalletDepotPalletMass sets on the pallet when it spawns.
+function PalletDepotPallets.getSizedPallet(productionPoint, fillType, size)
+    local spawner = productionPoint.palletSpawner
+    local filename = PalletDepotPallets.getProductPalletFile(productionPoint, fillType)
+    if filename == nil then
+        return loadPallet(spawner, size)            -- no pallet of its own: our plain pallet
+    end
+    spawner.palletDepotSized = spawner.palletDepotSized or {}
+    local key = size .. "|" .. filename
+    if spawner.palletDepotSized[key] == nil then
+        spawner.palletDepotSized[key] = {
+            filename = filename,
+            size = StoreItemUtil.getSizeValues(filename, "vehicle", 0, {}),
+            capacity = size,
+            palletDepotCapacity = size,
+        }
+    end
+    return spawner.palletDepotSized[key]
+end
+
 -- The spawner's table says which pallet gets spawned, the production's own table when: once its capacity is in stock.
--- Both get our pallet for the same products.
+-- Both get the product's own pallet, sized to the chosen liters, for the same products.
 function PalletDepotPallets.apply(productionPoint)
     local spawner = productionPoint.palletSpawner
     if spawner == nil or spawner.fillTypeIdToPallet == nil then
@@ -86,16 +121,18 @@ function PalletDepotPallets.apply(productionPoint)
     local gameOutputs = productionPoint.palletDepotOutputPallets or {}
 
     local size = PalletDepotPallets.get(productionPoint)
-    local pallet = size > 0 and loadPallet(spawner, size) or nil
     local spawnerMap = copy(productionPoint.palletDepotSpawnerPallets)
     local outputMap = copy(gameOutputs)
-    if pallet ~= nil then
+    if size > 0 then
         local isDepot = PalletDepot.isDepot(productionPoint)
         for fillType in pairs(productionPoint.outputFillTypeIds or {}) do
             -- other productions keep products without a pallet off pallets
             if isDepot or gameOutputs[fillType] ~= nil then
-                spawnerMap[fillType] = pallet
-                outputMap[fillType] = pallet
+                local pallet = PalletDepotPallets.getSizedPallet(productionPoint, fillType, size)
+                if pallet ~= nil then
+                    spawnerMap[fillType] = pallet
+                    outputMap[fillType] = pallet
+                end
             end
         end
     end

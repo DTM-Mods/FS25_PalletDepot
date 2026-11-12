@@ -17,9 +17,9 @@ from finish_i3d import mappings  # noqa: E402
 
 ROOT = os.path.dirname(HERE)
 # size: (width x, length z, height, empty mass kg, max mass kg, price). The game reads both masses in kg
-# (Vehicle.lua divides by 1000). Same limits as the NF Marsch map's pallets: 60 kg empty, at most 200 kg full,
+# (Vehicle.lua divides by 1000). 60 kg empty, at most 400 kg full (the NF Marsch goat milk pallet),
 # whatever the product, so any loader can lift a full pallet.
-PALLETS = {1000: (1.2, 1.0, 1.15, 60, 200, 600), 5000: (2.4, 1.2, 1.75, 60, 200, 1500)}
+PALLETS = {1000: (1.2, 1.0, 1.15, 60, 400, 600), 5000: (2.4, 1.2, 1.75, 60, 400, 1500)}
 NODES = ["dynamicMountTrigger", "palletVisual", "goods"]
 
 

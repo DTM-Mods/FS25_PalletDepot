@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="115">
     <author>Fennell</author>
-    <version>1.1.0.2</version>
+    <version>1.2.3.0</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -24,6 +24,13 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.2.3.0 - The pallet picture in a depot's spawn window has a clear background.
+1.2.2.0 - The goods on a resized pallet match its litres: 1,000 L on a pallet built for 5,000 L shows a fifth of the goods instead of a full pallet.
+1.2.1.0 - 1,000 L and 5,000 L pallets now look like the product: they are the product's own pallet (its model and textures) holding 1,000 or 5,000 litres, from the spawn window and from the Settings page. Only a product without a pallet of its own still gets the plain brown pallet. The size is kept after saving and loading. The spawn window of a depot now offers only these two pallets.
+1.2.0.0 - Spawning from a depot (Production Storage Control's spawn dialog): every product now offers our 1,000 L and 5,000 L pallet, next to the product's own pallets, whatever pallet size the depot's Settings page has.
+1.1.3.0 - The weight cap is now 400 kg (like the NF Marsch goat milk pallet): no pallet from a depot and none of our own pallets weighs more than 400 kg, a lighter pallet keeps its real weight, and every pallet still fills to its full litres. Pallets already capped at 200 kg get 400 kg after loading.
+1.1.2.0 - Fix: the 200 kg cap is on weight only. Pallets fill to their full litres again (with the trailer fill limit setting on, 1.1.1.0 stopped them at about 1,000 L).
+1.1.1.0 - Every pallet a depot spawns weighs at most 200 kg, whatever pallet it is (our own, the game's or another mod's, e.g. the Fed carrot bag pallet was 775 kg). The cap is kept after saving and loading.
 1.1.0.2 - Own pallets (1,000 L and 5,000 L) weigh like the NF Marsch pallets: 60 kg empty and at most 200 kg full, whatever the product. Before, a wrong unit made them weigh almost nothing (at most 9 kg).
 1.1.0.1 - New name: Pallet Depot is now Logistics Hub (title, shop, sign and menus). Nothing else changes: buildings you already own, their stock and settings stay as they are.
 1.1.0.1 - Beans & Alpacas: with the pack loaded, Food & Drinks also takes the banana and coffee products (bananas, fried bananas, banana chips, candy, cake, jam and milk, coffee bags, packed coffee, capsules, coffee yogurt and drinks, tiramisu) and Textiles & Goods the alpaca products (wool, fleece, socks, pillows, plush, chairs, armchairs), pigments, resin, paint buckets and fungicide. Products that do not come on pallets are left out.
@@ -69,6 +76,13 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.2.3.0 - Das Palettenbild im Auslager-Fenster eines Depots hat einen durchsichtigen Hintergrund.
+1.2.2.0 - Die Ware auf einer Palette mit geänderter Größe passt zu ihren Litern: 1.000 L auf einer Palette für 5.000 L zeigen ein Fünftel der Ware statt einer vollen Palette.
+1.2.1.0 - 1.000-L- und 5.000-L-Paletten sehen jetzt wie das Produkt aus: es ist die eigene Palette des Produkts (Modell und Texturen) mit 1.000 oder 5.000 Litern, aus dem Auslager-Fenster und von der Einstellungsseite. Nur ein Produkt ohne eigene Palette bekommt weiter die schlichte braune Palette. Die Größe bleibt nach Speichern und Laden erhalten. Das Auslager-Fenster eines Depots bietet jetzt nur noch diese zwei Paletten an.
+1.2.0.0 - Auslagern aus einem Depot (Auslager-Dialog von Production Storage Control): jedes Produkt bietet jetzt unsere 1.000-L- und 5.000-L-Palette an, neben den eigenen Paletten des Produkts, egal welche Palettengröße auf der Einstellungsseite des Depots steht.
+1.1.3.0 - Die Gewichtsgrenze liegt jetzt bei 400 kg (wie die Ziegenmilch-Palette der NF Marsch): keine Palette aus einem Depot und keine eigene Palette wiegt mehr als 400 kg, eine leichtere Palette behält ihr echtes Gewicht, und jede Palette füllt sich weiter bis zu ihren vollen Litern. Paletten, die schon auf 200 kg begrenzt waren, bekommen nach dem Laden 400 kg.
+1.1.2.0 - Fix: Die 200-kg-Grenze gilt nur für das Gewicht. Paletten füllen sich wieder bis zu ihren vollen Litern (mit eingeschalteter Anhänger-Füllgrenze stoppte 1.1.1.0 sie bei etwa 1.000 L).
+1.1.1.0 - Jede Palette, die ein Depot ausgibt, wiegt höchstens 200 kg, egal welche Palette es ist (eigene, die des Spiels oder eines anderen Mods, z. B. wog die Fed-Karottensack-Palette 775 kg). Die Grenze bleibt nach Speichern und Laden erhalten.
 1.1.0.2 - Eigene Paletten (1.000 L und 5.000 L) wiegen wie die Paletten der NF Marsch: leer 60 kg und voll höchstens 200 kg, egal welches Produkt. Vorher wogen sie durch eine falsche Einheit fast nichts (höchstens 9 kg).
 1.1.0.1 - Neuer Name: Palettendepot heißt jetzt Logistikzentrum (Titel, Shop, Schild und Menüs). Sonst ändert sich nichts: bereits gekaufte Gebäude, ihr Lager und ihre Einstellungen bleiben erhalten.
 1.1.0.1 - Beans & Alpacas: mit geladenem Pack nimmt Lebensmittel und Getränke auch die Bananen- und Kaffeeprodukte an (Bananen, frittierte Bananen, Bananenchips, -bonbons, -kuchen, -marmelade und -milch, Kaffeesäcke, verpackter Kaffee, Kapseln, Kaffeejoghurt und -getränke, Tiramisu) und Textilien und Waren die Alpaka-Produkte (Wolle, Vlies, Socken, Kissen, Plüschtiere, Stühle, Sessel), Pigmente, Harz, Farbeimer und Fungizid. Produkte, die nicht auf Paletten kommen, werden ausgelassen.
@@ -116,6 +130,8 @@ Changelog:
         <sourceFile filename="scripts/PalletDepotScheduleDialog.lua"/>
         <sourceFile filename="scripts/PalletDepotAutoManager.lua"/>
         <sourceFile filename="scripts/PalletDepotPallets.lua"/>
+        <sourceFile filename="scripts/PalletDepotPalletMass.lua"/>
+        <sourceFile filename="scripts/PalletDepotSpawnSizes.lua"/>
         <sourceFile filename="scripts/PalletDepotOptions.lua"/>
         <sourceFile filename="scripts/PalletDepotOverview.lua"/>
     </extraSourceFiles>

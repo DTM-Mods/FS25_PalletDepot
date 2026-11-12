@@ -29,7 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 ZIP_NAMES = ["FS25_PalletDepot", "FS25_LogisticsHub"]     # current map's name first; see the docstring
 ZIP = os.path.join(ROOT, "build", ZIP_NAMES[0] + ".zip")
-SHIP = ["modDesc.xml", "icon_palletDepot.dds", "i3d/depot_food.i3d", "i3d/depot_goods.i3d", "i3d/depot.i3d.shapes"]
+SHIP = ["modDesc.xml", "icon_palletDepot.dds", "icon_palletDepot_clear.dds", "i3d/depot_food.i3d", "i3d/depot_goods.i3d", "i3d/depot.i3d.shapes"]
 SHIP_DIRS = {"gui": (".xml",), "placeables": (".xml",), "scripts": (".lua",), "store": (".dds",), "textures": (".dds",),
              "vehicles": (".xml", ".i3d", ".shapes")}
 MAX_FILES, MAX_LUA, MAX_LINES = 128, 512 * 1024, 255
