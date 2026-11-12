@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="115">
     <author>Fennell</author>
-    <version>1.2.5.0</version>
+    <version>1.3.0.0</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -15,7 +15,7 @@ A pallet hall that stores your products and sends them on: drop pallets on the u
 Two buildings, each with its own storage of up to 1,000,000 L per product:
 - Logistics Hub: Food & Drinks (green sign)
 - Logistics Hub: Textiles & Goods (blue sign)
-Both also take the products of the FedMods packs and of the Beans & Alpacas pack (bananas, coffee, alpaca goods, paint) when those are loaded; without them they offer the base-game products.
+Both also take the products of the FedMods packs, of the Beans & Alpacas pack (bananas, coffee, alpaca goods, paint) and of the Highlands Fishing pack (fish, onion products, roof shingles) when those are loaded; without them they offer the base-game products. No other mod is needed.
 
 Pallets only: bulk goods, field crops and bales are not accepted.
 
@@ -24,6 +24,7 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.3.0.0 - Storing without other mods: a new Storing output for every product (Logistics page, Enter: Storing -> Spawning -> Distributing -> Selling). Stored products stay in the building until you spawn, deliver or sell them; Spawning puts them on pallets by itself. Hubs store by default (with Production Storage Control installed its own Storing stays in charge). Spawn goods remembers your last choice for each building, E picks all pallets, and it warns before spawning when the pallet limit would be reached or pallets still stand at the pickup lanes. Our 1,000 L and 5,000 L pallets have their own shop pictures; a pallet without a picture shows ours with the product's icon. Highlands Fishing: roof shingles and coal in Textiles & Goods; its fish and onion products were already taken.
 1.2.5.0 - Part-filled product pallets (e.g. 1,000 L carrot bags) stack right on top of each other instead of floating a full pallet height above.
 1.2.4.0 - Spawn goods has its own window now (no other mod needed, Production Storage Control is not used any more): pick the product in stock, the pallet (the product's own pallet in its normal size, or in 1,000 L or 5,000 L; in a hub for every product), whether only full pallets come out or the last one takes the rest, the farm that gets the pallets and how many (up / down chooses a line, left / right or Enter / Backspace changes it, X / C 10 pallets less / more, Space spawns). The pallets come out at the building's pickup lanes.
 1.2.3.0 - The pallet picture in a depot's spawn window has a clear background.
@@ -69,7 +70,7 @@ Eine Palettenhalle, die deine Produkte lagert und weitergibt: Paletten auf der A
 Zwei Hallen mit eigenem Lager von bis zu 1.000.000 L pro Produkt:
 - Logistikzentrum: Lebensmittel und Getränke (grünes Schild)
 - Logistikzentrum: Textilien und Waren (blaues Schild)
-Beide nehmen auch die Produkte der FedMods-Pakete und des Beans & Alpacas Packs (Bananen, Kaffee, Alpaka-Waren, Farbe) an, wenn diese geladen sind; ohne sie bieten sie die Produkte des Grundspiels.
+Beide nehmen auch die Produkte der FedMods-Pakete, des Beans & Alpacas Packs (Bananen, Kaffee, Alpaka-Waren, Farbe) und des Highlands Fishing Packs (Fisch, Zwiebelprodukte, Dachschindeln) an, wenn diese geladen sind; ohne sie bieten sie die Produkte des Grundspiels. Keine andere Mod nötig.
 
 Nur Paletten: Schüttgut, Feldfrüchte und Ballen werden nicht angenommen.
 
@@ -78,6 +79,7 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.3.0.0 - Lagern ohne andere Mods: eine neue Ausgabe Lagern für jedes Produkt (Logistik-Seite, Enter: Lagern -> Auslagern -> Verteilen -> Verkaufen). Gelagerte Produkte bleiben im Gebäude, bis du sie auslagerst, lieferst oder verkaufst; Auslagern packt sie von selbst auf Paletten. Logistikzentren lagern standardmäßig (mit Production Storage Control bleibt dessen eigenes Lagern zuständig). Waren auslagern merkt sich die letzte Wahl je Gebäude, E wählt alle Paletten, und es warnt vor dem Auslagern, wenn das Palettenlimit erreicht würde oder noch Paletten an den Abholspuren stehen. Unsere 1.000-L- und 5.000-L-Paletten haben eigene Shopbilder; eine Palette ohne Bild zeigt unseres mit dem Symbol des Produkts. Highlands Fishing: Dachschindeln und Kohle in Textilien und Waren; seine Fisch- und Zwiebelprodukte wurden schon angenommen.
 1.2.5.0 - Teilbefüllte Produktpaletten (z. B. 1.000 L Karottensäcke) stapeln sich direkt aufeinander statt eine volle Palettenhöhe darüber zu schweben.
 1.2.4.0 - Waren auslagern hat jetzt ein eigenes Fenster (keine andere Mod nötig, Production Storage Control wird nicht mehr benutzt): Produkt auf Lager, Palette (die eigene Palette des Produkts in normaler Größe oder mit 1.000 L oder 5.000 L, im Logistikzentrum für jedes Produkt), ob nur volle Paletten kommen oder die letzte den Rest nimmt, den Hof, der die Paletten bekommt, und die Anzahl wählen (hoch / runter wählt eine Zeile, links / rechts oder Enter / Rücktaste ändert sie, X / C 10 Paletten weniger / mehr, Leertaste lagert aus). Die Paletten kommen an den Abholspuren des Gebäudes heraus.
 1.2.3.0 - Das Palettenbild im Auslager-Fenster eines Depots hat einen durchsichtigen Hintergrund.
@@ -134,6 +136,7 @@ Changelog:
         <sourceFile filename="scripts/PalletDepotScheduleDialog.lua"/>
         <sourceFile filename="scripts/PalletDepotAutoManager.lua"/>
         <sourceFile filename="scripts/PalletDepotPallets.lua"/>
+        <sourceFile filename="scripts/PalletDepotStoring.lua"/>
         <sourceFile filename="scripts/PalletDepotPalletMass.lua"/>
         <sourceFile filename="scripts/PalletDepotSpawnSizes.lua"/>
         <sourceFile filename="scripts/PalletDepotOptions.lua"/>
@@ -254,7 +257,7 @@ Changelog:
         <text name="pdo_btnSave"><en>Save</en><de>Speichern</de></text>
         <text name="pdo_btnCancel"><en>Cancel</en><de>Abbrechen</de></text>
         <text name="pdo_spawnBrand"><en>Spawn goods</en><de>Waren auslagern</de></text>
-        <text name="pdo_spawnHint"><en>Up / down: choose a line. Left / right or Enter / Backspace: change it. X / C: 10 pallets less / more.</en><de>Hoch / runter: Zeile wählen. Links / rechts oder Enter / Rücktaste: ändern. X / C: 10 Paletten weniger / mehr.</de></text>
+        <text name="pdo_spawnHint"><en>Up / down: choose a line. Left / right or Enter / Backspace: change it. X / C: 10 pallets less / more, E: all.</en><de>Hoch / runter: Zeile wählen. Links / rechts oder Enter / Rücktaste: ändern. X / C: 10 Paletten weniger / mehr, E: alle.</de></text>
         <text name="pdo_spawnNothing"><en>Nothing in stock that can go on pallets</en><de>Nichts auf Lager, das auf Paletten kann</de></text>
         <text name="pdo_spawnProduct"><en>Product</en><de>Produkt</de></text>
         <text name="pdo_spawnPallet"><en>Pallet</en><de>Palette</de></text>
@@ -267,6 +270,8 @@ Changelog:
         <text name="pdo_spawnNoSpace"><en>%s: no free space at the pickup lanes for %s</en><de>%s: kein freier Platz an den Abholspuren für %s</de></text>
         <text name="pdo_spawnLimit"><en>Pallet limit reached: no more pallets can be spawned</en><de>Palettenlimit erreicht: es können keine Paletten mehr ausgelagert werden</de></text>
         <text name="pdo_spawnFailed"><en>%s: the pallet could not be loaded</en><de>%s: die Palette konnte nicht geladen werden</de></text>
+        <text name="pdo_spawnWarnLimit"><en>Pallet limit: only %d more pallets can be spawned</en><de>Palettenlimit: nur noch %d Paletten können ausgelagert werden</de></text>
+        <text name="pdo_spawnWarnLanes"><en>%d pallets are still standing at the pickup lanes</en><de>An den Abholspuren stehen noch %d Paletten</de></text>
         <text name="pdo_spawnPartial"><en>Partial pallet</en><de>Angebrochene Palette</de></text>
         <text name="pdo_spawnFullOnly"><en>No: full pallets only</en><de>Nein: nur volle Paletten</de></text>
         <text name="pdo_spawnWithRest"><en>Yes: the last pallet takes the rest</en><de>Ja: die letzte Palette nimmt den Rest</de></text>
@@ -281,8 +286,9 @@ Changelog:
         <text name="pdo_spawnAllOut"><en>Everything in stock goes out</en><de>Der ganze Bestand geht raus</de></text>
         <text name="pdo_btnNext"><en>Next</en><de>Nächste</de></text>
         <text name="pdo_btnPrevious"><en>Previous</en><de>Vorherige</de></text>
-        <text name="pdo_btnMinus10"><en>-10 pallets</en><de>-10 Paletten</de></text>
-        <text name="pdo_btnPlus10"><en>+10 pallets</en><de>+10 Paletten</de></text>
+        <text name="pdo_btnMinus10"><en>-10</en><de>-10</de></text>
+        <text name="pdo_btnPlus10"><en>+10</en><de>+10</de></text>
+        <text name="pdo_btnAll"><en>All</en><de>Alle</de></text>
         <text name="pdo_btnSpawn"><en>Spawn</en><de>Auslagern</de></text>
         <text name="pdo_month1"><en>March</en><de>März</de></text>
         <text name="pdo_month2"><en>April</en><de>April</de></text>

@@ -36,6 +36,8 @@ jobs:
         python tools/build_mod.py --ci
         cp build/FS25_LogisticsHub.zip build/FS25_PalletDepot.zip dist/
         git diff --exit-code -- placeables vehicles || { echo "::error::placeables/ or vehicles/ differ from what the generators write; run tools/build_mod.py and commit"; exit 1; }
+      # the scripts' offline tests (tests/*_test.lua with the engine stubbed, run on lupa)
+      test-command: python3 tests/run_tests.py
       install-note: |
         **Which zip?** Both are the same build.
         - `FS25_PalletDepot.zip`: for a savegame that already has the mod. It keeps the old file name, so the hubs you already own stay.

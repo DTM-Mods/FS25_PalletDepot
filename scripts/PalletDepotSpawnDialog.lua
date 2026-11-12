@@ -2,7 +2,9 @@
 --
 -- Five lines: product in stock, pallet, partial pallet (full pallets only, or the last pallet takes the rest), farm
 -- that gets the pallets, number of pallets. Up / down chooses a line, left / right or Enter / Backspace change it,
--- X / C take 10 pallets off / add 10, Space spawns, Esc cancels. Left: a preview of the product and the pallet;
+-- X / C take 10 pallets off / add 10, E all pallets, Space spawns, Esc cancels. The last spawn of each building is
+-- chosen again next time (while the game runs). Warnings before spawning: the pallet limit, pallets still standing
+-- at the pickup lanes. Left: a preview of the product and the pallet;
 -- bottom: what you get.
 -- Spawning itself is done by the server (scripts/PalletDepotSpawn.lua).
 
@@ -21,6 +23,7 @@ local COLOR = {
 }
 
 PalletDepotSpawnDialog.lastFullOnly = false        -- the last choice, kept while the game runs
+PalletDepotSpawnDialog.memory = {}                  -- productionPoint -> the last spawn {fillType, size, count, farmId}
 
 local KEYS = {
     {action = "MENU_ACCEPT", handler = "onClickNext"},
@@ -28,6 +31,7 @@ local KEYS = {
     {action = "MENU_EXTRA_1", handler = "onClickMinus10"},
     {action = "MENU_EXTRA_2", handler = "onClickPlus10"},
     {action = "MENU_ACTIVATE", handler = "onClickSpawn"},
+    {action = "MENU_PAGE_NEXT", handler = "onClickAll"},
 }
 
 local function text(key)
@@ -55,6 +59,9 @@ function PalletDepotSpawnDialog.show(productionPoint, fillTypeIndex, onDone)
     dialog.productionPoint = productionPoint
     dialog.onDone = onDone
     dialog.products = PalletDepotSpawn.getProducts(productionPoint)
+    -- the product selected in the productions window, else the one spawned last here
+    local memory = PalletDepotSpawnDialog.memory[productionPoint]
+    fillTypeIndex = fillTypeIndex or (memory ~= nil and memory.fillType or nil)
     for i, product in ipairs(dialog.products) do
         if product.fillType == fillTypeIndex then
             dialog.productIndex = i
@@ -70,12 +77,18 @@ function PalletDepotSpawnDialog.show(productionPoint, fillTypeIndex, onDone)
     table.sort(dialog.farms, function(a, b)
         return a.farmId < b.farmId
     end)
+    local farmId = memory ~= nil and memory.farmId or ownFarmId
     for i, farm in ipairs(dialog.farms) do
-        if farm.farmId == ownFarmId then
+        if farm.farmId == farmId then
             dialog.farmIndex = i
         end
     end
-    dialog:choosePallet(PalletDepotPallets.get(productionPoint))
+    -- the last pallet and amount for the same product, else the building's pallet setting
+    local product = dialog:getProduct()
+    local same = memory ~= nil and product ~= nil and memory.fillType == product.fillType
+    dialog.count = same and memory.count or 1
+    dialog:choosePallet(same and memory.size or PalletDepotPallets.get(productionPoint))
+    dialog:countLanePallets()
 
     g_gui:loadGui(PalletDepot.modDirectory .. "gui/PalletDepotSpawn.xml", PalletDepotSpawnDialog.GUI_NAME, dialog)
     g_gui:showDialog(PalletDepotSpawnDialog.GUI_NAME)
@@ -207,9 +220,18 @@ local function fillTypeIcon(fillTypeIndex)
     return fillType ~= nil and fillType.hudOverlayFilename or nil
 end
 
--- the pallet's shop picture (the product's own pallet), else our pallet icon; a blank shop picture (store_empty,
--- e.g. the Fed packs' pallets) counts as none
-function PalletDepotSpawnDialog:getPalletImage()
+local function setImage(element, filename, color)
+    element:setVisible(filename ~= nil)
+    if filename ~= nil then
+        element:setImageFilename(filename)
+        element:setImageColor(nil, unpack(color or {1, 1, 1, 1}))
+    end
+end
+
+-- What the pallet looks like: its shop picture (the product's own pallet), else nil and the product's icon, which the
+-- window puts on an empty wooden pallet (textures/ui_palletBase.dds) so the picture shows what is on it. A blank
+-- shop picture (store_empty, e.g. the Fed packs' pallets) counts as none.
+function PalletDepotSpawnDialog:getPalletLook()
     local product, pallet = self:getProduct(), self:getPallet()
     local filename
     if product ~= nil and pallet ~= nil then
@@ -223,9 +245,17 @@ function PalletDepotSpawnDialog:getPalletImage()
     local item = filename ~= nil and g_storeManager ~= nil and g_storeManager:getItemByXMLFilename(filename) or nil
     local image = item ~= nil and item.imageFilename or nil
     if image ~= nil and image ~= "" and string.find(string.lower(image), "store_empty", 1, true) == nil then
-        return image
+        return image, nil
     end
-    return icon("ui_pallet")
+    return nil, product ~= nil and fillTypeIcon(product.fillType) or nil
+end
+
+-- shows a pallet in picture / base / goods: the shop picture, or the product's icon on the empty pallet
+function PalletDepotSpawnDialog:showPallet(picture, base, goods)
+    local image, goodsIcon = self:getPalletLook()
+    setImage(picture, image)
+    setImage(base, image == nil and goodsIcon ~= nil and icon("ui_palletBase") or nil)
+    setImage(goods, image == nil and goodsIcon or nil)
 end
 
 function PalletDepotSpawnDialog:getPalletName()
@@ -250,18 +280,10 @@ local function farmLook(farm)
     return color, slice
 end
 
-local function setImage(element, filename, color)
-    element:setVisible(filename ~= nil)
-    if filename ~= nil then
-        element:setImageFilename(filename)
-        element:setImageColor(nil, unpack(color or {1, 1, 1, 1}))
-    end
-end
-
 function PalletDepotSpawnDialog:populateCellForItemInSection(list, section, index, row)
     local product, pallet = self:getProduct(), self:getPallet()
     local image, color, caption, value, detail = nil, nil, "", "", ""
-    local farmSlice, valueColor = nil, nil
+    local farmSlice, valueColor, palletRow = nil, nil, false
     local showBar = false
     if index == ROW.PRODUCT then
         image = fillTypeIcon(product.fillType)
@@ -269,7 +291,7 @@ function PalletDepotSpawnDialog:populateCellForItemInSection(list, section, inde
         value = product.title
         detail = string.format(text("pdo_spawnInStock"), liters(product.liters))
     elseif index == ROW.PALLET then
-        image = self:getPalletImage()
+        palletRow = true
         caption = text("pdo_spawnPallet")
         value = self:getPalletName()
         detail = string.format(text("pdo_spawnPerPallet"), liters(pallet.capacity))
@@ -295,7 +317,7 @@ function PalletDepotSpawnDialog:populateCellForItemInSection(list, section, inde
         detail = farm ~= nil and farm.farmId == g_currentMission:getFarmId() and text("pdo_spawnYourFarm") or ""
     else
         local max = self:getMaxCount()
-        image = self:getPalletImage()
+        palletRow = true
         caption = text("pdo_spawnCount")
         if max < 1 then
             value = text("pdo_spawnNotEnough")
@@ -313,7 +335,13 @@ function PalletDepotSpawnDialog:populateCellForItemInSection(list, section, inde
     end
 
     local selected = index == self.selected
-    setImage(row:getAttribute("icon"), image, color ~= nil and {color[1], color[2], color[3], 1} or nil)
+    if palletRow then
+        self:showPallet(row:getAttribute("icon"), row:getAttribute("iconBase"), row:getAttribute("iconGoods"))
+    else
+        setImage(row:getAttribute("icon"), image, color ~= nil and {color[1], color[2], color[3], 1} or nil)
+        setImage(row:getAttribute("iconBase"), nil)
+        setImage(row:getAttribute("iconGoods"), nil)
+    end
     row:getAttribute("stripe"):setVisible(selected)
     row:getAttribute("caption"):setText(caption)
     local farmIcon = row:getAttribute("farmIcon")
@@ -330,26 +358,107 @@ function PalletDepotSpawnDialog:populateCellForItemInSection(list, section, inde
     row:getAttribute("barFill"):setVisible(showBar)
 end
 
+-- --- warnings --------------------------------------------------------------------------------------------
+
+-- pallets standing at the pickup lanes now (the spawner places new ones around them, or reports no space)
+function PalletDepotSpawnDialog:countLanePallets()
+    self.lanePallets = {}
+    local spawner = self.productionPoint.palletSpawner
+    if spawner == nil or overlapBox == nil or CollisionFlag == nil then
+        return
+    end
+    local places, seen = {}, {}
+    local function add(list)
+        for _, place in ipairs(list or {}) do
+            if not seen[place] then
+                seen[place] = true
+                table.insert(places, place)
+            end
+        end
+    end
+    add(spawner.spawnPlaces)
+    for _, list in pairs(spawner.fillTypeToSpawnPlaces or {}) do
+        add(list)
+    end
+    for _, place in ipairs(places) do
+        if place.startX ~= nil and place.width ~= nil then
+            local x = place.startX + place.width / 2 * place.dirX
+            local y = place.startY + place.width / 2 * place.dirY
+            local z = place.startZ + place.width / 2 * place.dirZ
+            overlapBox(x, y, z, place.rotX, place.rotY, place.rotZ, place.width / 2, 1, 1, "onLaneObject", self,
+                CollisionFlag.VEHICLE + CollisionFlag.DYNAMIC_OBJECT, true, true, false, true)
+        end
+    end
+end
+
+function PalletDepotSpawnDialog:onLaneObject(node)
+    local object = g_currentMission.nodeToObject ~= nil and g_currentMission.nodeToObject[node] or nil
+    if object ~= nil and object.isPallet then
+        self.lanePallets[object] = true
+    end
+end
+
+-- how many of `count` pallets the game's pallet limit still allows
+local function palletsAllowed(count)
+    local slots = g_currentMission.slotSystem
+    if slots == nil or slots.getCanAddLimitedObjects == nil or SlotSystem == nil or SlotSystem.LIMITED_OBJECT_PALLET == nil then
+        return count
+    end
+    for n = count, 1, -1 do
+        if slots:getCanAddLimitedObjects(SlotSystem.LIMITED_OBJECT_PALLET, n) then
+            return n
+        end
+    end
+    return 0
+end
+
+function PalletDepotSpawnDialog:getWarning()
+    local allowed = palletsAllowed(self.count)
+    if allowed < self.count then
+        return string.format(text("pdo_spawnWarnLimit"), allowed)
+    end
+    local standing = 0
+    for _ in pairs(self.lanePallets or {}) do
+        standing = standing + 1
+    end
+    if standing > 0 then
+        return string.format(text("pdo_spawnWarnLanes"), standing)
+    end
+    return nil
+end
+
+function PalletDepotSpawnDialog:setSummary(main, info)
+    local warning = main ~= nil and self:getProduct() ~= nil and self:getMaxCount() > 0 and self:getWarning() or nil
+    self.summaryText:setVisible(warning == nil)
+    self.summaryTextTop:setVisible(warning ~= nil)
+    self.summaryWarning:setVisible(warning ~= nil)
+    self.summaryText:setText(main or "")
+    self.summaryTextTop:setText(main or "")
+    self.summaryWarning:setText(warning or "")
+    self.summaryInfo:setText(info or "")
+end
+
 -- the preview on the left and the line at the bottom
 function PalletDepotSpawnDialog:updatePreview()
     local product, pallet, farm = self:getProduct(), self:getPallet(), self.farms[self.farmIndex]
     if product == nil or pallet == nil then
         setImage(self.heroProductIcon, nil)
         setImage(self.heroPalletImage, nil)
+        setImage(self.heroPalletBase, nil)
+        setImage(self.heroPalletGoods, nil)
         self.heroProductName:setText("")
         self.heroProductInfo:setText("")
         self.heroPalletName:setText("")
         self.heroStockBg:setVisible(false)
         self.heroStockFill:setVisible(false)
-        self.summaryText:setText(text("pdo_spawnNothing"))
-        self.summaryInfo:setText("")
+        self:setSummary(text("pdo_spawnNothing"), "")
         return
     end
     setImage(self.heroProductIcon, fillTypeIcon(product.fillType))
     self.heroProductName:setText(product.title)
     self.heroProductInfo:setText(string.format(text("pdo_spawnInStock"), liters(product.liters)))
-    setImage(self.heroPalletImage, self:getPalletImage())
-    setImage(self.summaryIcon, self:getPalletImage())
+    self:showPallet(self.heroPalletImage, self.heroPalletBase, self.heroPalletGoods)
+    self:showPallet(self.summaryIcon, self.summaryBase, self.summaryGoods)
     self.heroPalletName:setText(self:getPalletName())
 
     local amount = self:getAmount()
@@ -359,14 +468,13 @@ function PalletDepotSpawnDialog:updatePreview()
     self.heroStockFill:setSize(self.heroStockBg.size[1] * math.min(amount / math.max(product.liters, 1), 1), nil)
 
     if self:getMaxCount() < 1 then
-        self.summaryText:setText(text("pdo_spawnNotEnough"))
-        self.summaryInfo:setText(string.format(text("pdo_spawnInStock"), liters(product.liters)))
+        self:setSummary(text("pdo_spawnNotEnough"), string.format(text("pdo_spawnInStock"), liters(product.liters)))
         return
     end
-    self.summaryText:setText(string.format(text("pdo_spawnSummary"), self.count, liters(amount), product.title,
-        farm ~= nil and farm.name or "?"))
     local rest = product.liters - amount
-    self.summaryInfo:setText(rest >= 1 and string.format(text("pdo_spawnRest"), liters(rest)) or text("pdo_spawnAllOut"))
+    self:setSummary(string.format(text("pdo_spawnSummary"), self.count, liters(amount), product.title,
+        farm ~= nil and farm.name or "?"),
+        rest >= 1 and string.format(text("pdo_spawnRest"), liters(rest)) or text("pdo_spawnAllOut"))
 end
 
 -- one block per pallet: chosen full pallets green, a chosen part-filled pallet light, the others grey
@@ -424,6 +532,8 @@ function PalletDepotSpawnDialog:updateButtons()
     self.minusButton:setInputAction(InputAction.MENU_EXTRA_1)
     self.plusButton:setVisible(canSpawn)
     self.plusButton:setInputAction(InputAction.MENU_EXTRA_2)
+    self.allButton:setVisible(canSpawn)
+    self.allButton:setInputAction(InputAction.MENU_PAGE_NEXT)
     self.spawnButton:setVisible(canSpawn)
     self.spawnButton:setInputAction(InputAction.MENU_ACTIVATE)
     local box = self.buttonBox
@@ -451,11 +561,23 @@ function PalletDepotSpawnDialog:onClickPlus10()
     self:changeCount(10)
 end
 
+-- every pallet of the selected product
+function PalletDepotSpawnDialog:onClickAll()
+    local max = self:getMaxCount()
+    if max > 0 then
+        self.count = max
+        self.selected = ROW.COUNT
+        self:refresh()
+    end
+end
+
 function PalletDepotSpawnDialog:onClickSpawn()
     local product, pallet, farm = self:getProduct(), self:getPallet(), self.farms[self.farmIndex]
     if product == nil or pallet == nil or farm == nil or self:getMaxCount() < 1 then
         return
     end
+    PalletDepotSpawnDialog.memory[self.productionPoint] = {fillType = product.fillType, size = pallet.size,
+        count = self.count, farmId = farm.farmId}
     PalletDepotSpawn.request(self.productionPoint, product.fillType, pallet.size, farm.farmId, self.count, self.fullOnly)
     local onDone = self.onDone
     self:close()

@@ -209,6 +209,11 @@
         <textBold value="true"/>
         <textColor value="$preset_pdGreenLight"/>
     </Profile>
+    <Profile name="pdSummaryWarning" extends="pdText">
+        <textSize value="14px"/>
+        <textBold value="true"/>
+        <textColor value="0.98 0.66 0.22 1"/>
+    </Profile>
     <Profile name="pdSummaryInfo" extends="pdDetail">
         <textSize value="15px"/>
     </Profile>

@@ -175,6 +175,15 @@ function PalletDepotPallets.apply(productionPoint)
             end
         end
     end
+    -- Storing (PalletDepotStoring): those products are left out of the automatic spawning; Spawn goods still
+    -- spawns them (it takes the pallet from the spawner's table)
+    if PalletDepotStoring ~= nil then
+        for fillType in pairs(productionPoint.outputFillTypeIds or {}) do
+            if PalletDepotStoring.isStored(productionPoint, fillType) then
+                outputMap[fillType] = nil
+            end
+        end
+    end
     spawner.fillTypeIdToPallet = spawnerMap
     if productionPoint.outputFillTypeIdsToPallets ~= nil then
         productionPoint.outputFillTypeIdsToPallets = outputMap

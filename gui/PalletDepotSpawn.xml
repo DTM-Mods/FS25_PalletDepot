@@ -26,6 +26,8 @@
             <Bitmap profile="pdHeaderLine" position="30px -236px" size="240px 2px"/>
             <Bitmap profile="pdTile" position="85px -250px" size="130px 130px"/>
             <Bitmap profile="pdImage" position="90px -255px" size="120px 120px" id="heroPalletImage"/>
+            <Bitmap profile="pdImage" position="90px -318px" size="120px 60px" id="heroPalletBase"/>
+            <Bitmap profile="pdImage" position="108px -252px" size="84px 84px" id="heroPalletGoods"/>
             <Text profile="pdHeroInfo" position="10px -384px" size="280px 22px" id="heroPalletName"/>
         </Bitmap>
 
@@ -36,6 +38,8 @@
                     <Bitmap profile="pdAccent" position="0px 0px" size="6px 80px" name="stripe"/>
                     <Bitmap profile="pdTile" position="22px -12px" size="56px 56px" name="tile"/>
                     <Bitmap profile="pdImage" position="27px -17px" size="46px 46px" name="icon"/>
+                    <Bitmap profile="pdImage" position="27px -44px" size="46px 23px" name="iconBase"/>
+                    <Bitmap profile="pdImage" position="33px -13px" size="34px 34px" name="iconGoods"/>
                     <Bitmap profile="pdImage" position="27px -17px" size="46px 46px" name="farmIcon"/>
                     <Text profile="pdCaption" position="100px -10px" size="250px 18px" name="caption"/>
                     <Text profile="pdDetail" position="360px -10px" size="284px 18px" name="detail"/>
@@ -72,7 +76,11 @@
         <Bitmap profile="pdSummaryBg" position="24px -535px" size="992px 62px">
             <Bitmap profile="pdAccent" position="0px 0px" size="6px 62px"/>
             <Bitmap profile="pdImage" position="20px -9px" size="44px 44px" id="summaryIcon"/>
+            <Bitmap profile="pdImage" position="20px -32px" size="44px 22px" id="summaryBase"/>
+            <Bitmap profile="pdImage" position="26px -6px" size="32px 32px" id="summaryGoods"/>
             <Text profile="pdSummaryText" position="76px 0px" size="600px 62px" id="summaryText"/>
+            <Text profile="pdSummaryText" position="76px -6px" size="600px 28px" id="summaryTextTop"/>
+            <Text profile="pdSummaryWarning" position="76px -34px" size="600px 22px" id="summaryWarning"/>
             <Text profile="pdSummaryInfo" position="680px 0px" size="290px 62px" id="summaryInfo"/>
         </Bitmap>
 
@@ -81,6 +89,7 @@
             <Button profile="buttonOK" text="$l10n_pdo_btnPrevious" onClick="onClickPrevious" id="previousButton"/>
             <Button profile="buttonOK" text="$l10n_pdo_btnMinus10" onClick="onClickMinus10" id="minusButton"/>
             <Button profile="buttonOK" text="$l10n_pdo_btnPlus10" onClick="onClickPlus10" id="plusButton"/>
+            <Button profile="buttonOK" text="$l10n_pdo_btnAll" onClick="onClickAll" id="allButton"/>
             <Button profile="buttonOK" text="$l10n_pdo_btnSpawn" onClick="onClickSpawn" id="spawnButton"/>
             <Button profile="buttonBack" text="$l10n_pdo_btnCancel" onClick="onClickBack" id="cancelButton"/>
         </BoxLayout>

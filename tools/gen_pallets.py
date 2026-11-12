@@ -32,7 +32,7 @@ def vehicle(size, fill_types, maps):
 <vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/vehicle.xsd">
     <storeData>
         <name>$l10n_storeItem_%(name)s</name>
-        <image>store/store_depot_food.dds</image>
+        <image>store/store_%(name)s.dds</image>
         <price>%(price)d</price>
         <category>pallets</category>
         <brand>NONE</brand>

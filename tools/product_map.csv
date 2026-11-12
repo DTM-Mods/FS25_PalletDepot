@@ -314,3 +314,9 @@ PAINTBUCKETS,dlc,goods,Paint buckets,Beans & Alpacas
 FUNGICIDE,dlc,goods,Fungicide,Beans & Alpacas (liquid tank pallet)
 BUFFALOBUTTER,fed,food,Buffalo butter,Fed Produktions Pack (standard edition only)
 GOATBUTTER,fed,food,Goat butter,Fed Produktions Pack (standard edition only)
+CASTLEROCK,dlc,exclude,Castle rock,Highlands Fishing: building stone and not a pallet
+COAL,dlc,goods,Coal,Highlands Fishing; dropped at load if it has no pallet
+SALMONYOUNG,dlc,exclude,Young salmon,Highlands Fishing: live fish
+SHINGLEROOF,dlc,goods,Roof shingles,Highlands Fishing
+STONEBIG,dlc,exclude,Big stone,Highlands Fishing: building stone and not a pallet
+TROUTYOUNG,dlc,exclude,Young trout,Highlands Fishing: live fish

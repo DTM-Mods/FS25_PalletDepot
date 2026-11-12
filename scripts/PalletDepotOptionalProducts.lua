@@ -1,8 +1,10 @@
--- Pallet Depot: lets both depots load with or without the FedMods packs and the Beans & Alpacas DLC.
+-- Pallet Depot: lets both depots load with or without the FedMods packs and the Beans & Alpacas and Highlands
+-- Fishing DLCs.
 --
--- The depots list the base products, the FedMods products and the Beans & Alpacas products. Before a depot's
--- production point reads its XML, this removes every line, storage capacity and trigger fill type whose product
--- the game does not know or that has no pallet, so without those mods the depot simply offers the base products.
+-- The depots list the base products, the FedMods products and the Beans & Alpacas and Highlands Fishing products.
+-- Before a depot's production point reads its XML, this removes every line, storage capacity and trigger fill type
+-- whose product the game does not know or that has no pallet, so without those mods the depot simply offers the base
+-- products.
 -- The pallet check matters for the DLC: its files are encrypted, so its list may hold bulk goods (ores, crops).
 
 PalletDepotOptionalProducts = {}
@@ -51,7 +53,7 @@ function PalletDepotOptionalProducts.load(productionPoint, superFunc, components
             PalletDepotOptionalProducts.removeUnknown(xmlFile, key .. ".storage.capacity", "#fillType")
             PalletDepotOptionalProducts.filterLists(xmlFile, key .. ".sellingStation.unloadTrigger")
             PalletDepotOptionalProducts.filterLists(xmlFile, key .. ".sellingStation.palletTrigger")
-            Logging.info("Pallet Depot: %d products skipped (FedMods packs or Beans & Alpacas not loaded, or no pallet)",
+            Logging.info("Pallet Depot: %d products skipped (FedMods packs or DLCs not loaded, or no pallet)",
                 skipped)
         end
     end

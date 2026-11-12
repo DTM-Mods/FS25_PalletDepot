@@ -1359,6 +1359,12 @@
    "source": "base"
   },
   {
+   "fillType": "COAL",
+   "title": null,
+   "english": "Coal",
+   "source": "dlc"
+  },
+  {
    "fillType": "COPPERORE",
    "title": null,
    "english": "Copper ore",
@@ -1597,6 +1603,12 @@
    "title": "$l10n_fillType_roofPlate",
    "english": "Roof plates",
    "source": "base"
+  },
+  {
+   "fillType": "SHINGLEROOF",
+   "title": null,
+   "english": "Roof shingles",
+   "source": "dlc"
   },
   {
    "fillType": "ROPE",

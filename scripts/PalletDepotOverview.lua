@@ -6,8 +6,7 @@
 --   Recipes      one line per recipe: product, ingredients, status; Backspace switches the recipe on / off; C back
 --   Finances     stock value, running costs and net per month; Backspace spawn goods; Q back
 --   Logistics    per recipe: stored, supply, output, destination, status; Enter changes the output (Storing ->
---                Spawning -> Distributing -> Selling with Production Storage Control, else Spawning -> Distributing ->
---                Selling), Backspace switches the recipe on / off, X schedule, C hides inactive recipes, Q spawn goods;
+--                Spawning -> Distributing -> Selling; Storing is ours, scripts/PalletDepotStoring.lua), Backspace switches the recipe on / off, X schedule, C hides inactive recipes, Q spawn goods;
 --                E back
 --   Settings     farm settings (auto-manage, alerts), the selected production's pallets, the selected depot's
 --                capacity, personal settings;
@@ -425,10 +424,26 @@ function PalletDepotOverview.getOutputMode(productionPoint, fillType)
     return ProductionPoint.OUTPUT_MODE.KEEP
 end
 
-function PalletDepotOverview:getOutputCell(productionPoint, fillType)
+-- what the Logistics page shows and cycles through: the game's modes, with KEEP split into our Storing (stays in
+-- stock, PalletDepotStoring) and Spawning (pallets come out by themselves). Production Storage Control's own STORE
+-- mode, when installed, also counts as Storing.
+local STORING = "storing"
+function PalletDepotOverview.getOutputChoice(productionPoint, fillType)
     local mode = PalletDepotOverview.getOutputMode(productionPoint, fillType)
     local MODE = ProductionPoint.OUTPUT_MODE
     if hasStoreMode() and mode == MODE.STORE then
+        return STORING
+    end
+    if mode == MODE.KEEP and (productionPoint.palletSpawner == nil or PalletDepotStoring.isStored(productionPoint, fillType)) then
+        return STORING
+    end
+    return mode
+end
+
+function PalletDepotOverview:getOutputCell(productionPoint, fillType)
+    local mode = PalletDepotOverview.getOutputChoice(productionPoint, fillType)
+    local MODE = ProductionPoint.OUTPUT_MODE
+    if mode == STORING then
         return cell(text("pdo_outputStoring"))
     elseif mode == MODE.DIRECT_SELL then
         return cell(text("pdo_outputSelling"), COLOR.green)
@@ -941,15 +956,14 @@ function PalletDepotOverview:canManage()
     return true
 end
 
-function PalletDepotOverview.getNextOutputMode(mode)
+-- Storing -> Spawning -> Distributing -> Selling -> Storing; without pickup lanes there is no Spawning
+function PalletDepotOverview.getNextOutputChoice(productionPoint, choice)
     local MODE = ProductionPoint.OUTPUT_MODE
-    if hasStoreMode() then
-        local nextMode = {[MODE.STORE] = MODE.KEEP, [MODE.KEEP] = MODE.AUTO_DELIVER,
-            [MODE.AUTO_DELIVER] = MODE.DIRECT_SELL, [MODE.DIRECT_SELL] = MODE.STORE}
-        return nextMode[mode] or MODE.STORE
+    if choice == STORING then
+        return productionPoint.palletSpawner ~= nil and MODE.KEEP or MODE.AUTO_DELIVER
     end
-    local nextMode = {[MODE.KEEP] = MODE.AUTO_DELIVER, [MODE.AUTO_DELIVER] = MODE.DIRECT_SELL, [MODE.DIRECT_SELL] = MODE.KEEP}
-    return nextMode[mode] or MODE.KEEP
+    local nextMode = {[MODE.KEEP] = MODE.AUTO_DELIVER, [MODE.AUTO_DELIVER] = MODE.DIRECT_SELL, [MODE.DIRECT_SELL] = STORING}
+    return nextMode[choice] or STORING
 end
 
 function PalletDepotOverview:onClickChangeOutput()
@@ -963,9 +977,17 @@ function PalletDepotOverview:onClickChangeOutput()
         InfoDialog.show(text("pdo_noOutput"))
         return
     end
-    local mode = PalletDepotOverview.getNextOutputMode(PalletDepotOverview.getOutputMode(productionPoint, fillType))
-    ProductionPointOutputModeEvent.sendEvent(productionPoint, fillType, mode, false)
-    productionPoint:setOutputDistributionMode(fillType, mode, true)
+    local choice = PalletDepotOverview.getNextOutputChoice(productionPoint,
+        PalletDepotOverview.getOutputChoice(productionPoint, fillType))
+    local mode = choice == STORING and ProductionPoint.OUTPUT_MODE.KEEP or choice
+    if PalletDepotOverview.getOutputMode(productionPoint, fillType) ~= mode then
+        ProductionPointOutputModeEvent.sendEvent(productionPoint, fillType, mode, false)
+        productionPoint:setOutputDistributionMode(fillType, mode, true)
+    end
+    -- Storing and Spawning are both the game's KEEP mode; our flag tells them apart
+    if productionPoint.palletSpawner ~= nil and mode == ProductionPoint.OUTPUT_MODE.KEEP then
+        PalletDepotStoring.request(productionPoint, fillType, choice == STORING)
+    end
     self:rebuild()
 end
 

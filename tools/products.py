@@ -4,8 +4,9 @@ Sources (read as data only):
   * the game's data/maps/maps_fillTypes.xml: every fill type with a <pallet> entry
   * the FedMods packs in the mods folder (standard and ProEdition): their pallet fill types; a Fed
     building gets the Fed products of EITHER edition (lines of the edition that is not loaded are dropped at load)
-  * the Beans & Alpacas DLC (pdlc_beansAndAlpacasPack): its .dlc is encrypted, so DLC_FILLTYPES lists its
-    products by hand (from the game log, "Mod 'pdlc_beansAndAlpacasPack': 30 fill type(s) requested")
+  * the Beans & Alpacas and Highlands Fishing DLCs (pdlc_beansAndAlpacasPack, pdlc_highlandsFishingPack): .dlc files
+    are encrypted, so DLC_FILLTYPES lists their products by hand (from the game log, "Mod 'pdlc_...': N fill type(s)
+    requested")
 
 tools/product_map.csv is the reviewable mapping table: one row per pallet fill type with its building
 (food = Food & Drinks, goods = Textiles & Goods, or exclude) and an English name. The English name is only the sort key (lines are listed A-Z
@@ -39,6 +40,10 @@ DLC_FILLTYPES = [
     "COFFEECHERRIES", "COFFEEBAGS", "COFFEEPACKED", "COFFEECAPSULES", "COFFEEYOGURT", "COFFEEBEVERAGE", "TIRAMISU",
     "ALPACAWOOL", "ALPACAFLEECE", "ALPACASOCKS", "ALPACAPILLOW", "ALPACAPLUSH", "ALPACACHAIR", "ALPACAARMCHAIR",
     "IRONORE", "COPPERORE", "PIGMENTS", "RESIN", "PAINTBUCKETS", "FUNGICIDE",
+    # Highlands Fishing (pdlc_highlandsFishingPack, 13 fill types); FISHFOOD, SALMON, TROUT, FRIEDONION, ONIONBAG,
+    # ONIONSALT and ONIONSOUP are also Fed products, so they are already listed under that name
+    "COAL", "STONEBIG", "CASTLEROCK", "SHINGLEROOF", "SALMONYOUNG", "TROUTYOUNG",
+    "FISHFOOD", "SALMON", "TROUT", "FRIEDONION", "ONIONBAG", "ONIONSALT", "ONIONSOUP",
 ]
 MAX_LINES = 255
 BUILDINGS = {   # store item -> (building of the mapping table, includes Fed/DLC products); those lines are
