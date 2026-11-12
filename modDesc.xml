@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="115">
     <author>Fennell</author>
-    <version>1.3.0.1</version>
+    <version>1.3.0.2</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -24,6 +24,7 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.3.0.2 - Spawn goods: the < and > of every line can be clicked with the mouse (they light up under it).
 1.3.0.1 - The Spawn goods and schedule windows are drawn on a layer of their own: the productions window behind them no longer shows through (its numbers and buttons were drawn over them). "1 pallet" instead of "1 pallets".
 1.3.0.0 - Storing without other mods: a new Storing output for every product (Logistics page, Enter: Storing -> Spawning -> Distributing -> Selling). Stored products stay in the building until you spawn, deliver or sell them; Spawning puts them on pallets by itself. Hubs store by default (with Production Storage Control installed its own Storing stays in charge). Spawn goods remembers your last choice for each building, E picks all pallets, and it warns before spawning when the pallet limit would be reached or pallets still stand at the pickup lanes. Our 1,000 L and 5,000 L pallets have their own shop pictures; a pallet without a picture shows ours with the product's icon. Highlands Fishing: roof shingles and coal in Textiles & Goods; its fish and onion products were already taken.
 1.2.5.0 - Part-filled product pallets (e.g. 1,000 L carrot bags) stack right on top of each other instead of floating a full pallet height above.
@@ -80,6 +81,7 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.3.0.2 - Waren auslagern: die < und > jeder Zeile lassen sich mit der Maus anklicken (sie leuchten unter ihr auf).
 1.3.0.1 - Die Fenster Waren auslagern und Zeitplan liegen auf einer eigenen Ebene: das Produktionsfenster dahinter scheint nicht mehr durch (seine Zahlen und Tasten wurden darüber gezeichnet). "1 Palette" statt "1 Paletten".
 1.3.0.0 - Lagern ohne andere Mods: eine neue Ausgabe Lagern für jedes Produkt (Logistik-Seite, Enter: Lagern -> Auslagern -> Verteilen -> Verkaufen). Gelagerte Produkte bleiben im Gebäude, bis du sie auslagerst, lieferst oder verkaufst; Auslagern packt sie von selbst auf Paletten. Logistikzentren lagern standardmäßig (mit Production Storage Control bleibt dessen eigenes Lagern zuständig). Waren auslagern merkt sich die letzte Wahl je Gebäude, E wählt alle Paletten, und es warnt vor dem Auslagern, wenn das Palettenlimit erreicht würde oder noch Paletten an den Abholspuren stehen. Unsere 1.000-L- und 5.000-L-Paletten haben eigene Shopbilder; eine Palette ohne Bild zeigt unseres mit dem Symbol des Produkts. Highlands Fishing: Dachschindeln und Kohle in Textilien und Waren; seine Fisch- und Zwiebelprodukte wurden schon angenommen.
 1.2.5.0 - Teilbefüllte Produktpaletten (z. B. 1.000 L Karottensäcke) stapeln sich direkt aufeinander statt eine volle Palettenhöhe darüber zu schweben.

@@ -2,7 +2,7 @@
 --
 -- Five lines: product in stock, pallet, partial pallet (full pallets only, or the last pallet takes the rest), farm
 -- that gets the pallets, number of pallets. Up / down chooses a line, left / right or Enter / Backspace change it,
--- X / C take 10 pallets off / add 10, E all pallets, Space spawns, Esc cancels. The last spawn of each building is
+-- X / C take 10 pallets off / add 10, E all pallets, Space spawns, Esc cancels; with the mouse, click a line's < or >. The last spawn of each building is
 -- chosen again next time (while the game runs). Warnings before spawning: the pallet limit, pallets still standing
 -- at the pickup lanes. Left: a preview of the product and the pallet;
 -- bottom: what you get.
@@ -590,6 +590,64 @@ function PalletDepotSpawnDialog:onClickSpawn()
     if onDone ~= nil then
         onDone()
     end
+end
+
+-- --- mouse: the < and > of every line can be clicked ----------------------------------------------------
+
+local ARROW_COLOR = {0.42, 0.86, 0.47, 1}       -- under the mouse
+
+-- the line (index) and arrow (-1 / +1) under the mouse, with a bit of room around the arrow; nil when none
+function PalletDepotSpawnDialog:getArrowAt(posX, posY)
+    local list = self.rowList
+    if list == nil or list.getElementAtScreenPosition == nil or #self.products == 0 then
+        return nil
+    end
+    local cell = list:getElementAtScreenPosition(posX, posY)
+    if cell == nil or cell.isEmptyCell or cell.indexInSection == nil or cell.indexInSection < 1 then
+        return nil
+    end
+    for _, arrow in ipairs({{name = "arrowLeft", delta = -1}, {name = "arrowRight", delta = 1}}) do
+        local element = cell:getAttribute(arrow.name)
+        if element ~= nil and element:getIsVisible() then
+            local x, w = element.absPosition[1], element.absSize[1]
+            local pad = w * 0.6
+            if posX >= x - pad and posX <= x + w + pad and posY >= cell.absPosition[2]
+                and posY <= cell.absPosition[2] + cell.absSize[2] then
+                return cell.indexInSection, arrow.delta, element
+            end
+        end
+    end
+    return nil
+end
+
+function PalletDepotSpawnDialog:setHoverArrow(element)
+    if self.hoverArrow == element then
+        return
+    end
+    if self.hoverArrow ~= nil and self.hoverArrow.palletDepotColor ~= nil then
+        local c = self.hoverArrow.palletDepotColor
+        self.hoverArrow:setTextColor(c[1], c[2], c[3], c[4])
+    end
+    self.hoverArrow = element
+    if element ~= nil then
+        if element.palletDepotColor == nil and element.textColor ~= nil then
+            element.palletDepotColor = {element.textColor[1], element.textColor[2], element.textColor[3], element.textColor[4]}
+        end
+        element:setTextColor(ARROW_COLOR[1], ARROW_COLOR[2], ARROW_COLOR[3], ARROW_COLOR[4])
+    end
+end
+
+function PalletDepotSpawnDialog:mouseEvent(posX, posY, isDown, isUp, button, eventUsed)
+    if not eventUsed and self:getIsVisible() then
+        local index, delta, element = self:getArrowAt(posX, posY)
+        self:setHoverArrow(element)
+        if index ~= nil and isDown and button == Input.MOUSE_BUTTON_LEFT then
+            self.selected = index
+            self:change(delta)                  -- selects the clicked line too
+            return true
+        end
+    end
+    return PalletDepotSpawnDialog:superClass().mouseEvent(self, posX, posY, isDown, isUp, button, eventUsed)
 end
 
 function PalletDepotSpawnDialog:inputEvent(action, value, eventUsed)

@@ -12,7 +12,7 @@
 
 [![Build](https://github.com/DTM-Mods/FS25_PalletDepot/actions/workflows/build.yml/badge.svg)](https://github.com/DTM-Mods/FS25_PalletDepot/actions/workflows/build.yml)
 ![Farming Simulator 25](https://img.shields.io/badge/Farming%20Simulator-25-2e7d32)
-![Version](https://img.shields.io/badge/version-1.3.0.1-1565c0)
+![Version](https://img.shields.io/badge/version-1.3.0.2-1565c0)
 ![Multiplayer](https://img.shields.io/badge/multiplayer-supported-2e7d32)
 ![Languages](https://img.shields.io/badge/languages-EN%20%7C%20DE-555)
 ![Upkeep](https://img.shields.io/badge/daily%20upkeep-none-555)
