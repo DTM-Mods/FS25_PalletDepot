@@ -70,9 +70,14 @@ function PalletDepotSpawnSizes.fixSpawn(productionPoint, fillTypeIndex, capacity
     local item = spawner ~= nil and spawner.pendingItem ~= nil and spawner.pendingItem[fillTypeIndex] or nil
     if filename ~= nil and item ~= nil then
         item.filename = filename                     -- the queued spawns point at this same item
-        item.size = StoreItemUtil.getSizeValues(filename, "vehicle", 0, {})
+        local own = PalletDepotPallets.getProductPalletFile(productionPoint, fillTypeIndex) ~= nil
+        if own then
+            item.size = PalletDepotPallets.getSizeFor(filename, capacity)     -- height for the picked liters
+        else
+            item.size = StoreItemUtil.getSizeValues(filename, "vehicle", 0, {})
+        end
         item.capacity = capacity
-        if PalletDepotPallets.getProductPalletFile(productionPoint, fillTypeIndex) ~= nil then
+        if own then
             item.palletDepotCapacity = capacity      -- the product's own pallet, holding the picked liters
         end
     end

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="115">
     <author>Fennell</author>
-    <version>1.2.4.0</version>
+    <version>1.2.5.0</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -24,6 +24,7 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.2.5.0 - Part-filled product pallets (e.g. 1,000 L carrot bags) stack right on top of each other instead of floating a full pallet height above.
 1.2.4.0 - Spawn goods has its own window now (no other mod needed, Production Storage Control is not used any more): pick the product in stock, the pallet (the product's own pallet in its normal size, or in 1,000 L or 5,000 L; in a hub for every product), whether only full pallets come out or the last one takes the rest, the farm that gets the pallets and how many (up / down chooses a line, left / right or Enter / Backspace changes it, X / C 10 pallets less / more, Space spawns). The pallets come out at the building's pickup lanes.
 1.2.3.0 - The pallet picture in a depot's spawn window has a clear background.
 1.2.2.0 - The goods on a resized pallet match its litres: 1,000 L on a pallet built for 5,000 L shows a fifth of the goods instead of a full pallet.
@@ -77,6 +78,7 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.2.5.0 - Teilbefüllte Produktpaletten (z. B. 1.000 L Karottensäcke) stapeln sich direkt aufeinander statt eine volle Palettenhöhe darüber zu schweben.
 1.2.4.0 - Waren auslagern hat jetzt ein eigenes Fenster (keine andere Mod nötig, Production Storage Control wird nicht mehr benutzt): Produkt auf Lager, Palette (die eigene Palette des Produkts in normaler Größe oder mit 1.000 L oder 5.000 L, im Logistikzentrum für jedes Produkt), ob nur volle Paletten kommen oder die letzte den Rest nimmt, den Hof, der die Paletten bekommt, und die Anzahl wählen (hoch / runter wählt eine Zeile, links / rechts oder Enter / Rücktaste ändert sie, X / C 10 Paletten weniger / mehr, Leertaste lagert aus). Die Paletten kommen an den Abholspuren des Gebäudes heraus.
 1.2.3.0 - Das Palettenbild im Auslager-Fenster eines Depots hat einen durchsichtigen Hintergrund.
 1.2.2.0 - Die Ware auf einer Palette mit geänderter Größe passt zu ihren Litern: 1.000 L auf einer Palette für 5.000 L zeigen ein Fünftel der Ware statt einer vollen Palette.

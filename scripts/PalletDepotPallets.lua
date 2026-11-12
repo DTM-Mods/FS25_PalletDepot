@@ -87,6 +87,30 @@ function PalletDepotPallets.getGamePallets(productionPoint)
     return productionPoint.palletDepotSpawnerPallets
 end
 
+-- The size the spawner uses for `liters` in a product's own pallet. Its xml size is for a FULL pallet; a part-filled
+-- one shows fewer bags, so the height (what the next pallet is stacked on) is scaled to the liters above the wooden
+-- base. Without this a 1,000 L pallet got the full height and the one stacked on it floated.
+PalletDepotPallets.BASE_HEIGHT = 0.15
+PalletDepotPallets.fullCapacity = {}
+function PalletDepotPallets.getSizeFor(filename, liters)
+    local size = StoreItemUtil.getSizeValues(filename, "vehicle", 0, {})
+    local full = PalletDepotPallets.fullCapacity[filename]
+    if full == nil then
+        full = 0
+        local xmlFile = XMLFile.load("palletDepotCapacity", filename, Vehicle.xmlSchema)
+        if xmlFile ~= nil then
+            full = xmlFile:getValue("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(0).fillUnits.fillUnit(0)#capacity", 0) or 0
+            xmlFile:delete()
+        end
+        PalletDepotPallets.fullCapacity[filename] = full
+    end
+    local base = PalletDepotPallets.BASE_HEIGHT
+    if liters ~= nil and full > 0 and liters < full and size.height ~= nil and size.height > base then
+        size.height = base + (size.height - base) * liters / full
+    end
+    return size
+end
+
 -- The product's own pallet file (its model and textures): the production's pallet for it, else the fill type's.
 -- nil when the product has no pallet of its own (then our plain pallet is used).
 function PalletDepotPallets.getProductPalletFile(productionPoint, fillType)
@@ -113,7 +137,7 @@ function PalletDepotPallets.getSizedPallet(productionPoint, fillType, size)
     if spawner.palletDepotSized[key] == nil then
         spawner.palletDepotSized[key] = {
             filename = filename,
-            size = StoreItemUtil.getSizeValues(filename, "vehicle", 0, {}),
+            size = PalletDepotPallets.getSizeFor(filename, size),
             capacity = size,
             palletDepotCapacity = size,
         }
