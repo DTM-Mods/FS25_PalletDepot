@@ -98,6 +98,7 @@ function PalletDepotSpawnDialog:onGuiSetupFinished()
     PalletDepotSpawnDialog:superClass().onGuiSetupFinished(self)
     self.rowList:setDataSource(self)
     self.rowList:setDelegate(self)
+    self:hookArrowMouse()
 end
 
 function PalletDepotSpawnDialog:onOpen()
@@ -637,17 +638,35 @@ function PalletDepotSpawnDialog:setHoverArrow(element)
     end
 end
 
-function PalletDepotSpawnDialog:mouseEvent(posX, posY, isDown, isUp, button, eventUsed)
-    if not eventUsed and self:getIsVisible() then
-        local index, delta, element = self:getArrowAt(posX, posY)
-        self:setHoverArrow(element)
-        if index ~= nil and isDown and button == Input.MOUSE_BUTTON_LEFT then
-            self.selected = index
-            self:change(delta)                  -- selects the clicked line too
+-- true when the mouse event was a click on an arrow (and is used up)
+function PalletDepotSpawnDialog:arrowMouseEvent(posX, posY, isDown, button)
+    local index, delta, element = self:getArrowAt(posX, posY)
+    self:setHoverArrow(element)
+    if index ~= nil and isDown and button == Input.MOUSE_BUTTON_LEFT then
+        self.selected = index
+        self:change(delta)                      -- selects the clicked line too
+        return true
+    end
+    return false
+end
+
+-- The arrows sit inside the row list, and the game gives a click to the dialog's elements first
+-- (Gui:mouseEvent -> root GuiElement -> SmoothListElement, which uses up a click on a line); the dialog's own
+-- mouseEvent only gets clicks nobody used. So the arrow check runs in the list's mouseEvent, before the list.
+function PalletDepotSpawnDialog:hookArrowMouse()
+    local list = self.rowList
+    if list == nil or list.palletDepotArrowHook then
+        return
+    end
+    list.palletDepotArrowHook = true
+    local dialog = self
+    local listMouseEvent = list.mouseEvent
+    list.mouseEvent = function(element, posX, posY, isDown, isUp, button, eventUsed)
+        if not eventUsed and dialog:arrowMouseEvent(posX, posY, isDown, button) then
             return true
         end
+        return listMouseEvent(element, posX, posY, isDown, isUp, button, eventUsed)
     end
-    return PalletDepotSpawnDialog:superClass().mouseEvent(self, posX, posY, isDown, isUp, button, eventUsed)
 end
 
 function PalletDepotSpawnDialog:inputEvent(action, value, eventUsed)
