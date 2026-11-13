@@ -62,7 +62,7 @@ function tests.depotSpawnGoods5000LButterIsAtMost400kg()
     PalletDepotSpawn.request(pp, BUTTER, 5000, 1, 1)
     runUpdates()
     local v = only("5,000 L")
-    assertEqual(v.configFileName, FED, "the product's own pallet")
+    assertEqual(v.configFileName, "/mods/FS25_PalletDepot/vehicles/depotPallet5000.xml", "our own pallet")
     assertEqual(v:getFillUnitFillLevel(1), 5000, "litres on it")
     assertCapped(v, "5,000 L butter at the depot")
 end
@@ -83,7 +83,7 @@ function tests.depot1000LIsNotRaised()
     runUpdates()
     local v = only("1,000 L")
     v:update()
-    assertEqual(math.floor(v:massKg() + 0.5), 175, "25 kg + 1,000 L x 0.15 kg, under the cap")
+    assertEqual(math.floor(v:massKg() + 0.5), 210, "60 kg + 1,000 L x 0.15 kg, under the cap")
 end
 
 function tests.depotAutomaticSpawnIsCapped()

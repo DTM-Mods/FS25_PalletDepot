@@ -1,13 +1,7 @@
--- Pallet Depot: what we change on a spawned pallet.
---
--- 1) Weight: every pallet a depot spawns weighs at most MAX_MASS kg (never more, a lighter load is never raised),
---    whatever pallet it is. The game caps a vehicle's mass at maxComponentMass (Vehicle:updateMass), read from
---    <components maxMass>; we overwrite it on the pallet the depot's spawner just made.
--- 2) Size: a pallet spawned as one of our sizes (1,000 L / 5,000 L) is the product's OWN pallet (its model and
---    textures) with only its fill capacity changed. The spawner's pallet entry carries palletDepotCapacity
---    (PalletDepotPallets / PalletDepotSpawnSizes); the pallet visuals follow the fill percentage (Pallet.lua).
--- The server sets both, every client gets them (event now, stream on join), and the savegame keeps them
--- (vehicle attributes palletDepotMaxMass / palletDepotCapacity) so a reloaded pallet keeps its cap and its litres.
+-- Depot pallets keep their litres and a 400 kg total mass limit.
+-- Newly spawned sized pallets use our own models. Legacy product-model pallets retain their
+-- original visual-capacity behaviour; our layered models use PalletDepotStack instead.
+-- Capacity and weight markers are saved and sent before the game's fill-level join data.
 
 PalletDepotPalletMass = {}
 PalletDepotPalletMass.MAX_MASS = 400            -- kg, like the NF Marsch goat milk pallet
@@ -65,7 +59,8 @@ Pallet.onFillUnitFillLevelChanged = Utils.overwrittenFunction(Pallet.onFillUnitF
         local visual = vehicle.palletDepotVisualCapacity
         local spec = vehicle.spec_fillUnit
         local fillUnit = spec ~= nil and spec.fillUnits ~= nil and spec.fillUnits[fillUnitIndex] or nil
-        if visual == nil or vehicle.palletDepotCapacity == nil or fillUnit == nil or visual <= 0 or visual == math.huge then
+        if PalletDepotPallets.isOwnPallet(vehicle.configFileName)
+            or visual == nil or vehicle.palletDepotCapacity == nil or fillUnit == nil or visual <= 0 or visual == math.huge then
             return superFunc(vehicle, fillUnitIndex, ...)
         end
         local capacity = fillUnit.capacity

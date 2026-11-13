@@ -6,8 +6,8 @@ function tests.offersPalletsPerProduct()
     local products = PalletDepotSpawn.getProducts(pp)
     assertEqual(#products, 3, "products in stock")
     assertEqual(products[1].fillType, 5, "sorted by name")
-    assertEqual(#products[1].pallets, 2, "1,000 L + 5,000 L (no normal size)")
-    assertEqual(#products[2].pallets, 2, "a hub product without a pallet of its own gets our two sizes")
+    assertEqual(#products[1].pallets, 3, "1,000 L + 2,500 L + 5,000 L (no normal size)")
+    assertEqual(#products[2].pallets, 3, "a hub product without a pallet of its own gets our three sizes")
 end
 
 function tests.otherProductionsOnlyOfferProductsWithPallets()
@@ -29,7 +29,7 @@ function tests.spawnsSizedOwnPalletsAndTakesTheRest()
     assertEqual(spawner.fillTypeIdToPallet[5], pp.gamePallet, "spawner table restored")
     spawner:run()
     assertEqual(#spawner.spawned, 7, "pallets")
-    assertEqual(spawner.spawned[1].file, "/data/carrotPallet.xml", "the product's own pallet")
+    assertEqual(spawner.spawned[1].file, "/mods/FS25_PalletDepot/vehicles/depotPallet5000.xml", "our own 5,000 L model")
     assertEqual(spawner.spawned[1].sized, 5000, "holding 5,000 L")
     assertEqual(spawner.spawned[1].farm, 2, "for the chosen farm")
     assertEqual(spawner.spawned[6].fill, 5000, "full")
@@ -68,7 +68,7 @@ end
 function tests.rejectsBadRequests()
     local pp = newProductionPoint(true)
     PalletDepotSpawn.request(pp, 5, 1000, 7, 1)     -- unknown farm
-    PalletDepotSpawn.request(pp, 5, 2500, 1, 1)     -- size not offered
+    PalletDepotSpawn.request(pp, 5, 3000, 1, 1)     -- size not offered
     PalletDepotSpawn.request(pp, 9, 1000, 1, 1)     -- not an output
     assertEqual(#pp.palletSpawner.queue, 0, "nothing queued")
 end

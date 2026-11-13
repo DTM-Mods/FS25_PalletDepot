@@ -13,6 +13,7 @@ in English and German; at most 255 production lines; Lua syntax and block struct
         --bump  raises the last version number in modDesc.xml first
         --ci    skips products.py (it reads the game install and the FedMods zips); the committed
                 build/products.json is used instead (GitHub Actions, .github/workflows/build.yml)
+        --check-only  validates without creating either ZIP (source-only work)
 
 Model and textures are built separately (make_textures.py, build_warehouse.py in Blender, finish_i3d.py,
 render_store.py in Blender).
@@ -26,6 +27,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
 ROOT = os.path.dirname(HERE)
 ZIP_NAMES = ["FS25_PalletDepot", "FS25_LogisticsHub"]     # current map's name first; see the docstring
 ZIP = os.path.join(ROOT, "build", ZIP_NAMES[0] + ".zip")
@@ -132,6 +134,36 @@ def check_vehicle(rel, keys):
         if key in BASE_TEXTS:
             continue
         check(keys.get(key, set()) >= {"en", "de"}, "%s: l10n key %s missing in en/de" % (rel, key))
+    if os.path.basename(rel).startswith("depotPallet"):
+        import pallet_layout as layout
+        capacity = int(root.find("fillUnit/fillUnitConfigurations/fillUnitConfiguration/fillUnits/fillUnit").get("capacity"))
+        size = root.find("base/size")
+        check(capacity in layout.LAYERS, "%s: unknown capacity" % rel)
+        check(abs(float(size.get("height")) - layout.height(capacity)) < 0.000001, "%s: incorrect full height" % rel)
+        check(float(size.get("width")) == layout.WIDTH and float(size.get("length")) == layout.DEPTH,
+              "%s: incorrect footprint" % rel)
+        check(root.find("base/components").get("maxMass") == "400", "%s: missing 400 kg cap" % rel)
+        check(len(root.findall("pallet/content/object")) == layout.LAYERS[capacity], "%s: incomplete layer list" % rel)
+        part = root.find("animations/animation[@name='fillAnimation']/part")
+        check(part is not None and part.get("node") == "contentCollision", "%s: missing fill collision animation" % rel)
+        if part is not None:
+            check(float(part.get("startScale").split()[1]) == layout.MIN_COLLISION_SCALE,
+                  "%s: collision animation minimum differs from the layer controller" % rel)
+        scene = ET.parse(i3d).getroot()
+        nodes = {n.get("name"): n for n in scene.find("Scene").iter()}
+        collision = nodes.get("contentCollision")
+        body = scene.find("Scene/Shape")
+        check(collision is not None and collision.get("compoundChild") == "true", "%s: no built-in compound child" % rel)
+        if collision is not None:
+            check(collision.get("collisionFilterGroup") == body.get("collisionFilterGroup")
+                  and collision.get("collisionFilterMask") == body.get("collisionFilterMask"), "%s: collision filters differ" % rel)
+            check(abs(float(collision.get("translation").split()[1]) - layout.DECK) < 0.000001,
+                  "%s: collision origin differs from deck height" % rel)
+        check(all("floorCollision%02d" % i in nodes for i in range(1, 4)), "%s: missing fork runner collision" % rel)
+        for layer in range(1, layout.LAYERS[capacity] + 1):
+            holder = nodes["goodsLayer%02d" % layer]
+            check(holder.tag == "TransformGroup" and not list(holder),
+                  "%s: native cargo holder contains replacement geometry" % rel)
 
 
 def lua_texts(rel, keys):
@@ -200,6 +232,10 @@ def main():
     check(len(ship) <= MAX_FILES, "%d files (limit %d)" % (len(ship), MAX_FILES))
     if errors:
         sys.exit("BUILD FAILED\n  " + "\n  ".join(errors))
+
+    if "--check-only" in sys.argv:
+        print("VALIDATION PASSED | version", mod.findtext("version"), "| files", len(ship), "| no archives created")
+        return
 
     os.makedirs(os.path.dirname(ZIP), exist_ok=True)
     with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED) as zf:

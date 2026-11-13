@@ -39,7 +39,8 @@ scene.view_settings.view_transform = "Standard"
 visible = []
 for obj in bpy.data.objects:
     hidden = obj.type != "MESH" or bool(obj.get("i3D_nonRenderable", False)) or bool(obj.get("i3D_trigger", False)) \
-        or obj.get("i3D_collision", None) is not None and not obj.data.materials or (BARE and obj.name == "goods")
+        or obj.get("i3D_collision", None) is not None and not obj.data.materials \
+        or (BARE and (obj.name == "goods" or obj.name.startswith("goodsLayer")))
     obj.hide_render = hidden
     if not hidden:
         visible.append(obj)

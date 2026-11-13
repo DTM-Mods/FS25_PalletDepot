@@ -27,6 +27,12 @@ import layout as L  # noqa: E402
 
 ROOT = os.path.dirname(HERE)
 EXPORTER = "io_export_i3d_10_0_2"
+try:                                           # newer installs drop the version from the add-on folder name
+    import importlib.util as _ilu
+    if _ilu.find_spec(EXPORTER) is None and _ilu.find_spec("io_export_i3d") is not None:
+        EXPORTER = "io_export_i3d"
+except Exception:
+    pass
 GAME_DIR = "C:/Program Files (x86)/Steam/steamapps/common/Farming Simulator 25/"   # trailing slash: the
 TEXTURES = os.path.join(ROOT, "textures")                                          # exporter appends to it
 BUILDING_SHADER = "$data/shaders/buildingShader.xml"

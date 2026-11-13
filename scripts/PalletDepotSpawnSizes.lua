@@ -1,15 +1,6 @@
--- Pallet Depot: in a depot, Production Storage Control's spawn dialog offers every product's own pallet (its model
--- and textures, nothing copied: we point at its file) in 1,000 L and 5,000 L, and nothing else, whatever size the
--- depot's Settings page has. Only a product without a pallet of its own gets our plain pallet.
---
--- PSC (Braeven, FS25_ProductionStorageControl) is not changed: we wrap two of its functions from outside.
---  * ProductionStorageDialog.show: for a depot, replace every package PSC lists for a product with our two,
---    1,000 L and 5,000 L.
---  * ProductionPoint:ReceiveSpawnEvent (server): PSC takes a type 6 pallet's file from the spawner's single slot; for a
---    depot we point it at the product's own pallet file and mark the picked liters (palletDepotCapacity), which
---    PalletDepotPalletMass sets on the pallet when it spawns.
--- The pallets still spawn through the depot's spawner, so PalletDepotPalletMass caps them (weight only).
--- PSC loads after us (mods load alphabetically), so the wraps are installed when the mission has loaded.
+-- Production Storage Control compatibility: depot packages use our own layered models.
+-- Only depot choices and their queued entries are changed; PSC's source is untouched.
+-- Each queued entry carries capacity and palletDepotCapacity for the mass/save/sync hooks.
 
 PalletDepotSpawnSizes = {}
 PalletDepotSpawnSizes.TYPE_SPAWNER_PALLET = 6       -- PSC's package type "pallet from the production's spawner"
@@ -19,9 +10,9 @@ local function plainPalletFile(capacity)
     return file ~= nil and PalletDepot.modDirectory .. file or nil
 end
 
--- the file to spawn for `capacity` liters of a product: its own pallet, else our plain one
+-- A depot size always uses our model; the queued fill type supplies its product.
 local function palletFile(productionPoint, fillTypeIndex, capacity)
-    return PalletDepotPallets.getProductPalletFile(productionPoint, fillTypeIndex) or plainPalletFile(capacity)
+    return plainPalletFile(capacity)
 end
 
 local function packageFor(productionPoint, fillTypeIndex, capacity, fillLevel, unitShort)
@@ -44,12 +35,12 @@ local function packageFor(productionPoint, fillTypeIndex, capacity, fillLevel, u
     }
 end
 
--- the dialog's product list for a depot: only our two sizes, every other pallet choice is removed
+-- the dialog's product list for a depot: only our sizes, every other pallet choice is removed
 function PalletDepotSpawnSizes.addPackages(options, productionPoint)
     for _, option in ipairs(options or {}) do
         if option.openmenu == nil and option.fillTypeIndex ~= nil and option.fillTypeIndex > 0 and option.packages ~= nil then
             local packages = {}
-            for _, capacity in ipairs({1000, 5000}) do
+            for _, capacity in ipairs({1000, 2500, 5000}) do
                 table.insert(packages, packageFor(productionPoint, option.fillTypeIndex, capacity, option.fillLevel or 0, option.unitShort))
             end
             option.packages = packages
@@ -70,16 +61,9 @@ function PalletDepotSpawnSizes.fixSpawn(productionPoint, fillTypeIndex, capacity
     local item = spawner ~= nil and spawner.pendingItem ~= nil and spawner.pendingItem[fillTypeIndex] or nil
     if filename ~= nil and item ~= nil then
         item.filename = filename                     -- the queued spawns point at this same item
-        local own = PalletDepotPallets.getProductPalletFile(productionPoint, fillTypeIndex) ~= nil
-        if own then
-            item.size = PalletDepotPallets.getSizeFor(filename, capacity)     -- height for the picked liters
-        else
-            item.size = StoreItemUtil.getSizeValues(filename, "vehicle", 0, {})
-        end
+        item.size = PalletDepotPallets.getSizeFor(filename, capacity)
         item.capacity = capacity
-        if own then
-            item.palletDepotCapacity = capacity      -- the product's own pallet, holding the picked liters
-        end
+        item.palletDepotCapacity = capacity
     end
 end
 

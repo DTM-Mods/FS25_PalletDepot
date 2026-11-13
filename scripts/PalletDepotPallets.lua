@@ -1,17 +1,12 @@
--- Pallet Depot: own pallets of 1,000 L and 5,000 L for every production (Settings page of the productions window).
---
--- Each production with pickup lanes spawns either the game's pallet of each product (0) or that same pallet (its
--- own model and textures) holding 1,000 L or 5,000 L: for every product it already puts on pallets, and in a depot
--- for every product it stores. Only a product without a pallet of its own gets our plain pallet
--- (vehicles/depotPallet*.xml), whose fill unit is opened to all fill types when it loads. A production spawns once a whole pallet is in stock, so 5,000 L pallets come out
--- full.
--- The server owns the choice: it saves it with the savegame (palletDepotPallets.xml, keyed by the building's unique
--- id), applies it and sends every change to all clients; joining clients get it with the production point's join data.
+-- Depot-only 1,000/2,500/5,000 L carriers; GoodsLook attaches the original product's cargo.
+-- Original product-pallet metadata is retained for the Spawn goods pictures and size-zero settings.
+-- Server-owned settings are saved by building ID and synchronised with clients.
 
 PalletDepotPallets = {}
 PalletDepotPallets.FILENAME = "palletDepotPallets.xml"
-PalletDepotPallets.SIZES = {0, 1000, 5000}
-PalletDepotPallets.FILES = {[1000] = "vehicles/depotPallet1000.xml", [5000] = "vehicles/depotPallet5000.xml"}
+PalletDepotPallets.SIZES = {0, 1000, 2500, 5000}
+PalletDepotPallets.FILES = {[1000] = "vehicles/depotPallet1000.xml", [2500] = "vehicles/depotPallet2500.xml",
+    [5000] = "vehicles/depotPallet5000.xml"}
 PalletDepotPallets.data = {}        -- productionPoint -> pallet size in liters (0 = the game's pallets)
 
 function PalletDepotPallets.get(productionPoint)
@@ -38,6 +33,7 @@ local function isOwnPallet(filename)
     end
     return false
 end
+PalletDepotPallets.isOwnPallet = isOwnPallet
 
 -- --- our pallets take any product ----------------------------------------------------------------------
 
@@ -87,33 +83,19 @@ function PalletDepotPallets.getGamePallets(productionPoint)
     return productionPoint.palletDepotSpawnerPallets
 end
 
--- The size the spawner uses for `liters` in a product's own pallet. Its xml size is for a FULL pallet; a part-filled
--- one shows fewer bags, so the height (what the next pallet is stacked on) is scaled to the liters above the wooden
--- base. Without this a 1,000 L pallet got the full height and the one stacked on it floated.
-PalletDepotPallets.BASE_HEIGHT = 0.15
-PalletDepotPallets.fullCapacity = {}
+-- A sized spawn reserves the exact dimensions of its own full model.
 function PalletDepotPallets.getSizeFor(filename, liters)
-    local size = StoreItemUtil.getSizeValues(filename, "vehicle", 0, {})
-    local full = PalletDepotPallets.fullCapacity[filename]
-    if full == nil then
-        full = 0
-        local xmlFile = XMLFile.load("palletDepotCapacity", filename, Vehicle.xmlSchema)
-        if xmlFile ~= nil then
-            full = xmlFile:getValue("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(0).fillUnits.fillUnit(0)#capacity", 0) or 0
-            xmlFile:delete()
-        end
-        PalletDepotPallets.fullCapacity[filename] = full
+    if PalletDepotPallets.FILES[liters] ~= nil then
+        filename = PalletDepot.modDirectory .. PalletDepotPallets.FILES[liters]
     end
-    local base = PalletDepotPallets.BASE_HEIGHT
-    if liters ~= nil and full > 0 and liters < full and size.height ~= nil and size.height > base then
-        size.height = base + (size.height - base) * liters / full
-    end
-    return size
+    return StoreItemUtil.getSizeValues(filename, "vehicle", 0, {})
 end
 
--- The product's own pallet file (its model and textures): the production's pallet for it, else the fill type's.
--- nil when the product has no pallet of its own (then our plain pallet is used).
-function PalletDepotPallets.getProductPalletFile(productionPoint, fillType)
+-- A requested size always selects our model. Without a size, return original product metadata for UI pictures.
+function PalletDepotPallets.getProductPalletFile(productionPoint, fillType, size)
+    if PalletDepotPallets.FILES[size] ~= nil then
+        return PalletDepot.modDirectory .. PalletDepotPallets.FILES[size]
+    end
     local spawner = productionPoint.palletSpawner
     local game = productionPoint.palletDepotSpawnerPallets or (spawner ~= nil and spawner.fillTypeIdToPallet) or {}
     local entry = game[fillType]
@@ -121,19 +103,62 @@ function PalletDepotPallets.getProductPalletFile(productionPoint, fillType)
         return entry.filename
     end
     local desc = g_fillTypeManager:getFillTypeByIndex(fillType)
-    return desc ~= nil and desc.palletFilename or nil
+    if desc ~= nil and desc.palletFilename ~= nil then
+        return desc.palletFilename
+    end
+    -- 1.4.0.0: the pallet it comes off a production line on, anywhere on the map, else a shop pallet made for it;
+    -- our plain pallet only when the game and the mods have no pallet for that product at all
+    return PalletDepotPallets.findProductionPallet(fillType) or PalletDepotPallets.findStorePallet(fillType)
 end
 
--- A spawner pallet entry of `size` liters for a product: it points at the product's own pallet file (nothing is
--- copied) and carries palletDepotCapacity, which PalletDepotPalletMass sets on the pallet when it spawns.
+-- the pallet another production spawns this product on (the game's / mod's table, never one of ours)
+function PalletDepotPallets.findProductionPallet(fillType)
+    local manager = g_currentMission ~= nil and g_currentMission.productionChainManager or nil
+    for _, productionPoint in ipairs(manager ~= nil and manager.productionPoints or {}) do
+        local spawner = productionPoint.palletSpawner
+        local game = productionPoint.palletDepotSpawnerPallets or (spawner ~= nil and spawner.fillTypeIdToPallet) or {}
+        local entry = game[fillType]
+        if entry ~= nil and entry.filename ~= nil and entry.palletDepotCapacity == nil and not isOwnPallet(entry.filename) then
+            return entry.filename
+        end
+    end
+    return nil
+end
+
+-- A shop pallet/bag/IBC (game or mod) for this one product; read once, then cached.
+function PalletDepotPallets.findStorePallet(fillType)
+    if PalletDepotPallets.storePallets == nil then
+        PalletDepotPallets.storePallets = {}
+        for _, item in ipairs(g_storeManager ~= nil and g_storeManager:getItems() or {}) do
+            local filename = item.xmlFilename
+            local category = string.lower(item.categoryName or "")
+            if filename ~= nil and not isOwnPallet(filename)
+                and (string.find(category, "pallet", 1, true) ~= nil or category == "bigbags") then
+                local xmlFile = XMLFile.loadIfExists("palletDepotStorePallet", filename, Vehicle.xmlSchema)
+                if xmlFile ~= nil then
+                    local names = xmlFile:getValue("vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(0).fillUnits.fillUnit(0)#fillTypes")
+                    xmlFile:delete()
+                    local index = names ~= nil and not string.find(names, " ", 1, true)
+                        and g_fillTypeManager:getFillTypeIndexByName(names) or nil
+                    if index ~= nil and PalletDepotPallets.storePallets[index] == nil then
+                        PalletDepotPallets.storePallets[index] = filename
+                    end
+                end
+            end
+        end
+    end
+    return PalletDepotPallets.storePallets[fillType]
+end
+
+-- Every depot product uses the same collision geometry at a given capacity, with its own fill type.
 function PalletDepotPallets.getSizedPallet(productionPoint, fillType, size)
     local spawner = productionPoint.palletSpawner
-    local filename = PalletDepotPallets.getProductPalletFile(productionPoint, fillType)
-    if filename == nil then
-        return loadPallet(spawner, size)            -- no pallet of its own: our plain pallet
+    if spawner == nil or PalletDepotPallets.FILES[size] == nil then
+        return nil
     end
+    local filename = PalletDepotPallets.getProductPalletFile(productionPoint, fillType, size)
     spawner.palletDepotSized = spawner.palletDepotSized or {}
-    local key = size .. "|" .. filename
+    local key = size .. "|" .. fillType
     if spawner.palletDepotSized[key] == nil then
         spawner.palletDepotSized[key] = {
             filename = filename,

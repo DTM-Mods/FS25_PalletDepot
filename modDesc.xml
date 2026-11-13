@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="115">
-    <author>Fennell</author>
-    <version>1.3.0.5</version>
+    <author>PropaineX</author>
+    <version>1.5.2.0</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -24,6 +24,15 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.5.2.0 - Fix empty loaded pallets: original game and mod model paths are explicitly resolved against their correct directories. This restores cargo for all products affected by the missing-path bug, including spinach and beet soup. Also enables the CPU mesh required for pallet tension belts. Untested in game.
+1.5.1.0 - Restore real product cargo: open lettuce crates with lettuce heads, carrot bags and other products use their original game/mod models and material maps. Depot cartons no longer use HUD pictures. Full 1,000 / 2,500 / 5,000 L pallets have 1 / 3 / 6 cargo layers, 0.364 / 0.804 / 1.464 m high including the pallet. The existing layered stacking collision and 400 kg cap remain. Untested in game.
+1.5.0.1 - Fix: the product pictures on the cartons flickered with plain boxes (the white box behind each label sat 0.2 mm under it; now 5 mm).
+1.5.0.0 - New depot pallets for every product: 1,000 / 2,500 / 5,000 L, all on a 1.20 x 0.80 m base, with full heights of 0.584 / 1.024 / 1.464 m. Cartons show the product picture in complete layers. Built-in collision follows the same layers when filling or selling goods, so mixed stacks can use the available truck height. Keeps the 400 kg weight cap, fork gaps, Spawn goods window, saved litres and multiplayer sync. Other productions and existing product-pallet models keep their own geometry. Untested in game.
+1.4.0.4 - Stacking done the way the game's pallets do it: a full 1,000 / 2,500 / 5,000 L pallet now shows all its goods, so it is exactly as high as its own collision and pallets stack on each other (also 5,000 L on 1,000 L) without floating, sinking or falling off. The stacking box of 1.4.0.0 - 1.4.0.3 is removed. A part-sold pallet shows what is left.
+1.4.0.3 - Fix: pallets stacked into each other in 1.4.0.2 (its stacking collision had no physics); it is now added to the pallet the way the game adds parts to a body, and if it ever has no physics the pallet keeps its own collision. Looking at one of our pallets shows its info box again (product, litres).
+1.4.0.2 - Fix: the full-layer look of 1.4.0.1 never switched on (a mistake in the layer check). Full pallets now round up to the next full layer on every pallet, also those whose goods are built into one model (e.g. the soups) and one-layer pallets (barrels, cans), and the stacking height follows it.
+1.4.0.1 - Full pallets of our sizes (1,000 / 2,500 / 5,000 L) never look like a partial: the top layer of goods is shown complete (visual only, the pallet still holds its litres). A part-sold or unloaded pallet still shows what is left.
+1.4.0.0 - New pallet size 2,500 L next to 1,000 L and 5,000 L (Settings page and Spawn goods), with its own shop picture. A product without a pallet in this building now comes out on the pallet it comes off a production line on anywhere on the map (else a shop pallet made for it); only if the game and mods have none, our pallet shows the product's texture on the goods. Part-filled product pallets of our sizes stack at the height of the goods they show: a box that grows and shrinks with the goods replaces the full-pallet collision, so Universal Autoload and the pickup lanes stack 1,000 / 2,500 / 5,000 L pallets on each other without gaps. Universal Autoload measures each of these pallets on its own. Test build: the log shows the measured heights ([PalletDepot] stack).
 1.3.0.2 - Spawn goods: the < and > of every line can be clicked with the mouse (they light up under it).
 1.3.0.1 - The Spawn goods and schedule windows are drawn on a layer of their own: the productions window behind them no longer shows through (its numbers and buttons were drawn over them). "1 pallet" instead of "1 pallets".
 1.3.0.0 - Storing without other mods: a new Storing output for every product (Logistics page, Enter: Storing -> Spawning -> Distributing -> Selling). Stored products stay in the building until you spawn, deliver or sell them; Spawning puts them on pallets by itself. Hubs store by default (with Production Storage Control installed its own Storing stays in charge). Spawn goods remembers your last choice for each building, E picks all pallets, and it warns before spawning when the pallet limit would be reached or pallets still stand at the pickup lanes. Our 1,000 L and 5,000 L pallets have their own shop pictures; a pallet without a picture shows ours with the product's icon. Highlands Fishing: roof shingles and coal in Textiles & Goods; its fish and onion products were already taken.
@@ -81,6 +90,15 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.5.2.0 - Leere beladene Paletten behoben: Spiel- und Modmodellpfade werden ausdruecklich mit dem richtigen Verzeichnis aufgeloest. Betroffene Waren, darunter Rahmspinat und Rote-Bete-Suppe, werden wieder dargestellt. CPU-Mesh fuer Spanngurte aktiviert. Im Spiel ungetestet.
+1.5.1.0 - Echte Warenmodelle wiederhergestellt: offene Salatkisten mit Salatkoepfen, Karottensaecke und andere Produkte verwenden ihre urspruenglichen Spiel-/Modmodelle und Materialtexturen. Keine HUD-Bilder auf Ersatzkartons. Volle 1.000 / 2.500 / 5.000 L Paletten haben 1 / 3 / 6 Warenlagen, Gesamthoehe 0,364 / 0,804 / 1,464 m. Lagenweise Stapelkollision und 400-kg-Grenze bleiben. Im Spiel ungetestet.
+1.5.0.1 - Fix: die Produktbilder auf den Kartons flackerten mit leeren Kartons (der weiße Karton hinter jedem Bild lag 0,2 mm darunter, jetzt 5 mm).
+1.5.0.0 - Neue eigene Depotpaletten für alle Produkte: 1.000 / 2.500 / 5.000 L auf einer Grundfläche von 1,20 x 0,80 m, mit Gesamthöhen von 0,584 / 1,024 / 1,464 m. Kartons zeigen das Produktbild in vollständigen Lagen. Die eingebaute Kollision folgt beim Füllen und Verkaufen denselben Lagen, damit gemischte Stapel die Ladehöhe nutzen können. 400-kg-Grenze, Gabelöffnungen, Warenfenster, gespeicherte Liter und Mehrspielerabgleich bleiben erhalten. Andere Produktionen und bereits gespeicherte Produktpaletten behalten ihre Modelle. Im Spiel ungetestet.
+1.4.0.4 - Stapeln wie bei den Paletten des Spiels: eine volle 1.000 / 2.500 / 5.000 L Palette zeigt jetzt ihre ganze Ware, ist also genau so hoch wie ihre eigene Kollision, und Paletten stapeln sich aufeinander (auch 5.000 L auf 1.000 L) ohne zu schweben, einzusinken oder herunterzufallen. Die Stapelkollision aus 1.4.0.0 - 1.4.0.3 ist entfernt. Eine teilweise verkaufte Palette zeigt, was übrig ist.
+1.4.0.3 - Fix: in 1.4.0.2 stapelten sich Paletten ineinander (die Stapelkollision hatte keine Physik); sie wird jetzt so an die Palette gehängt, wie das Spiel Teile an einen Körper hängt, und hat sie je keine Physik, behält die Palette ihre eigene Kollision. Beim Ansehen unserer Paletten erscheint wieder die Infobox (Produkt, Liter).
+1.4.0.2 - Fix: die vollen Lagen aus 1.4.0.1 schalteten sich nie ein (ein Fehler in der Lagenprüfung). Volle Paletten werden jetzt auf jeder Palette auf die nächste volle Lage aufgerundet, auch bei Ware, die in ein Modell eingebaut ist (z. B. die Suppen), und bei einlagigen Paletten (Fässer, Kanister), und die Stapelhöhe folgt ihr.
+1.4.0.1 - Volle Paletten unserer Größen (1.000 / 2.500 / 5.000 L) sehen nie wie angebrochen aus: die oberste Lage Ware wird komplett gezeigt (nur optisch, die Palette hat weiter ihre Liter). Eine teilweise verkaufte oder entladene Palette zeigt weiter, was übrig ist.
+1.4.0.0 - Neue Palettengröße 2.500 L neben 1.000 L und 5.000 L (Einstellungsseite und Waren auslagern), mit eigenem Shopbild. Ein Produkt ohne Palette in diesem Gebäude kommt jetzt auf der Palette, auf der es irgendwo auf der Karte aus einer Produktion kommt (sonst eine Shop-Palette dafür); nur wenn Spiel und Mods keine haben, zeigt unsere Palette die Textur des Produkts auf der Ware. Teilbefüllte Produktpaletten unserer Größen stapeln sich in der Höhe der sichtbaren Ware: eine Kollision, die mit der Ware wächst und schrumpft, ersetzt die Kollision der vollen Palette, so stapeln Universal Autoload und die Abholspuren 1.000 / 2.500 / 5.000 L Paletten ohne Lücke aufeinander. Universal Autoload misst jede dieser Paletten einzeln. Testversion: das Log zeigt die gemessenen Höhen ([PalletDepot] stack).
 1.3.0.2 - Waren auslagern: die < und > jeder Zeile lassen sich mit der Maus anklicken (sie leuchten unter ihr auf).
 1.3.0.1 - Die Fenster Waren auslagern und Zeitplan liegen auf einer eigenen Ebene: das Produktionsfenster dahinter scheint nicht mehr durch (seine Zahlen und Tasten wurden darüber gezeichnet). "1 Palette" statt "1 Paletten".
 1.3.0.0 - Lagern ohne andere Mods: eine neue Ausgabe Lagern für jedes Produkt (Logistik-Seite, Enter: Lagern -> Auslagern -> Verteilen -> Verkaufen). Gelagerte Produkte bleiben im Gebäude, bis du sie auslagerst, lieferst oder verkaufst; Auslagern packt sie von selbst auf Paletten. Logistikzentren lagern standardmäßig (mit Production Storage Control bleibt dessen eigenes Lagern zuständig). Waren auslagern merkt sich die letzte Wahl je Gebäude, E wählt alle Paletten, und es warnt vor dem Auslagern, wenn das Palettenlimit erreicht würde oder noch Paletten an den Abholspuren stehen. Unsere 1.000-L- und 5.000-L-Paletten haben eigene Shopbilder; eine Palette ohne Bild zeigt unseres mit dem Symbol des Produkts. Highlands Fishing: Dachschindeln und Kohle in Textilien und Waren; seine Fisch- und Zwiebelprodukte wurden schon angenommen.
@@ -142,6 +160,8 @@ Changelog:
         <sourceFile filename="scripts/PalletDepotPallets.lua"/>
         <sourceFile filename="scripts/PalletDepotStoring.lua"/>
         <sourceFile filename="scripts/PalletDepotPalletMass.lua"/>
+        <sourceFile filename="scripts/PalletDepotStack.lua"/>
+        <sourceFile filename="scripts/PalletDepotGoodsLook.lua"/>
         <sourceFile filename="scripts/PalletDepotSpawnSizes.lua"/>
         <sourceFile filename="scripts/PalletDepotOptions.lua"/>
         <sourceFile filename="scripts/PalletDepotSpawn.lua"/>
@@ -162,6 +182,7 @@ Changelog:
         <storeItem xmlFilename="placeables/depot_food.xml"/>
         <storeItem xmlFilename="placeables/depot_goods.xml"/>
         <storeItem xmlFilename="vehicles/depotPallet1000.xml"/>
+        <storeItem xmlFilename="vehicles/depotPallet2500.xml"/>
         <storeItem xmlFilename="vehicles/depotPallet5000.xml"/>
     </storeItems>
 
@@ -344,6 +365,7 @@ Changelog:
         <text name="pdo_palletGame"><en>Game / mod pallets</en><de>Spiel- / Mod-Paletten</de></text>
         <text name="pdo_palletDepot"><en>Own pallets %s L</en><de>Eigene Paletten %s L</de></text>
         <text name="storeItem_depotPallet1000"><en>Own pallet (1,000 L)</en><de>Eigene Palette (1.000 L)</de></text>
+        <text name="storeItem_depotPallet2500"><en>Own pallet (2,500 L)</en><de>Eigene Palette (2.500 L)</de></text>
         <text name="storeItem_depotPallet5000"><en>Own pallet (5,000 L)</en><de>Eigene Palette (5.000 L)</de></text>
         <text name="input_PALLET_DEPOT_OVERVIEW"><en>Logistics Hub: productions</en><de>Logistikzentrum: Produktionen</de></text>
         <text name="depot_productLine"><en>Stored product</en><de>Lagerprodukt</de></text>

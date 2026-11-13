@@ -12,7 +12,7 @@
 
 [![Build](https://github.com/DTM-Mods/FS25_PalletDepot/actions/workflows/build.yml/badge.svg)](https://github.com/DTM-Mods/FS25_PalletDepot/actions/workflows/build.yml)
 ![Farming Simulator 25](https://img.shields.io/badge/Farming%20Simulator-25-2e7d32)
-![Version](https://img.shields.io/badge/version-1.3.0.2-1565c0)
+![Version](https://img.shields.io/badge/version-1.5.2.0-1565c0)
 ![Multiplayer](https://img.shields.io/badge/multiplayer-supported-2e7d32)
 ![Languages](https://img.shields.io/badge/languages-EN%20%7C%20DE-555)
 ![Upkeep](https://img.shields.io/badge/daily%20upkeep-none-555)
@@ -60,8 +60,8 @@ With everything loaded that is up to 199 products in Food & Drinks and 81 in Tex
 
 - **Per-product routing**: store, spawn as pallets, deliver to your productions, or sell every full hour. Storing is built in (no other mod needed): hubs keep their stock until you take it out.
 - **Capacity option** per hub: 100,000 / 500,000 / 1,000,000 L per product.
-- **Your own pallets for every production**: any production with pickup lanes can spawn the game's pallets or this mod's **1,000 L / 5,000 L pallets**, which take any product of any map or mod.
-- **Spawn goods window** (no other mod needed): pick a product in stock, the pallet (the product's own pallet in its normal size, 1,000 L or 5,000 L), full pallets only or a last part-filled one, the farm that gets it and how many pallets; they come out at the pickup lanes. It remembers your last choice per building and warns about the pallet limit and pallets still at the lanes.
+- **Depot pallets in three sizes**: **1,000 L / 2,500 L / 5,000 L**, all on a **1.20 × 0.80 m** base. Full heights are **0.364 / 0.804 / 1.464 m**, with **1 / 3 / 6 cargo layers**. Cargo uses the original product models and material maps from the game or installed mod, including open lettuce crates and carrot bags. Built-in collision follows the complete layers as the fill changes. All three sizes of lettuce and carrot bags were visually checked in GIANTS Editor; gameplay remains untested. Universal Autoload measures the collision using its own code. Other productions keep their existing pallets.
+- **Spawn goods window** (no other mod needed): pick a product in stock, a 1,000 L, 2,500 L or 5,000 L depot pallet, full pallets only or a last part-filled one, the farm that gets it and how many pallets; they come out at the pickup lanes. It remembers your last choice per building and warns about the pallet limit and pallets still at the lanes.
 - **Racks that fill up**: 84 pallet places that show the stock as it grows.
 - **Working roller doors** on three sides. Open and close them like a garage door; their state is saved.
 - **Daily report at 06:00**: what came in, went out, was delivered and was sold at each hub.
@@ -111,7 +111,7 @@ Settings, schedules and options are saved with the savegame and shared with all 
 | FedMods (standard or ProEdition) | optional | Fed products in both hubs |
 | Beans & Alpacas (DLC) | optional | banana, coffee, alpaca and paint products in both hubs |
 | Highlands Fishing (DLC) | optional | fish, onion products, roof shingles and coal in the hubs |
-| Production Storage Control | not needed | Spawn goods (1.2.4.0) and Storing (1.3.0.0) are built in. With PSC installed, its spawn window at a hub offers the 1,000 L / 5,000 L pallets too, and its own Storing mode stays in charge |
+| Production Storage Control | not needed | Spawn goods and Storing are built in. With PSC installed, its spawn window at a hub offers the 1,000 L / 2,500 L / 5,000 L depot pallets too, and its own Storing mode stays in charge |
 | AutoDrive | optional | imports the hub's route when it is placed |
 | Price Ticker | optional | the hubs are taken out of its station list (its files are not changed) |
 

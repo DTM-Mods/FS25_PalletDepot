@@ -26,6 +26,14 @@ def read(path):
 # game functions names them in its header; without the zip (GitHub Actions) that file is skipped, never faked.
 GAME_SOURCE = os.path.join(os.path.expanduser("~"), "OneDrive", "Documents", "My Games", "FarmingSimulator2025",
                            "debugger", "gameSource.zip")
+if not os.path.isfile(GAME_SOURCE):
+    # The sandbox account has a different home; the project may be under the user's profile.
+    from pathlib import Path
+    for parent in Path(ROOT).parents:
+        candidate = parent / "debugger" / "gameSource.zip"
+        if candidate.is_file():
+            GAME_SOURCE = str(candidate)
+            break
 
 
 def game_function(zf, filename, name):
@@ -62,6 +70,19 @@ def run_file(path):
     lua = lupa.LuaRuntime()
     load = lua.eval("function(src, name) local f, err = load(src, '@' .. name) if not f then error(err) end return f() end")
     load(read(os.path.join(HERE, "stubs.lua")), "stubs.lua")
+    # XML-derived engine fixtures: tests cannot silently drift away from the built pallet models.
+    import xml.etree.ElementTree as ET
+    models = {}
+    for size in (1000, 2500, 5000):
+        model = ET.parse(os.path.join(ROOT, "vehicles", "depotPallet%d.xml" % size)).getroot()
+        unit = model.find("fillUnit/fillUnitConfigurations/fillUnitConfiguration/fillUnits/fillUnit")
+        part = model.find("animations/animation/part")
+        if part is not None:
+            models[size] = {"capacity": int(unit.get("capacity")),
+                            "layers": len(model.findall("pallet/content/object")),
+                            "height": float(model.find("base/size").get("height")),
+                            "minScale": float(part.get("startScale").split()[1])}
+    lua.globals().PALLET_MODELS = lua.table_from(models, recursive=True)
     for name in before:
         load(read(os.path.join(ROOT, name)), name)
     if games:
