@@ -28,11 +28,9 @@ function PalletDepotSpawn.getPallets(productionPoint, fillTypeIndex)
     if productionPoint.palletSpawner == nil then
         return pallets
     end
-    local game = PalletDepotPallets.getGamePallets(productionPoint)[fillTypeIndex]
     -- the product's normal pallet (size 0) is not offered (1.3.0.3): it duplicated our 1,000 / 5,000 L entries
-    -- our pallets take any product; outside the hubs only products that come on pallets anyway, as on the
-    -- Settings page
-    if game ~= nil or PalletDepot.isDepot(productionPoint) then
+    -- our pallets take any product, and only in the depots (1.3.0.5)
+    if PalletDepot.isDepot(productionPoint) then
         for _, size in ipairs(PalletDepotPallets.SIZES) do
             if size > 0 then
                 table.insert(pallets, {size = size, capacity = size})

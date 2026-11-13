@@ -159,7 +159,8 @@ function PalletDepotPallets.apply(productionPoint)
     end
     local gameOutputs = productionPoint.palletDepotOutputPallets or {}
 
-    local size = PalletDepotPallets.get(productionPoint)
+    -- our 1,000 / 5,000 L pallets only in the depots (1.3.0.5); every other production keeps the game's pallets
+    local size = PalletDepot.isDepot(productionPoint) and PalletDepotPallets.get(productionPoint) or 0
     local spawnerMap = copy(productionPoint.palletDepotSpawnerPallets)
     local outputMap = copy(gameOutputs)
     if size > 0 then

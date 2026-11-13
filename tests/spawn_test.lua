@@ -13,7 +13,7 @@ end
 function tests.otherProductionsOnlyOfferProductsWithPallets()
     local pp = newProductionPoint(false)
     local products = PalletDepotSpawn.getProducts(pp)
-    assertEqual(#products, 2, "cheese has no pallet outside a hub")
+    assertEqual(#products, 0, "our pallet sizes only in the depots")
 end
 
 function tests.maxPallets()

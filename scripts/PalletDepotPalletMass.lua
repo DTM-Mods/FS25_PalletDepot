@@ -98,14 +98,27 @@ PalletSpawner.onFinishLoadingPallet = Utils.prependedFunction(PalletSpawner.onFi
         local pallet = vehicles[1]
         local entry = spawner.currentObjectToSpawn ~= nil and spawner.currentObjectToSpawn.pallet or nil
         local liters = entry ~= nil and entry.palletDepotCapacity or 0
-        local kg = isDepotSpawner(spawner) and PalletDepotPalletMass.MAX_MASS or 0
+        -- capped: everything a depot spawns, and every pallet of our sizes, from ANY production (1.3.0.5: those
+        -- outside the depots were left uncapped, a 5,000 L butter pallet weighed 775 kg)
+        local kg = (isDepotSpawner(spawner) or liters > 0) and PalletDepotPalletMass.MAX_MASS or 0
         if liters <= 0 and kg <= 0 then
             return
         end
         applyCapacity(pallet, liters)
         apply(pallet, kg)
         g_server:broadcastEvent(PalletDepotPalletMassEvent.new(pallet, kg, liters))
+        local mod = g_modManager ~= nil and g_modManager:getModByName(PalletDepot.modName) or nil
+        Logging.info("[PalletDepot] %s: pallet %s capped at %d kg%s", mod ~= nil and mod.version or "?",
+            tostring(pallet.configFileName), kg, liters > 0 and string.format(", %d L", liters) or "")
     end)
+
+-- The cap must hold whatever resets maxComponentMass later: every mass update puts ours back first.
+Vehicle.updateMass = Utils.prependedFunction(Vehicle.updateMass, function(vehicle)
+    local kg = vehicle.palletDepotMaxMass
+    if kg ~= nil and kg > 0 then
+        vehicle.maxComponentMass = kg / 1000
+    end
+end)
 
 -- --- event: the server tells the clients ---------------------------------------------------------------
 
@@ -196,7 +209,7 @@ FillUnit.onLoad = Utils.appendedFunction(FillUnit.onLoad, function(vehicle, save
         applyCapacity(vehicle, liters)
     end
     local kg = getXMLInt(savegame.xmlFile.handle, savegame.key .. PalletDepotPalletMass.ATTR)
-    if kg ~= nil then
+    if kg ~= nil or liters ~= nil then      -- liters alone: a pallet of our sizes saved before 1.3.0.5, uncapped
         apply(vehicle, PalletDepotPalletMass.MAX_MASS)      -- today's cap, also for pallets saved under an older one
     end
 end)
