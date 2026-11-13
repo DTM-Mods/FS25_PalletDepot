@@ -6,7 +6,7 @@ function tests.offersPalletsPerProduct()
     local products = PalletDepotSpawn.getProducts(pp)
     assertEqual(#products, 3, "products in stock")
     assertEqual(products[1].fillType, 5, "sorted by name")
-    assertEqual(#products[1].pallets, 3, "own pallet in normal size + 1,000 L + 5,000 L")
+    assertEqual(#products[1].pallets, 2, "1,000 L + 5,000 L (no normal size)")
     assertEqual(#products[2].pallets, 2, "a hub product without a pallet of its own gets our two sizes")
 end
 
@@ -58,7 +58,7 @@ function tests.noSpaceIsReported()
     local pp = newProductionPoint(true, {[5] = 1500})
     pp.palletSpawner.space = 1
     notifications = {}
-    PalletDepotSpawn.request(pp, 5, 0, 1, 50)
+    PalletDepotSpawn.request(pp, 5, 1000, 1, 50)
     assertEqual(#pp.palletSpawner.queue, 2, "clamped to the stock")
     pp.palletSpawner:run()
     assertEqual(pp.storage.fillLevels[5], 500, "one pallet came out")
@@ -67,7 +67,7 @@ end
 
 function tests.rejectsBadRequests()
     local pp = newProductionPoint(true)
-    PalletDepotSpawn.request(pp, 5, 0, 7, 1)        -- unknown farm
+    PalletDepotSpawn.request(pp, 5, 1000, 7, 1)     -- unknown farm
     PalletDepotSpawn.request(pp, 5, 2500, 1, 1)     -- size not offered
     PalletDepotSpawn.request(pp, 9, 1000, 1, 1)     -- not an output
     assertEqual(#pp.palletSpawner.queue, 0, "nothing queued")

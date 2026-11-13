@@ -53,7 +53,7 @@ end
 function tests.spawnGoodsStillWorksForStoredProducts()
     local pp = newProductionPoint(true)
     PalletDepotStoring.onUpdateProduction(pp)
-    PalletDepotSpawn.request(pp, 5, 0, 1, 2)
+    PalletDepotSpawn.request(pp, 5, 1000, 1, 2)
     pp.palletSpawner:run()
     assertEqual(#pp.palletSpawner.spawned, 2, "spawned by hand")
     assertEqual(pp.storage.fillLevels[5], 28987, "stock")

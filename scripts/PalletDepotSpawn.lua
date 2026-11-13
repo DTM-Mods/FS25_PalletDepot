@@ -29,9 +29,7 @@ function PalletDepotSpawn.getPallets(productionPoint, fillTypeIndex)
         return pallets
     end
     local game = PalletDepotPallets.getGamePallets(productionPoint)[fillTypeIndex]
-    if game ~= nil and (game.capacity or 0) > 0 then
-        table.insert(pallets, {size = 0, capacity = game.capacity})
-    end
+    -- the product's normal pallet (size 0) is not offered (1.3.0.3): it duplicated our 1,000 / 5,000 L entries
     -- our pallets take any product; outside the hubs only products that come on pallets anyway, as on the
     -- Settings page
     if game ~= nil or PalletDepot.isDepot(productionPoint) then
