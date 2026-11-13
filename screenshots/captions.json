@@ -1,0 +1,12 @@
+{
+  "2.jpg": {
+    "title": "Two hubs",
+    "text": "Food & Drinks and Textiles & Goods: two Logistics Hubs to place on your farm.",
+    "at": "bottom"
+  },
+  "6.jpg": {
+    "title": "All your productions in one table",
+    "text": "Right Shift + P lists every production with its inputs, recipes, finances and logistics.",
+    "at": "bottom"
+  }
+}
