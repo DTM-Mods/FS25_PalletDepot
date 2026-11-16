@@ -85,6 +85,51 @@ function PalletDepotGoodsLook.measureRows(objects, height)
     return rows[1], math.max(0.01, pitch)
 end
 
+-- Names of the nodes that act as skin bones in an I3D (e.g. boardsStack2..8 posing one skinned mesh).
+-- Hiding a bone hides nothing, so pallets whose layers are bones must be drawn whole. Cached per file;
+-- a binary/unreadable I3D gives an empty set (old per-layer behaviour).
+PalletDepotGoodsLook.boneCache = {}
+function PalletDepotGoodsLook.getBoneNames(i3d)
+    local cached = PalletDepotGoodsLook.boneCache[i3d]
+    if cached ~= nil then return cached end
+    local names, idToName, boneIds = {}, {}, {}
+    local xmlId = loadXMLFile("palletDepotI3dBones", i3d)
+    if xmlId ~= nil and xmlId ~= 0 then
+        local function walk(key)
+            for _, tag in ipairs({"Shape", "TransformGroup"}) do
+                local i = 0
+                while true do
+                    local childKey = string.format("%s.%s(%d)", key, tag, i)
+                    if not hasXMLProperty(xmlId, childKey) then break end
+                    local nodeId = getXMLString(xmlId, childKey .. "#nodeId")
+                    local name = getXMLString(xmlId, childKey .. "#name")
+                    if nodeId ~= nil and name ~= nil then idToName[nodeId] = name end
+                    local skin = getXMLString(xmlId, childKey .. "#skinBindNodeIds")
+                    if skin ~= nil then
+                        for id in skin:gmatch("%S+") do boneIds[id] = true end
+                    end
+                    walk(childKey)
+                    i = i + 1
+                end
+            end
+        end
+        walk("i3D.Scene")
+        delete(xmlId)
+    end
+    for id in pairs(boneIds) do
+        if idToName[id] ~= nil then names[idToName[id]] = true end
+    end
+    PalletDepotGoodsLook.boneCache[i3d] = names
+    return names
+end
+
+local function layersAreBones(objects, boneNames)
+    for _, object in ipairs(objects) do
+        if boneNames[getName(object.node)] then return true end
+    end
+    return false
+end
+
 local function holders(vehicle)
     for _, content in ipairs(vehicle.spec_pallet.contents or {}) do
         if content.fillUnitIndex == (vehicle.spec_pallet.fillUnitIndex or 1) then return content.objects end
@@ -114,6 +159,9 @@ function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
     local pitch = targetHeight / #layers
     local sx, sz = vehicle.size.width / request.width, vehicle.size.length / request.length
     local center, sourcePitch = PalletDepotGoodsLook.measureRows(objects, request.height)
+    if layersAreBones(objects, PalletDepotGoodsLook.getBoneNames(request.i3d)) then
+        center = nil                                 -- one skinned mesh: draw it whole (below)
+    end
     vehicle.palletDepotGoodsNodes = {}
     if center ~= nil then
         for index, layer in ipairs(layers) do

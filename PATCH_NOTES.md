@@ -1,3 +1,9 @@
+# 1.5.3.0 - 2026-11-15 - Fix stretched, overlapping cargo (planks and others)
+
+- Fixes depot pallets showing tall stretched, overlapping slabs (planks, barrels, buckets, butter, cement bags, chocolate, potato chips, strawberries, tomatoes, wool, prefab walls, silage additive, and any mod pallet built the same way). Their layers are bones of one skinned mesh, so hiding a layer hid nothing and every layer drew the whole stack. Such cargo is now drawn once, fitted to the pallet's size (1,000 / 2,500 / 5,000 L) and shrinking with the fill level.
+- Stacking collision, sizes, weights and litres unchanged (cargo stays visual only).
+- Untested in game.
+
 # 1.5.2.0 — 2026-11-13 — Restore missing cargo
 
 - Fixes loaded pallets showing only wood: native product model paths now resolve against the original game or mod directory, following the game vehicle loader. Covers relative mod paths and base-game data paths.
