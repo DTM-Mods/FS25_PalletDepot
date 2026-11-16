@@ -1,3 +1,8 @@
+# 1.5.4.0 - 2026-11-16 - Fix leaning, sliding plank stacks
+
+- Fixes planks (and other one-mesh cargo: barrels, buckets, cement bags, wool, etc.) leaning and hanging off the pallet. Uneven stretching sheared the skinned mesh; it is now scaled evenly and whole copies are stacked to fill the 1,000 / 2,500 / 5,000 L heights, with copies hidden as the pallet empties.
+- Untested in game.
+
 # 1.5.3.0 - 2026-11-15 - Fix stretched, overlapping cargo (planks and others)
 
 - Fixes depot pallets showing tall stretched, overlapping slabs (planks, barrels, buckets, butter, cement bags, chocolate, potato chips, strawberries, tomatoes, wool, prefab walls, silage additive, and any mod pallet built the same way). Their layers are bones of one skinned mesh, so hiding a layer hid nothing and every layer drew the whole stack. Such cargo is now drawn once, fitted to the pallet's size (1,000 / 2,500 / 5,000 L) and shrinking with the fill level.
