@@ -23,7 +23,6 @@ function PalletDepotGoodsLook.clear(vehicle)
     vehicle.palletDepotGoodsRequest = nil
     for _, node in ipairs(vehicle.palletDepotGoodsNodes or {}) do delete(node) end
     vehicle.palletDepotGoodsNodes, vehicle.palletDepotGoodsWhole, vehicle.palletDepotGoodsFillType = nil, nil, nil
-    vehicle.palletDepotGoodsCopies = nil
     if request ~= nil then request.discarded = true release(request) end
 end
 
@@ -161,26 +160,11 @@ function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
     local sx, sz = vehicle.size.width / request.width, vehicle.size.length / request.length
     local center, sourcePitch = PalletDepotGoodsLook.measureRows(objects, request.height)
     local skinned = layersAreBones(objects, PalletDepotGoodsLook.getBoneNames(request.i3d))
-    vehicle.palletDepotGoodsNodes = {}
     if skinned then
-        -- One skinned mesh: non-uniform scale shears it (leaning, sliding stacks). Scale it the same on
-        -- every axis and stack whole copies to fill the height.
-        local s = math.min(sx, sz)
-        local copyHeight = math.max(0.01, (request.height - deck) * s)
-        local count = math.max(1, math.floor(targetHeight / copyHeight + 0.5))
-        while count > 1 and count * copyHeight > targetHeight + 0.05 do count = count - 1 end
-        vehicle.palletDepotGoodsCopies = {}
-        for k = 1, count do
-            local cargo = clone(scene, false, false, false)
-            visualsOnly(cargo)
-            sourceObjects(xml, cargo)
-            link(layers[1].node, cargo)
-            setScale(cargo, s, s, s)
-            setTranslation(cargo, 0, deck + (k - 1) * copyHeight - deck * s, 0)
-            table.insert(vehicle.palletDepotGoodsNodes, cargo)
-            table.insert(vehicle.palletDepotGoodsCopies, cargo)
-        end
-    elseif center ~= nil then
+        center = nil                                 -- one skinned mesh: draw it whole (below)
+    end
+    vehicle.palletDepotGoodsNodes = {}
+    if center ~= nil then
         for index, layer in ipairs(layers) do
             local cargo = clone(scene, false, false, false)
             visualsOnly(cargo)
@@ -195,7 +179,8 @@ function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
         end
     else
         -- Indivisible cargo (churns, tanks, etc.) keeps its complete native assembly, fitted to the envelope.
-        local cargo = clone(scene, false, false, false)
+        -- A clone()d skin keeps following the source's bones, so skinned cargo uses the loaded model itself.
+        local cargo = skinned and scene or clone(scene, false, false, false)
         visualsOnly(cargo)
         sourceObjects(xml, cargo)
         link(layers[1].node, cargo)
@@ -206,7 +191,7 @@ function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
         table.insert(vehicle.palletDepotGoodsNodes, cargo)
     end
     xml:delete()
-    delete(scene)
+    if not skinned then delete(scene) end
     vehicle.palletDepotGoodsFillType = request.fillType
     PalletDepotGoodsLook.update(vehicle, request.fillType)
 end
@@ -218,13 +203,6 @@ function PalletDepotGoodsLook.update(vehicle, fillTypeIndex)
     fillTypeIndex = fillTypeIndex or vehicle:getFillUnitFillType(spec.fillUnitIndex or 1)
     if fillTypeIndex == nil or fillTypeIndex == FillType.UNKNOWN then return end
     if vehicle.palletDepotGoodsFillType == fillTypeIndex then
-        local copies = vehicle.palletDepotGoodsCopies
-        if copies ~= nil then
-            local layers = holders(vehicle)
-            local fraction = (vehicle.palletDepotShownLayers or #layers) / math.max(1, #layers)
-            local shown = math.max(1, math.ceil(fraction * #copies - 0.001))
-            for k, node in ipairs(copies) do setVisibility(node, k <= shown) end
-        end
         local whole = vehicle.palletDepotGoodsWhole
         if whole ~= nil then
             local layers = holders(vehicle)

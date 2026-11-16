@@ -1,3 +1,9 @@
+# 1.5.5.0 - 2026-11-16 - Fix skewed plank stacks (second attempt)
+
+- 1.5.4.0 did not fix it and is reverted: cargo code is back to 1.5.3.0 with one change. One-mesh cargo (planks, barrels, wool, etc.) was copied with clone(), and the copy kept following the original model's bones, so the stacks drew skewed and off the pallet. It now uses the loaded model itself, like the game's own pallets.
+- Test harness: added stand-ins for loadXMLFile, getName and setRotation (11 tests had failed since 1.5.3.0).
+- Untested in game.
+
 # 1.5.4.0 - 2026-11-16 - Fix leaning, sliding plank stacks
 
 - Fixes planks (and other one-mesh cargo: barrels, buckets, cement bags, wool, etc.) leaning and hanging off the pallet. Uneven stretching sheared the skinned mesh; it is now scaled evenly and whole copies are stacked to fill the 1,000 / 2,500 / 5,000 L heights, with copies hidden as the pallet empties.

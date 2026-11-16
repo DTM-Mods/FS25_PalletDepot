@@ -151,3 +151,7 @@ g_i3DManager = {
     end,
     releaseSharedI3DFile = function(_, id) NATIVE_RELEASES[id] = (NATIVE_RELEASES[id] or 0) + 1 end
 }
+-- Source I3D text is not available here: no skin bones are reported (per-layer behaviour).
+function loadXMLFile() return 0 end
+function setRotation(n, x, y, z) NATIVE_NODES[n].rotation = {x, y, z} end
+function getName(n) return "node" .. tostring(n) end
