@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomShader version="5">
+    <Parameters>
+        <Parameter name="cargoScale" target="cargoScale" type="float3" group="base" defaultValue="1 1 1" minValue="0.001 0.001 0.001" maxValue="100 100 100"/>
+    </Parameters>
+    <UvUsages>
+        <UvUsage textureName="baseMap" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="normalMap" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="glossMap" uvType="uv0" uvScale="1.0"/>
+    </UvUsages>
+    <Textures/>
+    <VertexAttributes/>
+    <Variations/>
+    <LodLevel startDistance="0">
+        <CodeInjections>
+            <CodeInjection position="OBJECT_PARAMETERS"><![CDATA[
+                float3 cargoScale;
+            ]]></CodeInjection>
+            <CodeInjection position="GET_POSITION_VS"><![CDATA[
+                float3 position = In.position.xyz * object.cargoScale;
+                #if defined(SKINNING)
+                    return skinPoint(position, In, instance, object);
+                #else
+                    return position;
+                #endif
+            ]]></CodeInjection>
+            <CodeInjection position="GET_PREV_POSITION_VS"><![CDATA[
+                float3 position = In.position.xyz * object.cargoScale;
+                #if defined(SKINNING)
+                    return skinPrevPoint(position, In, instance, object);
+                #else
+                    return position;
+                #endif
+            ]]></CodeInjection>
+            <CodeInjection position="GET_NORMAL_VS"><![CDATA[
+                float3 normal = normalize(In.normal.xyz / object.cargoScale);
+                #if defined(SKINNING)
+                    return skinVector(normal, In, instance, object);
+                #else
+                    return normal;
+                #endif
+            ]]></CodeInjection>
+            <CodeInjection position="GET_TANGENT_VS"><![CDATA[
+                float3 tangent = normalize(In.tangent.xyz * object.cargoScale);
+                #if defined(SKINNING)
+                    return skinVector(tangent, In, instance, object);
+                #else
+                    return tangent;
+                #endif
+            ]]></CodeInjection>
+            <CodeInjection position="GET_BITANGENT_VS"><![CDATA[
+                return cross(getNormal(In, instance, object), getTangent(In, instance, object)) * getBitangentSide(In, object);
+            ]]></CodeInjection>
+        </CodeInjections>
+    </LodLevel>
+</CustomShader>

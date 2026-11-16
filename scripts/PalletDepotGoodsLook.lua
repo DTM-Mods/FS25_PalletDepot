@@ -137,6 +137,45 @@ local function holders(vehicle)
     return {}
 end
 
+-- Single-weight skinning does not support scaled joints (even uniform scale changes the rotation).
+-- Fit the native plank vertices in the shader instead; the complete skeleton stays at unit scale.
+function PalletDepotGoodsLook.fitPlankStack(cargo, request, targetHeight)
+    if not request.i3d:match("/boardsStackPallet/boardsStackPallet%.i3d$") then return nil end
+    local function find(node)
+        if getName(node) == "boardsStack1" then return node end
+        for i = 0, getNumOfChildren(node) - 1 do
+            local found = find(getChildAt(node, i))
+            if found ~= nil then return found end
+        end
+    end
+    local shape = find(cargo)
+    if shape == nil then return nil end
+    local count, vertices = getShapeVertexPositions(shape)
+    if count == 0 or vertices == nil then return nil end
+    local lo, hi = {math.huge, math.huge, math.huge}, {-math.huge, -math.huge, -math.huge}
+    for i = 1, count * 3, 3 do
+        for axis = 1, 3 do
+            local value = vertices[i + axis - 1]
+            lo[axis], hi[axis] = math.min(lo[axis], value), math.max(hi[axis], value)
+        end
+    end
+    for axis = 1, 3 do if hi[axis] - lo[axis] <= 0 then return nil end end
+    local template, sharedId = g_i3DManager:loadSharedI3DFile(
+        PalletDepot.modDirectory .. "vehicles/plankCargoMaterial.i3d", false, false)
+    if template == 0 then
+        if sharedId ~= nil then g_i3DManager:releaseSharedI3DFile(sharedId) end
+        Logging.warning("[PalletDepot] Could not load plank cargo material")
+        return nil
+    end
+    setMaterial(shape, getMaterial(getChildAt(template, 0), 0), 0)
+    delete(template)
+    if sharedId ~= nil then g_i3DManager:releaseSharedI3DFile(sharedId) end
+    return {shape = shape, sx = request.vehicle.size.width / (hi[1] - lo[1]),
+        sy = targetHeight / (hi[2] - lo[2]), sz = request.vehicle.size.length / (hi[3] - lo[3]),
+        baseY = lo[2], centerX = (lo[1] + hi[1]) / 2, centerZ = (lo[3] + hi[3]) / 2,
+        radius = select(4, getShapeBoundingSphere(shape))}
+end
+
 function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
     local vehicle = request.vehicle
     if scene == 0 or vehicle.isDeleted or vehicle.isDeleting
@@ -159,8 +198,7 @@ function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
     local pitch = targetHeight / #layers
     local sx, sz = vehicle.size.width / request.width, vehicle.size.length / request.length
     local center, sourcePitch = PalletDepotGoodsLook.measureRows(objects, request.height)
-    local skinned = layersAreBones(objects, PalletDepotGoodsLook.getBoneNames(request.i3d))
-    if skinned then
+    if layersAreBones(objects, PalletDepotGoodsLook.getBoneNames(request.i3d)) then
         center = nil                                 -- one skinned mesh: draw it whole (below)
     end
     vehicle.palletDepotGoodsNodes = {}
@@ -179,19 +217,19 @@ function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
         end
     else
         -- Indivisible cargo (churns, tanks, etc.) keeps its complete native assembly, fitted to the envelope.
-        -- A clone()d skin keeps following the source's bones, so skinned cargo uses the loaded model itself.
-        local cargo = skinned and scene or clone(scene, false, false, false)
+        local cargo = clone(scene, false, false, false)
         visualsOnly(cargo)
         sourceObjects(xml, cargo)
         link(layers[1].node, cargo)
         local sy = targetHeight / math.max(0.01, request.height - deck)
-        vehicle.palletDepotGoodsWhole = {node = cargo, sx = sx, sy = sy, sz = sz}
-        setScale(cargo, sx, sy, sz)
-        setTranslation(cargo, 0, deck - deck * sy, 0)
+        local whole = PalletDepotGoodsLook.fitPlankStack(cargo, request, targetHeight)
+            or {sx = sx, sy = sy, sz = sz}
+        whole.node = cargo
+        vehicle.palletDepotGoodsWhole = whole
         table.insert(vehicle.palletDepotGoodsNodes, cargo)
     end
     xml:delete()
-    if not skinned then delete(scene) end
+    delete(scene)
     vehicle.palletDepotGoodsFillType = request.fillType
     PalletDepotGoodsLook.update(vehicle, request.fillType)
 end
@@ -208,8 +246,18 @@ function PalletDepotGoodsLook.update(vehicle, fillTypeIndex)
             local layers = holders(vehicle)
             local fraction = (vehicle.palletDepotShownLayers or #layers) / math.max(1, #layers)
             local sy = whole.sy * math.max(0.001, fraction)
-            setScale(whole.node, whole.sx, sy, whole.sz)
-            setTranslation(whole.node, 0, PalletDepotGoodsLook.DECK * (1 - sy), 0)
+            if whole.shape ~= nil then
+                setShaderParameter(whole.shape, "cargoScale", whole.sx, sy, whole.sz, 0, false)
+                -- Shader displacement must also be included in the render/culling bounds.
+                setShapeBoundingSphere(whole.shape, whole.centerX * whole.sx,
+                    whole.baseY * sy, whole.centerZ * whole.sz,
+                    whole.radius * math.max(whole.sx, sy, whole.sz))
+                setTranslation(whole.node, -whole.centerX * whole.sx,
+                    PalletDepotGoodsLook.DECK - whole.baseY * sy, -whole.centerZ * whole.sz)
+            else
+                setScale(whole.node, whole.sx, sy, whole.sz)
+                setTranslation(whole.node, 0, PalletDepotGoodsLook.DECK * (1 - sy), 0)
+            end
         end
         return
     end

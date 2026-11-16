@@ -240,6 +240,43 @@ function tests.indivisibleNativeCargoFollowsPartialCollision()
     close(NODE_SCALE[whole.node][2], whole.sy / 2, 'whole cargo follows three of six collision layers')
 end
 
+function tests.plankSkinFitsEveryLayerWithoutScalingItsSkeleton()
+    local source = '/game/data/objects/pallets/boardsStackPallet/boardsStackPallet.i3d'
+    NATIVE_RAW_FILENAME_BY_TYPE[5] = source
+    PalletDepotGoodsLook.boneCache[source] = {boardsStack1 = true}
+    for _, size in ipairs({1000, 2500, 5000}) do
+        local v = layeredPallet(size)
+        v:addFillUnitFillLevel(1, 1, size, 5, 0)
+        local whole = v.palletDepotGoodsWhole
+        assert(whole and whole.shape, 'the skinned plank path must be exercised')
+        assertEqual(#NATIVE_NODES[whole.shape].skin, 8, 'all eight native plank bones retained')
+        assertEqual(NATIVE_RELEASES[NATIVE_MATERIAL_REQUEST], 1, 'temporary material request released once')
+        assertEqual(NATIVE_NODES[NATIVE_MATERIAL_SCENE].deleted, true, 'material carrier removed')
+        for layer = #v.spec_pallet.contents[1].objects, 1, -1 do
+            local node = whole.shape
+            while NATIVE_NODES[node] do
+                local scale = NODE_SCALE[node] or {1, 1, 1}
+                for axis = 1, 3 do close(scale[axis], 1, 'skeleton ancestors must stay at unit scale') end
+                node = NATIVE_NODES[node].parent
+            end
+            local scale, translation = NATIVE_NODES[whole.shape].cargoScale, NATIVE_NODES[whole.node].translation
+            local _, vertices = getShapeVertexPositions(whole.shape)
+            close(vertices[1] * scale[1] + translation[1], -0.6, 'cargo left edge')
+            close(vertices[4] * scale[1] + translation[1], 0.6, 'cargo right edge')
+            close(vertices[3] * scale[3] + translation[3], -0.4, 'cargo back edge')
+            close(vertices[6] * scale[3] + translation[3], 0.4, 'cargo front edge')
+            close(vertices[2] * scale[2] + translation[2], 0.144, 'cargo remains on the deck')
+            close(vertices[5] * scale[2] + translation[2], 0.144 + layer * 0.22, 'cargo top follows collision')
+            if layer > 1 then v:addFillUnitFillLevel(1, 1, -size / #v.spec_pallet.contents[1].objects, 5, 0) end
+        end
+        local old = whole.node
+        v:addFillUnitFillLevel(1, 1, -size, 5, 0)
+        v:addFillUnitFillLevel(1, 1, size, 6, 0)
+        assertEqual(NATIVE_NODES[old].deleted, true, 'old plank skeleton removed on product change')
+    end
+    NATIVE_RAW_FILENAME_BY_TYPE[5] = nil
+end
+
 function tests.legacyProductPalletsKeepTheGamesOwnGeometry()
     local v = layeredPallet(5000)
     v.configFileName = '/otherMod/productPallet.xml'

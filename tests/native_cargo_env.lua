@@ -93,7 +93,8 @@ local originalLoad = XMLFile.loadIfExists
 XMLFile.loadIfExists = function(_, filename)
     local ft = tonumber(filename:match('/products/product(%d+)%.xml$'))
     if not ft then return originalLoad and originalLoad(nil, filename) end
-    local count = ft == 7 and 0 or 12
+    local isPlanks = (NATIVE_RAW_FILENAME_BY_TYPE[ft] or ''):match('/boardsStackPallet/boardsStackPallet%.i3d$') ~= nil
+    local count = ft == 7 and 0 or (isPlanks and 8 or 12)
     local xml = {}
     function xml:delete() end
     function xml:iterator(key)
@@ -128,9 +129,11 @@ function finishNativeLoad(id, failed)
     local ft = load.target.fillType
     if ft ~= 7 then
         local bones = {}
-        for i = 1, 12 do
-            local obj = node(content, i == 1, 0.144 + math.floor((i - 1) / 4) * 0.22)
+        local isPlanks = load.target.i3d:match('/boardsStackPallet/boardsStackPallet%.i3d$') ~= nil
+        for i = 1, isPlanks and 8 or 12 do
+            local obj = node(content, i == 1, isPlanks and 0 or 0.144 + math.floor((i - 1) / 4) * 0.22)
             NATIVE_NODES[obj].material = 300 + ft
+            if isPlanks then NATIVE_NODES[obj].name = 'boardsStack' .. i end
             node(obj, true) -- tension mesh has a per-crate sphere
             bones[i] = obj
         end
@@ -139,6 +142,16 @@ function finishNativeLoad(id, failed)
     load.callback(load.target, scene)
 end
 g_i3DManager = {
+    loadSharedI3DFile = function(_, filename, callOnCreate, physics)
+        assert(filename:match('/vehicles/plankCargoMaterial%.i3d$'), 'only our material carrier is loaded')
+        assertEqual(callOnCreate, false, 'material carrier cannot run onCreate')
+        assertEqual(physics, false, 'material carrier cannot enter physics')
+        nextRequest = nextRequest + 1
+        local scene = node()
+        node(scene, true)
+        NATIVE_MATERIAL_REQUEST, NATIVE_MATERIAL_SCENE = nextRequest, scene
+        return scene, nextRequest
+    end,
     loadSharedI3DFileAsync = function(_, filename, callOnCreate, physics, callback, target)
         assert(filename:sub(1, 1) == '/' or filename:match('^%a:/'),
             'native loader received an unresolved model path: ' .. filename)
@@ -154,4 +167,12 @@ g_i3DManager = {
 -- Source I3D text is not available here: no skin bones are reported (per-layer behaviour).
 function loadXMLFile() return 0 end
 function setRotation(n, x, y, z) NATIVE_NODES[n].rotation = {x, y, z} end
-function getName(n) return "node" .. tostring(n) end
+function getName(n) return NATIVE_NODES[n].name or 'node' .. tostring(n) end
+-- Bounds measured from the original plank mesh in GIANTS Editor; positions are kept in the skin's bind pose.
+function getShapeVertexPositions()
+    return 2, {-0.6065325737, 0.1446710825, -0.4158901572, 0.6073279977, 0.6446714997, 0.4158901572}
+end
+function setShaderParameter(n, name, x, y, z)
+    NATIVE_NODES[n][name] = {x, y, z}
+end
+function setShapeBoundingSphere(n, x, y, z, r) NATIVE_NODES[n].sphere = {x, y, z, r} end

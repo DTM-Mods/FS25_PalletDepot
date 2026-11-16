@@ -1,3 +1,10 @@
+# 1.5.6.0 - 2026-11-16 - Align plank stacks with their pallet
+
+- Plank stacks stay square with their wooden pallet when spawned or turned. The original game mesh and its diffuse, normal and specular textures are retained.
+- Planks fit the 1.20 x 0.80 m base and the full 0.364 / 0.804 / 1.464 m heights of the 1,000 / 2,500 / 5,000 L pallets. Part-filled stacks follow the existing complete-layer collision height.
+- Removes the failed 1.5.4.0/1.5.5.0 experiments. This correction is limited to the native boards-stack model; other cargo, capacity, weight and autoload behavior are unchanged.
+- Verified in GIANTS Editor at three rotations and every partial-load height; 44 offline tests pass. Untested in game.
+
 # 1.5.5.0 - 2026-11-16 - Fix skewed plank stacks (second attempt)
 
 - 1.5.4.0 did not fix it and is reverted: cargo code is back to 1.5.3.0 with one change. One-mesh cargo (planks, barrels, wool, etc.) was copied with clone(), and the copy kept following the original model's bones, so the stacks drew skewed and off the pallet. It now uses the loaded model itself, like the game's own pallets.
