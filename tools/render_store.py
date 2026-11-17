@@ -1,4 +1,4 @@
-"""Renders the shop images (512 x 512, transparent) for both buildings and the mod icon (256 x 256) from
+"""Renders the shop images (512 x 512, transparent) for both buildings from
 build/depot.blend, then converts them to .dds with GIANTS' textureTool.
 
     blender --background build/depot.blend --python tools/render_store.py
@@ -106,15 +106,7 @@ for brand in L.BRANDS:
     render(png, 512, True)
     convert(png, os.path.join(ROOT, "store", "store_depot_%s.dds" % brand))
 
-set_brand("food")
-scene.world = scene.world or bpy.data.worlds.new("world")
-scene.world.color = (0.32, 0.42, 0.36)
-shading.background_type = "WORLD"
-frame((-0.55, 0.42, 0.72), 0.03)
-png = os.path.join(SRC, "icon_palletDepot.png")
-render(png, 512, False)
-convert(png, os.path.join(ROOT, "icon_palletDepot.dds"))
-# ModHub wants the mod icon 512x512 DXT1 without mipmaps: copy the png to modhub/icon_512.png and run
-# DTM-Mods/_tools/modhub_fix.py --no-bump, which writes icon_palletDepot.dds from it
-dds_mips.trim(os.path.join(ROOT, "icon_palletDepot.dds"), 1)
+# The mod icon is not rendered here: ModHub wants the standard icon, the shop render on GIANTS' mod icon
+# background. After this script: python ../_brand/tools/make_icons.py <brand> <work> --modhub-render
+#   store/store_depot_goods.dds modhub/icon_512.png, then write icon_palletDepot.dds (DXT1, no mipmaps) from it.
 print("STORE IMAGES DONE")
