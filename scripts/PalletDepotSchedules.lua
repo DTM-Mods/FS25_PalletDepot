@@ -72,8 +72,12 @@ end
 -- --- texts ---------------------------------------------------------------------------------------------
 
 function PalletDepotSchedules.getMonthName(period, short)
-    local ok, name = pcall(g_i18n.formatPeriod, g_i18n, period, short)
-    if ok and type(name) == "string" and name ~= "" then
+    -- the game's own month names when it has them (periods 1..12), else ours
+    local name = nil
+    if g_i18n.formatPeriod ~= nil and type(period) == "number" and period >= 1 and period <= PalletDepotSchedules.NUM_MONTHS then
+        name = g_i18n:formatPeriod(period, short)
+    end
+    if type(name) == "string" and name ~= "" then
         return name
     end
     name = g_i18n:getText("pdo_month" .. period)

@@ -212,8 +212,9 @@ function PalletDepotSpawnDialog:getNumberOfItemsInSection(list, section)
     return #self.products > 0 and NUM_ROWS or 0
 end
 
-local function icon(name)
-    return PalletDepot.modDirectory .. "textures/" .. name .. ".dds"
+-- the full path inside the mod is written out at every use, so tools that look for unused files find them
+local function icon(path)
+    return PalletDepot.modDirectory .. path
 end
 
 local function fillTypeIcon(fillTypeIndex)
@@ -255,7 +256,7 @@ end
 function PalletDepotSpawnDialog:showPallet(picture, base, goods)
     local image, goodsIcon = self:getPalletLook()
     setImage(picture, image)
-    setImage(base, image == nil and goodsIcon ~= nil and icon("ui_palletBase") or nil)
+    setImage(base, image == nil and goodsIcon ~= nil and icon("textures/ui_palletBase.dds") or nil)
     setImage(goods, image == nil and goodsIcon or nil)
 end
 
@@ -298,7 +299,7 @@ function PalletDepotSpawnDialog:populateCellForItemInSection(list, section, inde
         detail = string.format(text("pdo_spawnPerPallet"), liters(pallet.capacity))
     elseif index == ROW.PARTIAL then
         local rest = math.floor(product.liters) % pallet.capacity
-        image = icon(self.fullOnly and "ui_pallet" or "ui_partial")
+        image = icon(self.fullOnly and "textures/ui_pallet.dds" or "textures/ui_partial.dds")
         caption = text("pdo_spawnPartial")
         value = text(self.fullOnly and "pdo_spawnFullOnly" or "pdo_spawnWithRest")
         if rest >= 1 then
@@ -309,7 +310,7 @@ function PalletDepotSpawnDialog:populateCellForItemInSection(list, section, inde
         local farmColor
         farmColor, farmSlice = farmLook(farm)
         if farmSlice == nil then
-            image = icon("ui_farm")
+            image = icon("textures/ui_farm.dds")
             color = farmColor
         end
         valueColor = farmColor

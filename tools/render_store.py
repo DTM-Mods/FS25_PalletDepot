@@ -16,6 +16,7 @@ HERE = os.path.dirname(os.path.abspath(bpy.data.filepath))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import layout as L  # noqa: E402
+import dds_mips  # noqa: E402
 
 TEXTURE_TOOL = r"C:\Program Files\GIANTS Software\GIANTS_Editor_10.0.14\tools\textureTool.exe"
 SRC = os.path.join(ROOT, "src", "store")
@@ -93,6 +94,7 @@ def convert(png, dds):
                        capture_output=True, text=True)
     if r.returncode != 0 or not os.path.exists(dds):
         sys.exit("textureTool failed for %s:\n%s%s" % (png, r.stdout, r.stderr))
+    dds_mips.trim(dds)      # shop images: at most 3 mipmaps (GIANTS TestRunner)
 
 
 os.makedirs(SRC, exist_ok=True)
@@ -110,6 +112,9 @@ scene.world.color = (0.32, 0.42, 0.36)
 shading.background_type = "WORLD"
 frame((-0.55, 0.42, 0.72), 0.03)
 png = os.path.join(SRC, "icon_palletDepot.png")
-render(png, 256, False)
+render(png, 512, False)
 convert(png, os.path.join(ROOT, "icon_palletDepot.dds"))
+# ModHub wants the mod icon 512x512 DXT1 without mipmaps: copy the png to modhub/icon_512.png and run
+# DTM-Mods/_tools/modhub_fix.py --no-bump, which writes icon_palletDepot.dds from it
+dds_mips.trim(os.path.join(ROOT, "icon_palletDepot.dds"), 1)
 print("STORE IMAGES DONE")

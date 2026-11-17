@@ -44,13 +44,11 @@ local function getSelectedDepot(frame)
     local productionPoint = frame.selectedProductionPoint
     if productionPoint == nil then
         local getSelected = PalletDepotHideEmpty.original.getSelectedProduction
-        if getSelected == nil then
+        -- the menu's own lookup reads its lists, which exist once the frame is set up
+        if getSelected == nil or frame.productsList == nil or frame.productsList.getSelectedPath == nil then
             return nil
         end
-        local ok, _, selectedPoint = pcall(getSelected, frame)
-        if not ok then
-            return nil
-        end
+        local _, selectedPoint = getSelected(frame)
         productionPoint = selectedPoint
     end
     if not PalletDepot.isDepot(productionPoint) or productionPoint.storage == nil then
@@ -187,17 +185,33 @@ local function wrap(name, originalFunc)
             productionPoint[tableName] = snapshot[tableName]
         end
         PalletDepotHideEmpty.depth = PalletDepotHideEmpty.depth + 1
+        PalletDepotHideEmpty.swapped = {productionPoint = productionPoint, saved = saved}
 
-        local result = {pcall(originalFunc, frame, ...)}
+        local result = {originalFunc(frame, ...)}
 
-        PalletDepotHideEmpty.depth = PalletDepotHideEmpty.depth - 1
-        for tableName, original in pairs(saved) do
-            productionPoint[tableName] = original
+        PalletDepotHideEmpty.restore()
+        return unpack(result, 1, table.maxn(result))
+    end
+end
+
+-- puts the depot's own tables back. Normally right after the menu function; if that function stopped with an error
+-- (shown in the log), update() does it on the next frame, so the depot never keeps the filtered copies
+function PalletDepotHideEmpty.restore()
+    local swapped = PalletDepotHideEmpty.swapped
+    PalletDepotHideEmpty.swapped = nil
+    PalletDepotHideEmpty.depth = 0
+    if swapped ~= nil then
+        for tableName, original in pairs(swapped.saved) do
+            swapped.productionPoint[tableName] = original
         end
-        if not result[1] then
-            error(result[2], 0)
-        end
-        return unpack(result, 2, table.maxn(result))
+    end
+end
+
+-- runs every frame outside the menu's functions: anything still swapped here was left by an error
+function PalletDepotHideEmpty:update(dt)
+    if PalletDepotHideEmpty.swapped ~= nil or PalletDepotHideEmpty.depth ~= 0 then
+        logOnce("restore", "a production menu function stopped with an error; the depot's tables were put back")
+        PalletDepotHideEmpty.restore()
     end
 end
 
@@ -217,9 +231,8 @@ function PalletDepotHideEmpty.toggle(frame)
     local viewOffset = detailsList ~= nil and detailsList.viewOffset or nil
     if frame.productsList ~= nil and frame.onListSelectionChanged ~= nil then
         local section, index = frame.productsList:getSelectedPath()
-        local ok, err = pcall(frame.onListSelectionChanged, frame, frame.productsList, section, index)
-        if not ok then
-            logOnce("refresh", "refreshing the details list failed: %s", tostring(err))
+        if section ~= nil and index ~= nil then
+            frame:onListSelectionChanged(frame.productsList, section, index)
         end
     end
     if detailsList ~= nil and detailsList.reloadData ~= nil then
@@ -268,6 +281,7 @@ if InGameMenuProductionFrame ~= nil then
             PalletDepotHideEmpty.updateMenuButtons)
     end
     Logging.info("[%s] HideEmpty: wrapped %s", PalletDepot.modName, table.concat(wrapped, ", "))
+    addModEventListener(PalletDepotHideEmpty)     -- update(): puts tables back after an error in a menu function
 else
     Logging.warning("[%s] InGameMenuProductionFrame not found, empty materials will not be hidden", PalletDepot.modName)
 end

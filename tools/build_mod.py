@@ -7,7 +7,7 @@ map. Never load both at once (same scripts, store items and key binding).
 Runs tools/products.py, tools/gen_placeables.py and tools/gen_pallets.py first, then checks: every XML parses; every i3dMapping
 resolves to a node of that name; no duplicate nodeIds; every referenced file exists; every $l10n_ key exists
 in English and German; at most 255 production lines; Lua syntax and block structure; GIANTS limits
-(at most 128 files, Lua files at most 0.5 MB).
+(at most 128 files, Lua files at most 0.5 MB). Files matching a glob in .modignore are left out of the zip.
 
     python tools/build_mod.py [--bump] [--ci]
         --bump  raises the last version number in modDesc.xml first
@@ -18,6 +18,7 @@ in English and German; at most 255 production lines; Lua syntax and block struct
 Model and textures are built separately (make_textures.py, build_warehouse.py in Blender, finish_i3d.py,
 render_store.py in Blender).
 """
+import fnmatch
 import os
 import re
 import shutil
@@ -54,11 +55,25 @@ def bump_version():
     print("version", new, "- add a changelog line to modDesc.xml")
 
 
+def modignore():
+    """The globs in .modignore (one per line, # comments): files the zip leaves out, the same file the DTM CI reads."""
+    path = os.path.join(ROOT, ".modignore")
+    if not os.path.exists(path):
+        return []
+    lines = (line.strip() for line in open(path, encoding="utf-8"))
+    return [line.strip("/") for line in lines if line and not line.startswith(("#", "!"))]
+
+
+def ignored(rel, patterns):
+    return any(fnmatch.fnmatchcase(rel, p) or rel.startswith(p + "/") for p in patterns)
+
+
 def files():
     out = list(SHIP)
     for d, ext in SHIP_DIRS.items():
         out += sorted("%s/%s" % (d, f) for f in os.listdir(os.path.join(ROOT, d)) if f.endswith(ext))   # ext: tuple
-    return out
+    patterns = modignore()
+    return [f for f in out if not ignored(f, patterns)]
 
 
 def i3d_paths(path):

@@ -16,7 +16,7 @@ import layout as L  # noqa: E402
 
 ROOT = os.path.dirname(HERE)
 PRICE = 50000
-# no daily upkeep (user's decision, 2026-10-26)
+# no daily upkeep (user's decision, 2026-10-26); <dailyUpkeep>0</dailyUpkeep> says so (ModHub's TestRunner wants the element)
 CAPACITY = 1000000                # the most a depot can hold; PalletDepotOptions.lua can lower it per depot
 CYCLES_PER_HOUR = 1000          # litres moved per hour and line (1 L in -> 1 L out)
 WALL_LIGHT = "$data/shared/assets/lights/lizard/buildings/industrialWallLight.xml"
@@ -152,6 +152,7 @@ def placeable(item, lines, mappings):
         </functions>
         <image>store/store_depot_%(brand)s.dds</image>
         <price>%(price)d</price>
+        <dailyUpkeep>0</dailyUpkeep>
         <lifetime>1000</lifetime>
         <rotation>0</rotation>
         <brand>NONE</brand>

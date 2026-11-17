@@ -1,0 +1,7 @@
+# files the build leaves out of the zip (see DTM-Mods/.github ci/README.md); tools/build_mod.py reads it too
+# source images (the mod ships the .dds made from them)
+src
+# the Blender export the two building i3ds are made from (they share its depot.i3d.shapes)
+i3d/depot.i3d
+# no longer used: the depot pallets show the game's own cargo (make_goods_texture.py still writes them)
+textures/pallet_goods_*.dds

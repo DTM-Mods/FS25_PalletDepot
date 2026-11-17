@@ -45,6 +45,7 @@ local function applyCapacity(vehicle, liters)
         vehicle.palletDepotVisualCapacity = fillUnit.capacity    -- the pallet's own size, from its xml
     end
     vehicle.palletDepotCapacity = liters
+    vehicle.palletDepotLentCapacity = nil
     fillUnit.capacity = liters
     fillUnit.capacityToDisplay = nil
 end
@@ -59,17 +60,21 @@ Pallet.onFillUnitFillLevelChanged = Utils.overwrittenFunction(Pallet.onFillUnitF
         local visual = vehicle.palletDepotVisualCapacity
         local spec = vehicle.spec_fillUnit
         local fillUnit = spec ~= nil and spec.fillUnits ~= nil and spec.fillUnits[fillUnitIndex] or nil
+        if fillUnit ~= nil and vehicle.palletDepotLentCapacity ~= nil then
+            -- the last call stopped with an error (shown in the log) before it gave the capacity back
+            fillUnit.capacity = vehicle.palletDepotLentCapacity
+            vehicle.palletDepotLentCapacity = nil
+        end
         if PalletDepotPallets.isOwnPallet(vehicle.configFileName)
             or visual == nil or vehicle.palletDepotCapacity == nil or fillUnit == nil or visual <= 0 or visual == math.huge then
             return superFunc(vehicle, fillUnitIndex, ...)
         end
         local capacity = fillUnit.capacity
+        vehicle.palletDepotLentCapacity = capacity
         fillUnit.capacity = visual          -- over 100 % just shows every object (the game loops over what it has)
-        local ok, result = pcall(superFunc, vehicle, fillUnitIndex, ...)
+        local result = superFunc(vehicle, fillUnitIndex, ...)
         fillUnit.capacity = capacity
-        if not ok then
-            error(result)
-        end
+        vehicle.palletDepotLentCapacity = nil
         return result
     end)
 

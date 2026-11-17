@@ -8,6 +8,7 @@
         </functions>
         <image>store/store_depot_food.dds</image>
         <price>50000</price>
+        <dailyUpkeep>0</dailyUpkeep>
         <lifetime>1000</lifetime>
         <rotation>0</rotation>
         <brand>NONE</brand>

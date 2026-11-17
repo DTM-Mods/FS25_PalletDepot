@@ -1,3 +1,11 @@
+# 1.5.8.1 - 2026-11-16 - Pass GIANTS' ModHub checks
+
+- Meets GIANTS' ModHub checks (TestRunner). The mod icon is 512 x 512 (DXT1, no mipmaps); the buildings' shop pictures keep 3 mipmaps (tools/dds_mips.py, which render_store.py now runs; it renders the icon at 512 px).
+- The Spawn goods window names its own pictures (textures/ui_*.dds) by their full path, so the check sees they are used. No visible change.
+- The zip leaves out what the game never loads: the source images in src/, the Blender export i3d/depot.i3d and the unused pallet_goods textures. tools/build_mod.py now reads .modignore, the same list the DTM CI uses.
+- Both buildings state their daily upkeep in the shop data (0, so still no upkeep).
+- Errors are no longer hidden: they show in the log. The production menu's lists, the month names of schedules and the goods shown on pallets now call the game directly instead of catching its errors; if a menu function stops with an error, the depot's own tables are still put back on the next frame, and a pallet gets its capacity back on its next fill change.
+
 # 1.5.8.0 - 2026-11-16 - Restore depot pallet pickup
 
 - Fixes the loading failure introduced in 1.5.7.0. Universal Autoload can recognize depot pallets again and offer its loading action.
