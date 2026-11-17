@@ -10,6 +10,33 @@
 
     <description>
 <en><![CDATA[
+Logistics Hub: Food & Drinks
+Category: Production Sites
+Price: $50,000
+Monthly upkeep: none
+
+Logistics Hub: Textiles & Goods
+Category: Production Sites
+Price: $50,000
+Monthly upkeep: none
+
+Own pallet (1,000 L)
+Category: Pallets (not sold in the shop: the hubs put goods out on them)
+Price: $600
+Capacity: 1,000 l
+
+Own pallet (2,500 L)
+Category: Pallets (not sold in the shop: the hubs put goods out on them)
+Price: $1,000
+Capacity: 2,500 l
+
+Own pallet (5,000 L)
+Category: Pallets (not sold in the shop: the hubs put goods out on them)
+Price: $1,500
+Capacity: 5,000 l
+
+Hotkeys: Right Shift + P opens the productions window. Controller: none by default, set one under Settings > Controls.
+
 A pallet hall that stores your products and sends them on: drop pallets on the unload pad at the front, then choose per product whether it stays in storage, comes out as pallets at the pickup lanes at the back, is delivered to your other productions or is sold every full hour.
 
 Two buildings, each with its own storage of up to 1,000,000 L per product:
@@ -19,9 +46,7 @@ Both also take the products of the FedMods packs, of the Beans & Alpacas pack (b
 
 Pallets only: bulk goods, field crops and bales are not accepted.
 
-Price: 50,000 | No daily upkeep
-
-Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
+Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
 1.5.8.2 - Updated for the current game version (modDesc version 116).
@@ -84,6 +109,33 @@ Changelog:
 1.0.0.1 - First test build: building with LODs and collisions, unload pad, pickup lanes, product lists, line names, AutoDrive route.
 ]]></en>
 <de><![CDATA[
+Logistikzentrum: Lebensmittel und Getränke
+Kategorie: Produktionsstätten
+Preis: 50.000 €
+Monatliche Unterhaltskosten: keine
+
+Logistikzentrum: Textilien und Waren
+Kategorie: Produktionsstätten
+Preis: 50.000 €
+Monatliche Unterhaltskosten: keine
+
+Eigene Palette (1.000 L)
+Shopkategorie: Paletten (nicht im Shop: die Logistikzentren lagern Waren darauf aus)
+Preis: 600 €
+Kapazität: 1.000 l
+
+Eigene Palette (2.500 L)
+Shopkategorie: Paletten (nicht im Shop: die Logistikzentren lagern Waren darauf aus)
+Preis: 1.000 €
+Kapazität: 2.500 l
+
+Eigene Palette (5.000 L)
+Shopkategorie: Paletten (nicht im Shop: die Logistikzentren lagern Waren darauf aus)
+Preis: 1.500 €
+Kapazität: 5.000 l
+
+Tastenkombinationen: Rechte Umschalttaste + P öffnet das Produktionsfenster. Controller: standardmäßig keine, unter Einstellungen > Steuerung belegen.
+
 Eine Palettenhalle, die deine Produkte lagert und weitergibt: Paletten auf der Abladefläche vorne abstellen und dann je Produkt wählen, ob es im Lager bleibt, als Paletten an den Abholspuren hinten ausgegeben, an deine anderen Produktionen geliefert oder zu jeder vollen Stunde verkauft wird.
 
 Zwei Hallen mit eigenem Lager von bis zu 1.000.000 L pro Produkt:
@@ -93,9 +145,7 @@ Beide nehmen auch die Produkte der FedMods-Pakete, des Beans & Alpacas Packs (Ba
 
 Nur Paletten: Schüttgut, Feldfrüchte und Ballen werden nicht angenommen.
 
-Preis: 50.000 | Keine täglichen Unterhaltskosten
-
-Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
+Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
 1.5.8.2 - An die aktuelle Spielversion angepasst (modDesc-Version 116).

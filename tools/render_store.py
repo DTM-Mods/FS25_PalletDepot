@@ -94,7 +94,7 @@ def convert(png, dds):
                        capture_output=True, text=True)
     if r.returncode != 0 or not os.path.exists(dds):
         sys.exit("textureTool failed for %s:\n%s%s" % (png, r.stdout, r.stderr))
-    dds_mips.trim(dds)      # shop images: at most 3 mipmaps (GIANTS TestRunner)
+    dds_mips.trim(dds)      # shop images: no mipmaps (GIANTS' FS25 ModHub guidelines)
 
 
 os.makedirs(SRC, exist_ok=True)

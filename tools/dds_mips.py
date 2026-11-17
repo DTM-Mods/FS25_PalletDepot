@@ -1,14 +1,14 @@
 """Cuts the mipmap chain of a block-compressed .dds (DXT1/DXT5/BC4-BC7, also DX10 headers) to its first levels.
 
-GIANTS' TestRunner wants shop images with at most 3 mipmaps ("has 8 mips but only up to 3 are required");
-textureTool writes the full chain. The kept levels are copied unchanged, so nothing is re-encoded.
+GIANTS' FS25 ModHub guidelines want shop images (store_*.dds) without mipmaps; textureTool writes the full
+chain. The kept levels are copied unchanged, so nothing is re-encoded.
 
-    python tools/dds_mips.py <file.dds> [...] [--keep 3]
-render_store.py calls trim() after textureTool.
+    python tools/dds_mips.py <file.dds> [...] [--keep 1]
+render_store.py and render_pallets.py call trim() after textureTool.
 """
 import struct
 
-SHOP_IMAGE_MIPS = 3
+SHOP_IMAGE_MIPS = 1     # the image itself, no mipmaps
 DDSD_MIPMAPCOUNT = 0x20000
 BLOCK8 = {b"DXT1", b"ATI1", b"BC4U", b"BC4S"}
 BLOCK8_DXGI = {70, 71, 72, 79, 80, 81}               # BC1, BC4

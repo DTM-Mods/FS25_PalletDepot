@@ -91,4 +91,9 @@ r = subprocess.run([TEXTURE_TOOL, "-inputs", png, "-targetFile", dds, "-ignoreTi
                    capture_output=True, text=True)
 if r.returncode != 0 or not os.path.exists(dds):
     sys.exit("textureTool failed for %s:\n%s%s" % (png, r.stdout, r.stderr))
+if not BARE:
+    # shop images: no mipmaps (GIANTS' FS25 ModHub guidelines)
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import dds_mips  # noqa: E402
+    dds_mips.trim(dds)
 print("PALLET IMAGE DONE", dds)
