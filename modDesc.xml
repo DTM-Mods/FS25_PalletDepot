@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="115">
+<modDesc descVersion="116">
     <author>DTM Mods, Fennell, PropaineX</author>
-    <version>1.5.8.1</version>
+    <version>1.5.8.2</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -24,6 +24,7 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.5.8.2 - Updated for the current game version (modDesc version 116).
 1.5.8.1 - Meets GIANTS' ModHub checks (TestRunner): mod icon 512 x 512, shop pictures of the buildings with 3 mipmaps, unused textures and source images left out of the zip, the buildings state their daily upkeep (none, as before). Errors are no longer hidden: they show in the log.
 1.5.8.0 - Fixes depot pallets not being recognized for loading after 1.5.7.0: the Autoload size lookup now reads the collision node ID from the game's mapping record. Untested in game.
 1.5.7.0 - Full-size plank graphics match their existing collision heights again (0.364 / 0.804 / 1.464 m). Depot pallets report their correct 1.20 x 0.80 m footprint to Universal Autoload so a bad cached measurement cannot waste trailer space. Partly emptied pallets keep their current stacking height. Untested in game.
@@ -97,6 +98,7 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.5.8.2 - An die aktuelle Spielversion angepasst (modDesc-Version 116).
 1.5.8.1 - Erfüllt die ModHub-Prüfung von GIANTS (TestRunner): Mod-Icon 512 x 512, Shopbilder der Gebäude mit 3 Mipmaps, ungenutzte Texturen und Quellbilder nicht mehr im Zip, die Gebäude geben ihre täglichen Unterhaltskosten an (wie bisher keine). Fehler werden nicht mehr versteckt und erscheinen im Log.
 1.5.8.0 - Depotpaletten werden nach dem Fehler in 1.5.7.0 wieder zum Laden erkannt: die Autoload-Groessenabfrage liest die Knoten-ID der Kollision aus dem Mapping-Eintrag des Spiels. Im Spiel ungetestet.
 1.5.6.0 - Schiefe Bretterstapel behoben: Originalmodell und Texturen bleiben bei jeder Drehung an der Palette ausgerichtet und passen zu allen drei Palettengroessen, auch bei Teilbeladung. Im GIANTS Editor geprueft; im Spiel ungetestet.

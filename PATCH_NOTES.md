@@ -1,3 +1,7 @@
+# 1.5.8.2 - 2026-11-17 - Current game version
+
+- Updated for the current game version: modDesc descVersion 116 (the game build of 2026-10-27; GIANTS TestRunner 0.9.24 accepts only 116).
+
 # 1.5.8.1 - 2026-11-16 - Pass GIANTS' ModHub checks
 
 - Meets GIANTS' ModHub checks (TestRunner). The mod icon is 512 x 512 (DXT1, no mipmaps); the buildings' shop pictures keep 3 mipmaps (tools/dds_mips.py, which render_store.py now runs; it renders the icon at 512 px).
