@@ -168,10 +168,10 @@ g_i3DManager = {
 function loadXMLFile() return 0 end
 function setRotation(n, x, y, z) NATIVE_NODES[n].rotation = {x, y, z} end
 function getName(n) return NATIVE_NODES[n].name or 'node' .. tostring(n) end
--- Bounds measured from the original plank mesh in GIANTS Editor; positions are kept in the skin's bind pose.
-function getShapeVertexPositions()
-    return 2, {-0.6065325737, 0.1446710825, -0.4158901572, 0.6073279977, 0.6446714997, 0.4158901572}
-end
+-- Offline fixture measured in GIANTS Editor. The game has no getShapeVertexPositions API.
+NATIVE_PLANK_VERTICES = {-0.6065325737, 0.1446710825, -0.4158901572,
+    0.6073279977, 0.6446714997, 0.4158901572}
+getShapeVertexPositions = nil
 function setShaderParameter(n, name, x, y, z)
     NATIVE_NODES[n][name] = {x, y, z}
 end

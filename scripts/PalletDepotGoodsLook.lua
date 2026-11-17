@@ -150,16 +150,11 @@ function PalletDepotGoodsLook.fitPlankStack(cargo, request, targetHeight)
     end
     local shape = find(cargo)
     if shape == nil then return nil end
-    local count, vertices = getShapeVertexPositions(shape)
-    if count == 0 or vertices == nil then return nil end
-    local lo, hi = {math.huge, math.huge, math.huge}, {-math.huge, -math.huge, -math.huge}
-    for i = 1, count * 3, 3 do
-        for axis = 1, 3 do
-            local value = vertices[i + axis - 1]
-            lo[axis], hi[axis] = math.min(lo[axis], value), math.max(hi[axis], value)
-        end
-    end
-    for axis = 1, 3 do if hi[axis] - lo[axis] <= 0 then return nil end end
+    -- Native boardsStackPallet bounds measured offline in GIANTS Editor (1,984 vertices).
+    -- getShapeVertexPositions is editor-only: calling it in game aborts cargo fitting.
+    -- These values apply only to the specific base-game model checked above.
+    local lo = {-0.6065325737, 0.1446710825, -0.4158901572}
+    local hi = {0.6073279977, 0.6446714997, 0.4158901572}
     local template, sharedId = g_i3DManager:loadSharedI3DFile(
         PalletDepot.modDirectory .. "vehicles/plankCargoMaterial.i3d", false, false)
     if template == 0 then

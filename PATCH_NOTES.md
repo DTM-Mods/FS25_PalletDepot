@@ -1,3 +1,16 @@
+# 1.5.8.0 - 2026-11-16 - Restore depot pallet pickup
+
+- Fixes the loading failure introduced in 1.5.7.0. Universal Autoload can recognize depot pallets again and offer its loading action.
+- The size lookup now reads the collision's numeric node ID from the game's mapping record. Missing collision mappings retain Autoload's original measurement.
+- Regression checks use the game's mapping format and Universal Autoload's actual pickup callback, eligibility counts and loading-action gate, covering all three sizes and access/material filters. The released code fails these checks; the correction passes all 50 offline tests. Untested in game.
+
+# 1.5.7.0 - 2026-11-16 - Match plank height and Autoload spacing
+
+- Full 5,000 L planks fill the large pallet's 1.464 m height, so the visible cargo reaches the existing stacking and belt surface. The 1,000 / 2,500 L sizes likewise fill their 0.364 / 0.804 m heights; part-filled loads follow the complete layers.
+- Fixes the game-only cargo-loading error that left a short plank bundle inside the full-size collision.
+- Depot pallets report their 1.20 x 0.80 m footprint to Universal Autoload, preventing a bad cached measurement from wasting trailer space. The Krone Profi Liner fits three narrow sides across; partially emptied pallets retain their current collision height.
+- Verified in GIANTS Editor with the unavailable game function disabled, plus the installed Universal Autoload packing code. Offline checks cover all three pallet sizes, partial loads and a bad cached size. Untested in game.
+
 # 1.5.6.0 - 2026-11-16 - Align plank stacks with their pallet
 
 - Plank stacks stay square with their wooden pallet when spawned or turned. The original game mesh and its diffuse, normal and specular textures are retained.

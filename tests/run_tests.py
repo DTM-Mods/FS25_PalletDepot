@@ -47,8 +47,8 @@ def game_function(zf, filename, name):
 
 
 def header(path):
-    """-- game: <file> <Func> ...   -- before: <tests file>   -- scripts: <script> ... (top of a test file)"""
-    games, before, scripts = [], [], []
+    """Read game/before/scripts headers and optional -- installed-mod: <archive> <file> <Func> ..."""
+    games, before, scripts, installed = [], [], [], []
     for line in read(path).splitlines():
         if not line.startswith("--"):
             break
@@ -59,14 +59,24 @@ def header(path):
             before += parts[1:]
         elif parts[:1] == ["scripts:"]:
             scripts += parts[1:]
-    return games, before, scripts
+        elif parts[:1] == ["installed-mod:"]:
+            installed.append((parts[1], parts[2], parts[3:]))
+    return games, before, scripts, installed
 
 
 def run_file(path):
-    games, before, extra = header(path)
+    games, before, extra, installed = header(path)
     if games and not os.path.isfile(GAME_SOURCE):
         print("  skip (needs the game's Lua: %s)" % GAME_SOURCE)
         return 0, 0
+    from pathlib import Path
+    installed_sources = []
+    for archive, filename, functions in installed:
+        location = Path(GAME_SOURCE).parent.parent / "mods" / archive
+        if not location.is_file():
+            print("  skip (needs installed mod: %s)" % archive)
+            return 0, 0
+        installed_sources.append((location, filename, functions))
     lua = lupa.LuaRuntime()
     load = lua.eval("function(src, name) local f, err = load(src, '@' .. name) if not f then error(err) end return f() end")
     load(read(os.path.join(HERE, "stubs.lua")), "stubs.lua")
@@ -81,6 +91,10 @@ def run_file(path):
             models[size] = {"capacity": int(unit.get("capacity")),
                             "layers": len(model.findall("pallet/content/object")),
                             "height": float(model.find("base/size").get("height")),
+                            "width": float(model.find("base/size").get("width")),
+                            "length": float(model.find("base/size").get("length")),
+                            "deck": float(ET.parse(os.path.join(ROOT, "vehicles", "depotPallet%d.i3d" % size))
+                                          .find(".//Shape[@name='contentCollision']").get("translation").split()[1]),
                             "minScale": float(part.get("startScale").split()[1])}
     lua.globals().PALLET_MODELS = lua.table_from(models, recursive=True)
     for name in before:
@@ -91,6 +105,12 @@ def run_file(path):
             for filename, functions in games:
                 for function in functions:
                     load(game_function(zf, filename, function), "game:" + filename + ":" + function)
+    if installed_sources:
+        import zipfile
+        for location, filename, functions in installed_sources:
+            with zipfile.ZipFile(location) as zf:
+                for function in functions:
+                    load(game_function(zf, filename, function), "installed-mod:" + location.name + ":" + function)
     for script in SCRIPTS + extra:
         load(read(os.path.join(ROOT, "scripts", script)), "scripts/" + script)
     tests = load(read(path), os.path.relpath(path, ROOT))

@@ -241,6 +241,7 @@ function tests.indivisibleNativeCargoFollowsPartialCollision()
 end
 
 function tests.plankSkinFitsEveryLayerWithoutScalingItsSkeleton()
+    assertEqual(getShapeVertexPositions, nil, 'editor-only mesh reader must be absent, as in game')
     local source = '/game/data/objects/pallets/boardsStackPallet/boardsStackPallet.i3d'
     NATIVE_RAW_FILENAME_BY_TYPE[5] = source
     PalletDepotGoodsLook.boneCache[source] = {boardsStack1 = true}
@@ -260,7 +261,7 @@ function tests.plankSkinFitsEveryLayerWithoutScalingItsSkeleton()
                 node = NATIVE_NODES[node].parent
             end
             local scale, translation = NATIVE_NODES[whole.shape].cargoScale, NATIVE_NODES[whole.node].translation
-            local _, vertices = getShapeVertexPositions(whole.shape)
+            local vertices = NATIVE_PLANK_VERTICES
             close(vertices[1] * scale[1] + translation[1], -0.6, 'cargo left edge')
             close(vertices[4] * scale[1] + translation[1], 0.6, 'cargo right edge')
             close(vertices[3] * scale[3] + translation[3], -0.4, 'cargo back edge')

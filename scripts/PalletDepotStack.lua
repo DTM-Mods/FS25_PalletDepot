@@ -1,5 +1,5 @@
 -- Whole carton layers and the matching built-in animated collision, on our own pallets only.
--- No runtime physics shapes and no Universal Autoload hooks.
+-- Autoload uses our known box dimensions instead of caching an unreliable first raycast measurement.
 PalletDepotStack = {}
 PalletDepotStack.MIN_SCALE = 0.001       -- matches tools/pallet_layout.py and vehicle fillAnimation
 
@@ -62,3 +62,42 @@ FillUnit.onPostLoad = Utils.appendedFunction(FillUnit.onPostLoad,
     function(vehicle) PalletDepotStack.update(vehicle) end)
 Pallet.onPostLoad = Utils.appendedFunction(Pallet.onPostLoad,
     function(vehicle) PalletDepotStack.update(vehicle) end)
+
+function PalletDepotStack.getAutoloadType(vehicle, measured)
+    if measured == nil or not PalletDepotPallets.isOwnPallet(vehicle.configFileName) then return measured end
+    local size = vehicle.size
+    -- FS25 mapping values are records; engine transform functions require the record's nodeId.
+    local mapping = vehicle.i3dMappings ~= nil and vehicle.i3dMappings.contentCollision or nil
+    local collision = mapping ~= nil and mapping.nodeId or nil
+    if size == nil or collision == nil or collision == 0 then return measured end
+    local _, deck = getTranslation(collision)
+    local _, scaleY = getScale(collision)
+    -- Copy: UAL shares its cached full-pallet type between every product on the same model.
+    local corrected = {}
+    for key, value in pairs(measured) do corrected[key] = value end
+    corrected.sizeX, corrected.sizeZ = size.width, size.length
+    corrected.sizeY = deck + (size.height - deck) * scaleY
+    corrected.width = math.min(corrected.sizeX, corrected.sizeZ)
+    corrected.length = math.max(corrected.sizeX, corrected.sizeZ)
+    -- Our model's origin is centered on the pallet's bottom, including its runners.
+    corrected.offset = {x = 0, y = 0, z = 0}
+    return corrected
+end
+
+function PalletDepotStack.installAutoload()
+    if PalletDepotStack.autoloadInstalled then return end
+    local mod = _G["FS25_UniversalAutoload"]
+    local autoload = mod ~= nil and mod.UniversalAutoload or nil
+    if autoload == nil or autoload.getContainerType == nil then return end
+    autoload.getContainerType = Utils.overwrittenFunction(autoload.getContainerType,
+        function(vehicle, superFunc, ...)
+            local measured = superFunc(vehicle, ...)
+            if vehicle == nil then return measured end
+            return PalletDepotStack.getAutoloadType(vehicle, measured)
+        end)
+    PalletDepotStack.autoloadInstalled = true
+end
+
+-- Both mods have finished loading by this point; UAL remains optional.
+Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished,
+    PalletDepotStack.installAutoload)

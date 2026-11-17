@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="115">
     <author>DTM Mods, Fennell, PropaineX</author>
-    <version>1.5.6.0</version>
+    <version>1.5.8.0</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -24,6 +24,8 @@ Price: 50,000 | No daily upkeep
 Building, textures and scripts: Fennell. Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.5.8.0 - Fixes depot pallets not being recognized for loading after 1.5.7.0: the Autoload size lookup now reads the collision node ID from the game's mapping record. Untested in game.
+1.5.7.0 - Full-size plank graphics match their existing collision heights again (0.364 / 0.804 / 1.464 m). Depot pallets report their correct 1.20 x 0.80 m footprint to Universal Autoload so a bad cached measurement cannot waste trailer space. Partly emptied pallets keep their current stacking height. Untested in game.
 1.5.6.0 - Fix skewed plank stacks: original plank geometry and textures stay aligned with the pallet at every rotation and fit all three pallet sizes, including partial loads. Verified in GIANTS Editor; untested in game.
 1.5.2.0 - Fix empty loaded pallets: original game and mod model paths are explicitly resolved against their correct directories. This restores cargo for all products affected by the missing-path bug, including spinach and beet soup. Also enables the CPU mesh required for pallet tension belts. Untested in game.
 1.5.1.0 - Restore real product cargo: open lettuce crates with lettuce heads, carrot bags and other products use their original game/mod models and material maps. Depot cartons no longer use HUD pictures. Full 1,000 / 2,500 / 5,000 L pallets have 1 / 3 / 6 cargo layers, 0.364 / 0.804 / 1.464 m high including the pallet. The existing layered stacking collision and 400 kg cap remain. Untested in game.
@@ -94,6 +96,7 @@ Preis: 50.000 | Keine täglichen Unterhaltskosten
 Gebäude, Texturen und Skripte: Fennell. Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.5.8.0 - Depotpaletten werden nach dem Fehler in 1.5.7.0 wieder zum Laden erkannt: die Autoload-Groessenabfrage liest die Knoten-ID der Kollision aus dem Mapping-Eintrag des Spiels. Im Spiel ungetestet.
 1.5.6.0 - Schiefe Bretterstapel behoben: Originalmodell und Texturen bleiben bei jeder Drehung an der Palette ausgerichtet und passen zu allen drei Palettengroessen, auch bei Teilbeladung. Im GIANTS Editor geprueft; im Spiel ungetestet.
 1.5.2.0 - Leere beladene Paletten behoben: Spiel- und Modmodellpfade werden ausdruecklich mit dem richtigen Verzeichnis aufgeloest. Betroffene Waren, darunter Rahmspinat und Rote-Bete-Suppe, werden wieder dargestellt. CPU-Mesh fuer Spanngurte aktiviert. Im Spiel ungetestet.
 1.5.1.0 - Echte Warenmodelle wiederhergestellt: offene Salatkisten mit Salatkoepfen, Karottensaecke und andere Produkte verwenden ihre urspruenglichen Spiel-/Modmodelle und Materialtexturen. Keine HUD-Bilder auf Ersatzkartons. Volle 1.000 / 2.500 / 5.000 L Paletten haben 1 / 3 / 6 Warenlagen, Gesamthoehe 0,364 / 0,804 / 1,464 m. Lagenweise Stapelkollision und 400-kg-Grenze bleiben. Im Spiel ungetestet.
