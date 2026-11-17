@@ -1,3 +1,10 @@
+# 1.5.8.3 - 2026-11-17 - GIANTS' ModHub guidelines
+
+- Description in GIANTS' ModHub layout (category, price, upkeep or hotkeys at the top).
+- New mod icon in the ModHub standard.
+- Shop images without mipmaps, as ModHub wants.
+- No modder names in the description and the game texts any more.
+
 # 1.5.8.2 - 2026-11-17 - Current game version
 
 - Updated for the current game version: modDesc descVersion 116 (the game build of 2026-10-27; GIANTS TestRunner 0.9.24 accepts only 116).

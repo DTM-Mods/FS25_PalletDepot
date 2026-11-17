@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="116">
     <author>DTM Mods, Fennell, PropaineX</author>
-    <version>1.5.8.2</version>
+    <version>1.5.8.3</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -49,6 +49,7 @@ Pallets only: bulk goods, field crops and bales are not accepted.
 Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.5.8.3 - Description in GIANTS' ModHub layout (category, price, upkeep or hotkeys at the top). New mod icon in the ModHub standard. Shop images without mipmaps, as ModHub wants. No modder names in the description and the game texts any more.
 1.5.8.2 - Updated for the current game version (modDesc version 116).
 1.5.8.1 - Meets GIANTS' ModHub checks (TestRunner): mod icon 512 x 512, shop pictures of the buildings with 3 mipmaps, unused textures and source images left out of the zip, the buildings state their daily upkeep (none, as before). Errors are no longer hidden: they show in the log.
 1.5.8.0 - Fixes depot pallets not being recognized for loading after 1.5.7.0: the Autoload size lookup now reads the collision node ID from the game's mapping record. Untested in game.
@@ -148,6 +149,7 @@ Nur Paletten: Schüttgut, Feldfrüchte und Ballen werden nicht angenommen.
 Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.5.8.3 - Beschreibung im ModHub-Aufbau von GIANTS (Kategorie, Preis, Unterhalt bzw. Tasten oben). Neues Mod-Icon im ModHub-Standard. Shopbilder ohne Mipmaps, wie ModHub es verlangt. Keine Modder-Namen mehr in der Beschreibung und den Spieltexten.
 1.5.8.2 - An die aktuelle Spielversion angepasst (modDesc-Version 116).
 1.5.8.1 - Erfüllt die ModHub-Prüfung von GIANTS (TestRunner): Mod-Icon 512 x 512, Shopbilder der Gebäude mit 3 Mipmaps, ungenutzte Texturen und Quellbilder nicht mehr im Zip, die Gebäude geben ihre täglichen Unterhaltskosten an (wie bisher keine). Fehler werden nicht mehr versteckt und erscheinen im Log.
 1.5.8.0 - Depotpaletten werden nach dem Fehler in 1.5.7.0 wieder zum Laden erkannt: die Autoload-Groessenabfrage liest die Knoten-ID der Kollision aus dem Mapping-Eintrag des Spiels. Im Spiel ungetestet.
