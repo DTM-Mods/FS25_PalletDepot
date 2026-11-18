@@ -1,3 +1,7 @@
+# 1.5.8.4 - 2026-11-17 - Settings on ModMux's LIVE tab
+
+- With ModMux installed, the farm settings of the productions window (auto-management, the three alerts, low and high threshold) and the personal "Hide sites without active productions" are also instant switches on ModMux's LIVE tab. Farm settings go to the server like from the Settings tab and need the right to manage productions; without it you get the usual message and nothing changes.
+
 # 1.5.8.3 - 2026-11-17 - GIANTS' ModHub guidelines
 
 - Description in GIANTS' ModHub layout (category, price, upkeep or hotkeys at the top).

@@ -421,9 +421,82 @@ function PalletDepotAutoManager.loadPersonal()
     end
 end
 
+-- --- ModMux's LIVE tab (only when ModMux is installed) -------------------------------------------------
+-- The farm settings change through requestSettings (the server applies and shares them, as from the Settings tab),
+-- only for players allowed to manage the farm's productions; the personal one is this player's own. This mod saves
+-- them itself, so ModMux doesn't remember them (remember = false).
+
+local function percentTexts(choices)
+    local texts = {}
+    for i, value in ipairs(choices) do
+        texts[i] = string.format("%d %%", value)
+    end
+    return texts
+end
+
+function PalletDepotAutoManager.registerLiveSettings()
+    local modMux = g_modMux
+    if type(modMux) ~= "table" or type(modMux.registerLiveSetting) ~= "function" then
+        return
+    end
+    local modName = PalletDepot ~= nil and PalletDepot.modName or g_currentModName
+    local function farmSetting(key, nameKey, descKey, choices)
+        local def = {
+            id = "logisticsHub.farm." .. key,
+            modName = modName,
+            title = g_i18n:getText(nameKey),
+            description = g_i18n:getText(descKey),
+            kind = choices ~= nil and "choice" or "bool",
+            choices = choices,
+            texts = choices ~= nil and percentTexts(choices) or nil,
+            remember = false,
+            get = function()
+                return PalletDepotAutoManager.getSettings(g_currentMission:getFarmId())[key]
+            end,
+            set = function(value)
+                if g_currentMission.getHasPlayerPermission ~= nil and not g_currentMission:getHasPlayerPermission("manageProductions") then
+                    g_currentMission:addIngameNotification(FSBaseMission.INGAME_NOTIFICATION_CRITICAL,
+                        g_i18n:getText("pdo_noPermission"))
+                    return
+                end
+                local farmId = g_currentMission:getFarmId()
+                local copy = {}
+                for k, v in pairs(PalletDepotAutoManager.getSettings(farmId)) do
+                    copy[k] = v
+                end
+                copy[key] = value
+                PalletDepotAutoManager.requestSettings(farmId, copy)
+            end
+        }
+        modMux.registerLiveSetting(def)
+    end
+    farmSetting("autoManage", "pdo_setAutoManage", "pdo_setAutoManageDesc")
+    farmSetting("notifyControl", "pdo_setNotifyControl", "pdo_setNotifyControlDesc")
+    farmSetting("notifyLowInputs", "pdo_setNotifyLow", "pdo_setNotifyLowDesc")
+    farmSetting("notifyHighOutputs", "pdo_setNotifyHigh", "pdo_setNotifyHighDesc")
+    farmSetting("lowThreshold", "pdo_setLowThreshold", "pdo_setLowThresholdDesc", PalletDepotAutoManager.LOW_CHOICES)
+    farmSetting("highThreshold", "pdo_setHighThreshold", "pdo_setHighThresholdDesc", PalletDepotAutoManager.HIGH_CHOICES)
+    modMux.registerLiveSetting({
+        id = "logisticsHub.personal.hideInactiveSites",
+        modName = modName,
+        title = g_i18n:getText("pdo_setHideInactive"),
+        description = g_i18n:getText("pdo_setHideInactiveDesc"),
+        kind = "bool",
+        remember = false,
+        get = function()
+            return PalletDepotAutoManager.personal.hideInactiveSites == true
+        end,
+        set = function(value)
+            PalletDepotAutoManager.personal.hideInactiveSites = value
+            PalletDepotAutoManager.savePersonal()
+        end
+    })
+end
+
 function PalletDepotAutoManager:loadMap()
     if g_client ~= nil then
         PalletDepotAutoManager.loadPersonal()
+        PalletDepotAutoManager.registerLiveSettings()
     end
 end
 
