@@ -2,6 +2,8 @@
 
     ui_pallet   a full pallet (the Partial pallet line: full pallets only; any pallet without a shop picture)
     ui_partial  a pallet loaded half way, the rest outlined (the Partial pallet line: the last one takes the rest)
+    ui_tickOff  an empty tick box (the AUTO column of the Logistics page, scripts/PalletDepotAutoSpawn.lua)
+    ui_tickOn   the same box, green, with a tick
     ui_farm     a barn, white so the window can tint it (the For farm line in single player; in multiplayer the
                 game's farm icon is used)
 Everything else in the window uses the game's pictures: product icons, the pallet's shop picture.
@@ -89,10 +91,24 @@ def icon_farm():
     return img
 
 
+TICK_GREY, TICK_GREEN = (200, 200, 200, 255), (140, 200, 40, 255)
+
+
+def tick_box(color, ticked):
+    img, d = canvas()
+    t = int(N * 0.08)
+    d.rectangle([N * 0.1, N * 0.1, N * 0.9, N * 0.9], outline=color, width=t)
+    if ticked:
+        d.line([(N * 0.24, N * 0.52), (N * 0.43, N * 0.72), (N * 0.78, N * 0.26)], fill=color, width=int(N * 0.11),
+               joint="curve")
+    return img
+
+
 def main():
     os.makedirs(SRC, exist_ok=True)
     paths = []
-    for name, fn in (("ui_pallet", icon_pallet), ("ui_farm", icon_farm), ("ui_partial", icon_partial)):
+    for name, fn in (("ui_pallet", icon_pallet), ("ui_farm", icon_farm), ("ui_partial", icon_partial),
+                     ("ui_tickOff", lambda: tick_box(TICK_GREY, False)), ("ui_tickOn", lambda: tick_box(TICK_GREEN, True))):
         path = os.path.join(SRC, name + ".png")
         fn().resize((SIZE, SIZE), Image.LANCZOS).save(path)     # RGBA: the background stays clear
         paths.append(path)

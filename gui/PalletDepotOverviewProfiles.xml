@@ -102,6 +102,19 @@
         <imageHighlightedColor value="$preset_pdGreenSoft"/>
     </Profile>
 
+    <!-- AUTO SPAWN on the Logistics page: the farm's on/off switch in the page strip (its ON / OFF picture is a
+         Bitmap over it) and the clickable tick box of each hub product -->
+    <Profile name="pdAutoSpawn" extends="pdTab">
+        <textAlignment value="left"/>
+        <textColor value="$preset_pdText"/>
+        <imageFocusedColor value="0 0 0 0"/>
+        <imageHighlightedColor value="0 0 0 0"/>
+    </Profile>
+    <Profile name="pdTickButton" extends="pdTab">
+        <imageFocusedColor value="0 0 0 0"/>
+        <imageHighlightedColor value="0 0 0 0"/>
+    </Profile>
+
     <!-- sidebar rows -->
     <Profile name="pdSiteItem" extends="baseReference" with="anchorTopStretchingX">
         <height value="64px"/>

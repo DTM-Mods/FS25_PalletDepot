@@ -1,3 +1,10 @@
+# 1.6.0.0 - 2026-11-18 - Auto spawn
+
+- Logistics page: AUTO column with a tick box for every Logistics Hub product (clicked with the mouse), and the farm's AUTO SPAWN on/off button in the page strip (ADAddOn's ON/OFF button). Only on the Logistics page; only hubs (our 5,000 L pallet exists there only).
+- While AUTO SPAWN is on, the server spawns full 5,000 L pallets of ticked products with at least 5,000 L in stock in groups (as many full pallets as the stock has, up to 20 per round; the lanes take what fits; checked every second), through the Spawn goods code. Lanes full: it waits (8 s retries, no messages) until a truck has taken the pallets away. A hub works down its ticked products in Logistics-page order, one product after another: when less than a full pallet is left after spawning from it, its tick is taken off and the next ticked product starts. A ticked product that never had a full pallet is skipped and keeps its tick.
+- A tick does not change the product's output mode (Storing / Distributing / Selling).
+- Ticks saved in palletDepotAutoSpawn.xml (savegame), the switch with the farm settings (palletDepotAutoManager.xml); both synced in multiplayer, changes need the right to manage productions.
+
 # 1.5.8.5 - 2026-11-18 - Hide inactive is remembered
 
 - Logistics page: the Hide/Show inactive toggle (C) is saved in the player's own settings file (modSettings/PalletDepot/settings.xml) and restored on the next start, instead of resetting every session.

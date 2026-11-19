@@ -10,6 +10,8 @@
 --   notifyLowInputs    alert when an input of a running line falls below the low threshold
 --   notifyHighOutputs  alert when an output of a running line reaches the high threshold
 --   lowThreshold / highThreshold   in percent of the storage capacity
+--   autoSpawn          the AUTO SPAWN button of the Logistics page: ticked hub products come out as pallets
+--                      (scripts/PalletDepotAutoSpawn.lua)
 -- The server checks every CHECK_INTERVAL and sends alerts to the players of the owning farm. Depots are left alone:
 -- their lines are storage, not production.
 
@@ -28,7 +30,7 @@ PalletDepotAutoManager.timer = 0
 
 function PalletDepotAutoManager.defaultSettings()
     return {autoManage = false, notifyControl = false, notifyLowInputs = false, notifyHighOutputs = false,
-        lowThreshold = 20, highThreshold = 80}
+        lowThreshold = 20, highThreshold = 80, autoSpawn = false}
 end
 
 function PalletDepotAutoManager.getSettings(farmId)
@@ -257,6 +259,7 @@ function PalletDepotSettingsEvent:readStream(streamId, connection)
     s.notifyHighOutputs = streamReadBool(streamId)
     s.lowThreshold = streamReadUInt8(streamId)
     s.highThreshold = streamReadUInt8(streamId)
+    s.autoSpawn = streamReadBool(streamId)
     self.settings = s
     self:run(connection)
 end
@@ -270,6 +273,7 @@ function PalletDepotSettingsEvent:writeStream(streamId, connection)
     streamWriteBool(streamId, s.notifyHighOutputs)
     streamWriteUInt8(streamId, s.lowThreshold)
     streamWriteUInt8(streamId, s.highThreshold)
+    streamWriteBool(streamId, s.autoSpawn == true)
 end
 
 function PalletDepotSettingsEvent:run(connection)
@@ -307,7 +311,7 @@ local function getKey(productionPoint)
     return placeable ~= nil and placeable.getUniqueId ~= nil and placeable:getUniqueId() or nil
 end
 
-local BOOL_SETTINGS = {"autoManage", "notifyControl", "notifyLowInputs", "notifyHighOutputs"}
+local BOOL_SETTINGS = {"autoManage", "notifyControl", "notifyLowInputs", "notifyHighOutputs", "autoSpawn"}
 
 function PalletDepotAutoManager.save()
     local filename = getFilename()
@@ -320,7 +324,7 @@ function PalletDepotAutoManager.save()
         local key = string.format("palletDepotAutoManager.farm(%d)", i)
         setXMLInt(xmlId, key .. "#id", farmId)
         for _, name in ipairs(BOOL_SETTINGS) do
-            setXMLBool(xmlId, key .. "#" .. name, settings[name])
+            setXMLBool(xmlId, key .. "#" .. name, settings[name] == true)
         end
         setXMLInt(xmlId, key .. "#lowThreshold", settings.lowThreshold)
         setXMLInt(xmlId, key .. "#highThreshold", settings.highThreshold)

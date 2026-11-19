@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="116">
     <author>DTM Mods, Fennell, PropaineX</author>
-    <version>1.5.8.5</version>
+    <version>1.6.0.0</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -39,6 +39,8 @@ Hotkeys: Right Shift + P opens the productions window. Controller: none by defau
 
 A pallet hall that stores your products and sends them on: drop pallets on the unload pad at the front, then choose per product whether it stays in storage, comes out as pallets at the pickup lanes at the back, is delivered to your other productions or is sold every full hour.
 
+Auto spawn (Logistics page of the productions window): tick hub products with the mouse and switch AUTO SPAWN on. Full 5,000 L pallets come out at the pickup lanes in groups, the next group as soon as a truck has cleared the lanes; the ticked products are worked down the list and each tick comes off when that product is done.
+
 Two buildings, each with its own storage of up to 1,000,000 L per product:
 - Logistics Hub: Food & Drinks (green sign)
 - Logistics Hub: Textiles & Goods (blue sign)
@@ -49,6 +51,7 @@ Pallets only: bulk goods, field crops and bales are not accepted.
 Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.6.0.0 - New: Auto spawn on the Logistics page. Tick a Logistics Hub product (AUTO column, mouse) and switch AUTO SPAWN on: full 5,000 L pallets of it keep coming out at the hub's pickup lanes, the next ones as soon as a truck has taken the last away. It works down the ticked products in list order and takes each tick off when that product is done. The product's output (Storing, Distributing, Selling) is not changed.
 1.5.8.5 - The Logistics page remembers "Hide inactive" (C) between sessions.
 1.5.8.4 - With ModMux installed, the farm's auto-management and alert settings and "Hide sites without active productions" are also on ModMux's LIVE tab. Farm settings still need the right to manage productions.
 1.5.8.3 - Description in GIANTS' ModHub layout (category, price, upkeep or hotkeys at the top). New mod icon in the ModHub standard. Shop images without mipmaps, as ModHub wants. No modder names in the description and the game texts any more.
@@ -140,6 +143,8 @@ Tastenkombinationen: Rechte Umschalttaste + P öffnet das Produktionsfenster. Co
 
 Eine Palettenhalle, die deine Produkte lagert und weitergibt: Paletten auf der Abladefläche vorne abstellen und dann je Produkt wählen, ob es im Lager bleibt, als Paletten an den Abholspuren hinten ausgegeben, an deine anderen Produktionen geliefert oder zu jeder vollen Stunde verkauft wird.
 
+Auto-Spawn (Logistik-Seite des Produktionsfensters): Hub-Produkte mit der Maus ankreuzen und AUTO-SPAWN einschalten. Volle 5.000-L-Paletten kommen in Gruppen an den Abholspuren heraus, die nächste Gruppe, sobald ein LKW die Spuren geräumt hat; die angekreuzten Produkte werden der Reihe nach abgearbeitet, das Häkchen verschwindet, sobald ein Produkt fertig ist.
+
 Zwei Hallen mit eigenem Lager von bis zu 1.000.000 L pro Produkt:
 - Logistikzentrum: Lebensmittel und Getränke (grünes Schild)
 - Logistikzentrum: Textilien und Waren (blaues Schild)
@@ -150,6 +155,7 @@ Nur Paletten: Schüttgut, Feldfrüchte und Ballen werden nicht angenommen.
 Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.6.0.0 - Neu: Auto-Spawn auf der Logistik-Seite. Ein Produkt eines Logistik-Hubs ankreuzen (Spalte AUTO, Maus) und AUTO-SPAWN einschalten: volle 5.000-L-Paletten davon kommen laufend an den Abholspuren des Hubs heraus, die nächsten, sobald ein LKW die letzten abgeholt hat. Die angekreuzten Produkte werden der Reihe nach abgearbeitet, das Häkchen verschwindet, sobald ein Produkt fertig ist. Die Ausgabe des Produkts (Lagern, Verteilen, Verkaufen) bleibt unverändert.
 1.5.8.5 - Die Logistik-Seite merkt sich "Inaktive ausblenden" (C) auch nach einem Neustart.
 1.5.8.4 - Mit ModMux stehen die automatische Verwaltung, die Hinweise des Hofs und "Standorte ohne aktive Produktionen ausblenden" auch im Reiter LIVE von ModMux. Hof-Einstellungen brauchen weiter das Recht, Produktionen zu verwalten.
 1.5.8.3 - Beschreibung im ModHub-Aufbau von GIANTS (Kategorie, Preis, Unterhalt bzw. Tasten oben). Neues Mod-Icon im ModHub-Standard. Shopbilder ohne Mipmaps, wie ModHub es verlangt. Keine Modder-Namen mehr in der Beschreibung und den Spieltexten.
@@ -234,6 +240,7 @@ Changelog:
         <sourceFile filename="scripts/PalletDepotSpawnSizes.lua"/>
         <sourceFile filename="scripts/PalletDepotOptions.lua"/>
         <sourceFile filename="scripts/PalletDepotSpawn.lua"/>
+        <sourceFile filename="scripts/PalletDepotAutoSpawn.lua"/>
         <sourceFile filename="scripts/PalletDepotSpawnDialog.lua"/>
         <sourceFile filename="scripts/PalletDepotOverview.lua"/>
     </extraSourceFiles>
@@ -296,6 +303,8 @@ Changelog:
         <text name="pdo_hbLine"><en>Production</en><de>Produktion</de></text>
         <text name="pdo_hbIngredients"><en>Ingredients</en><de>Zutaten</de></text>
         <text name="pdo_hbStatus"><en>Status</en><de>Status</de></text>
+        <text name="pdo_hbAuto"><en>Auto</en><de>Auto</de></text>
+        <text name="pdo_autoSpawn"><en>Auto spawn</en><de>Auto-Spawn</de></text>
         <text name="pdo_hbItem"><en>Item</en><de>Posten</de></text>
         <text name="pdo_hbPrice"><en>Price / 1000 L</en><de>Preis / 1000 L</de></text>
         <text name="pdo_hbValue"><en>Value</en><de>Wert</de></text>

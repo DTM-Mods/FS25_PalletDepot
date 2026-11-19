@@ -22,6 +22,9 @@
         <Button profile="pdTab" position="478px -88px" size="220px 36px" id="page3" onClick="onClickPage3" text="$l10n_pdo_tabFinances"/>
         <Button profile="pdTab" position="703px -88px" size="220px 36px" id="page4" onClick="onClickPage4" text="$l10n_pdo_tabLogistics"/>
         <Button profile="pdTab" position="928px -88px" size="220px 36px" id="page5" onClick="onClickPage5" text="$l10n_pdo_tabSettings"/>
+        <!-- Logistics page only: the farm's AUTO SPAWN switch (scripts/PalletDepotAutoSpawn.lua) -->
+        <Button profile="pdAutoSpawn" position="1170px -88px" size="200px 36px" id="autoSpawnButton" onClick="onClickAutoSpawn" text="$l10n_pdo_autoSpawn"/>
+        <Bitmap profile="pdIcon" position="1300px -91px" size="37px 30px" id="autoSpawnIcon"/>
         <Bitmap profile="pdAccent" position="28px -124px" size="220px 3px" id="pageUnderline"/>
 
         <!-- the table -->
@@ -34,6 +37,7 @@
                 <Text profile="pdHeaderText" position="600px 0px" size="100px 34px" id="header4"/>
                 <Text profile="pdHeaderText" position="700px 0px" size="100px 34px" id="header5"/>
                 <Text profile="pdHeaderText" position="800px 0px" size="100px 34px" id="headerStatus"/>
+                <Text profile="pdHeaderText" position="900px 0px" size="60px 34px" id="headerAuto" text="$l10n_pdo_hbAuto"/>
                 <Text profile="pdHeaderText" position="0px 0px" size="100px 34px" id="pxRef" visible="false"/>
             </Bitmap>
             <SmoothList profile="pdList" id="table" position="6px -40px" size="1694px 604px" focusInit="onOpen">
@@ -50,6 +54,8 @@
                     <Bitmap profile="pdIcon" position="300px -9px" name="icon5"/>
                     <Text profile="pdCell" position="324px 0px" size="100px 36px" name="text5"/>
                     <Text profile="pdCellStatus" position="1590px 0px" size="100px 36px" name="status"/>
+                    <Bitmap profile="pdIcon" position="560px -9px" name="tick"/>
+                    <Button profile="pdTickButton" position="551px 0px" size="36px 36px" name="tickButton" onClick="onClickTick"/>
                 </ListItem>
             </SmoothList>
             <ThreePartBitmap profile="fs25_listSliderBox" position="-4px -40px" size="12px 604px" with="anchorTopRight">

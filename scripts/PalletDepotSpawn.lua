@@ -86,8 +86,9 @@ end
 
 -- --- spawning (server) ------------------------------------------------------------------------------------
 
--- connection: the player who asked (nil: the host / single player)
-function PalletDepotSpawn.spawn(productionPoint, fillTypeIndex, size, farmId, count, fullOnly, connection)
+-- connection: the player who asked (nil: the host / single player); onDone(code, spawned): called instead of the
+-- messages when everything was tried (Auto spawn, PalletDepotAutoSpawn). Returns true when pallets were queued.
+function PalletDepotSpawn.spawn(productionPoint, fillTypeIndex, size, farmId, count, fullOnly, connection, onDone)
     local spawner = productionPoint.palletSpawner
     local storage = productionPoint.storage
     if spawner == nil or storage == nil or productionPoint.outputFillTypeIds == nil
@@ -121,7 +122,7 @@ function PalletDepotSpawn.spawn(productionPoint, fillTypeIndex, size, farmId, co
     end
 
     local job = {productionPoint = productionPoint, fillType = fillTypeIndex, farmId = farmId, connection = connection,
-                 fullOnly = fullOnly == true, pending = count, spawned = 0, liters = 0, problem = nil}
+                 onDone = onDone, fullOnly = fullOnly == true, pending = count, spawned = 0, liters = 0, problem = nil}
     -- the spawner takes the pallet from its table when the request is queued; for this request it is the chosen one
     local map = spawner.fillTypeIdToPallet
     local before = map[fillTypeIndex]
@@ -130,6 +131,7 @@ function PalletDepotSpawn.spawn(productionPoint, fillTypeIndex, size, farmId, co
         spawner:spawnPallet(farmId, fillTypeIndex, PalletDepotSpawn.onPalletSpawned, job)
     end
     map[fillTypeIndex] = before
+    return true
 end
 
 function PalletDepotSpawn.onPalletSpawned(job, vehicle, result, fillTypeIndex)
@@ -166,7 +168,9 @@ function PalletDepotSpawn.onPalletSpawned(job, vehicle, result, fillTypeIndex)
 
     if job.pending <= 0 then
         local code = job.problem or PalletDepotSpawn.RESULT_DONE
-        if job.connection ~= nil then
+        if job.onDone ~= nil then
+            job.onDone(code, job.spawned)
+        elseif job.connection ~= nil then
             job.connection:sendEvent(PalletDepotSpawnResultEvent.new(productionPoint, fillTypeIndex, code, job.spawned, job.liters))
         else
             PalletDepotSpawn.showResult(productionPoint, fillTypeIndex, code, job.spawned, job.liters)

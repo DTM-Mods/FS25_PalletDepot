@@ -62,6 +62,7 @@ With everything loaded that is up to 199 products in Food & Drinks and 81 in Tex
 - **Capacity option** per hub: 100,000 / 500,000 / 1,000,000 L per product.
 - **Depot pallets in three sizes**: **1,000 L / 2,500 L / 5,000 L**, all on a **1.20 × 0.80 m** base. Full heights are **0.364 / 0.804 / 1.464 m**, with **1 / 3 / 6 cargo layers**. Cargo uses the original product models and material maps from the game or installed mod, including open lettuce crates and carrot bags. Built-in collision follows the complete layers as the fill changes. All three sizes of lettuce and carrot bags were visually checked in GIANTS Editor; gameplay remains untested. Universal Autoload receives the depot footprint and current collision height directly, allowing three narrow sides across the Krone Profi Liner even if its cached measurement is wrong. Other productions keep their existing pallets.
 - **Spawn goods window** (no other mod needed): pick a product in stock, a 1,000 L, 2,500 L or 5,000 L depot pallet, full pallets only or a last part-filled one, the farm that gets it and how many pallets; they come out at the pickup lanes. It remembers your last choice per building and warns about the pallet limit and pallets still at the lanes.
+- **Auto spawn**: on the Logistics page, tick hub products with the mouse and switch **AUTO SPAWN** on. Full 5,000 L pallets come out at the pickup lanes in groups (up to 20 per round, as many as fit), the next group as soon as a truck has cleared the lanes. The ticked products are worked down the list, one after another, and each tick comes off when that product has less than a full pallet left. The product's output (Storing, Distributing, Selling) is not changed.
 - **Racks that fill up**: 84 pallet places that show the stock as it grows.
 - **Working roller doors** on three sides. Open and close them like a garage door; their state is saved.
 - **Daily report at 06:00**: what came in, went out, was delivered and was sold at each hub.
@@ -86,13 +87,14 @@ Press **Right Shift + P** for one table of **all** your productions, not only th
 | Key | Main page | Logistics page |
 |:---:|---|---|
 | <kbd>X</kbd> | inputs / outputs | schedule: the months a line runs |
-| <kbd>C</kbd> | recipes | hide inactive |
+| <kbd>C</kbd> | recipes | hide inactive (remembered) |
 | <kbd>Q</kbd> | finances | spawn goods |
 | <kbd>E</kbd> | logistics | |
 | <kbd>Enter</kbd> | settings | change output |
 | <kbd>Backspace</kbd> | spawn goods | recipe on / off |
 | <kbd>Space</kbd> | CSV export | |
 | <kbd>Esc</kbd> | close | close |
+| Mouse | | AUTO column tick boxes and the AUTO SPAWN on/off button (Logistics Hubs only) |
 
 The **settings** page has:
 

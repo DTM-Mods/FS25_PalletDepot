@@ -7,7 +7,8 @@
 --   Finances     stock value, running costs and net per month; Backspace spawn goods; Q back
 --   Logistics    per recipe: stored, supply, output, destination, status; Enter changes the output (Storing ->
 --                Spawning -> Distributing -> Selling; Storing is ours, scripts/PalletDepotStoring.lua), Backspace switches the recipe on / off, X schedule, C hides inactive recipes, Q spawn goods;
---                E back
+--                E back. Logistics Hub products have a tick box (AUTO, clicked with the mouse) and the page strip the
+--                farm's AUTO SPAWN on/off button: ticked products come out as 5,000 L pallets (scripts/PalletDepotAutoSpawn.lua)
 --   Settings     farm settings (auto-manage, alerts), the selected production's pallets, the selected depot's
 --                capacity, personal settings;
 --                Enter changes the selected setting, Backspace back
@@ -45,8 +46,8 @@ local LAYOUT = {
         slots = {{300, 290}, {600, 290}, {900, 290}},
         headers = {name = "pdo_hbName", "pdo_finStockValue", "pdo_finCosts", "pdo_finNet"}},
     [PAGE.LOGISTICS] = {
-        slots = {{300, 310, true}, {620, 230}, {860, 120}, {990, 170}, {1170, 410}},
-        status = {1590, 100},
+        slots = {{300, 250, true}, {620, 230}, {860, 120}, {990, 170}, {1170, 410}},
+        status = {1590, 100}, tick = 560,
         headers = {name = "pdo_hbName", "pdo_hbRecipe", "pdo_hbStored", "pdo_hbSupply", "pdo_hbOutput",
                    "pdo_hbDestination", status = "pdo_hbStatus"}},
     [PAGE.SETTINGS] = {
@@ -717,6 +718,17 @@ function PalletDepotOverview:updateTexts()
             header:setVisible(false)
         end
     end
+    local logistics = page == PAGE.LOGISTICS
+    self.headerAuto:setVisible(logistics)
+    if logistics then
+        self.headerAuto:setPosition(self:px(layout.tick - 8), nil)
+    end
+    self.autoSpawnButton:setVisible(logistics)
+    self.autoSpawnIcon:setVisible(logistics)
+    if logistics then
+        local on = PalletDepotAutoSpawn.isOn(g_currentMission:getFarmId())
+        self.autoSpawnIcon:setImageFilename(PalletDepot.modDirectory .. (on and "textures/ui_powerOn.dds" or "textures/ui_powerOff.dds"))
+    end
     if layout.status ~= nil then
         self.headerStatus:setPosition(self:px(layout.status[1] + 6), nil)
         self.headerStatus:setSize(self:px(layout.status[2]), nil)
@@ -766,6 +778,19 @@ function PalletDepotOverview:populateCellForItemInSection(list, section, index, 
             icon:setVisible(false)
             label:setVisible(false)
         end
+    end
+    local tick, tickButton = element:getAttribute("tick"), element:getAttribute("tickButton")
+    local productionPoint = row.facility ~= nil and row.facility.productionPoint or nil
+    local tickable = layout.tick ~= nil and row.production ~= nil and row.fillType ~= nil
+        and PalletDepotAutoSpawn.canTick(productionPoint)
+    tick:setVisible(tickable)
+    tickButton:setVisible(tickable)
+    tickButton.palletDepotRow = index
+    if tickable then
+        tick:setPosition(self:px(layout.tick), nil)
+        tickButton:setPosition(self:px(layout.tick - 9), nil)
+        local ticked = PalletDepotAutoSpawn.isTicked(productionPoint, row.fillType)
+        tick:setImageFilename(PalletDepot.modDirectory .. (ticked and "textures/ui_tickOn.dds" or "textures/ui_tickOff.dds"))
     end
     local status = element:getAttribute("status")
     if row.status ~= nil and layout.status ~= nil then
@@ -946,6 +971,33 @@ function PalletDepotOverview:onClickPage2() self:openPage(PAGE.RECIPES) end
 function PalletDepotOverview:onClickPage3() self:openPage(PAGE.FINANCES) end
 function PalletDepotOverview:onClickPage4() self:openPage(PAGE.LOGISTICS) end
 function PalletDepotOverview:onClickPage5() self:openPage(PAGE.SETTINGS) end
+
+-- --- Auto spawn (Logistics page, mouse) ----------------------------------------------------------------
+
+-- the farm's AUTO SPAWN button in the page strip
+function PalletDepotOverview:onClickAutoSpawn()
+    if self:getPage() ~= PAGE.LOGISTICS or not self:canManage() then
+        return
+    end
+    local farmId = g_currentMission:getFarmId()
+    PalletDepotAutoSpawn.requestOn(farmId, not PalletDepotAutoSpawn.isOn(farmId))
+    self:updateTexts()
+end
+
+-- a product's tick box
+function PalletDepotOverview:onClickTick(button)
+    local row = button ~= nil and self.rows[button.palletDepotRow] or nil
+    if self:getPage() ~= PAGE.LOGISTICS or row == nil or row.fillType == nil or row.facility == nil then
+        return
+    end
+    local productionPoint = row.facility.productionPoint
+    if not PalletDepotAutoSpawn.canTick(productionPoint) or not self:canManage() then
+        return
+    end
+    PalletDepotAutoSpawn.request(productionPoint, row.fillType, not PalletDepotAutoSpawn.isTicked(productionPoint, row.fillType))
+    self.table:reloadData()
+    self.table:setSelectedItem(1, self.rowIndex, true)
+end
 
 -- --- recipe actions ------------------------------------------------------------------------------------
 
