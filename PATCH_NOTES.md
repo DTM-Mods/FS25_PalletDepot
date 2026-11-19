@@ -1,3 +1,7 @@
+# 1.5.8.5 - 2026-11-18 - Hide inactive is remembered
+
+- Logistics page: the Hide/Show inactive toggle (C) is saved in the player's own settings file (modSettings/PalletDepot/settings.xml) and restored on the next start, instead of resetting every session.
+
 # 1.5.8.4 - 2026-11-17 - Settings on ModMux's LIVE tab
 
 - With ModMux installed, the farm settings of the productions window (auto-management, the three alerts, low and high threshold) and the personal "Hide sites without active productions" are also instant switches on ModMux's LIVE tab. Farm settings go to the server like from the Settings tab and need the right to manage productions; without it you get the usual message and nothing changes.

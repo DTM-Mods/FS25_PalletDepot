@@ -397,7 +397,7 @@ end
 
 -- --- personal settings (this player only, kept in modSettings) ------------------------------------------
 
-PalletDepotAutoManager.personal = {hideInactiveSites = false}
+PalletDepotAutoManager.personal = {hideInactiveSites = false, hideInactiveLines = false}
 
 local function personalFilename()
     return getUserProfileAppPath() .. "modSettings/PalletDepot/settings.xml"
@@ -408,6 +408,7 @@ function PalletDepotAutoManager.savePersonal()
     createFolder(getUserProfileAppPath() .. "modSettings/PalletDepot/")
     local xmlId = createXMLFile("palletDepotSettings", personalFilename(), "palletDepotSettings")
     setXMLBool(xmlId, "palletDepotSettings#hideInactiveSites", PalletDepotAutoManager.personal.hideInactiveSites)
+    setXMLBool(xmlId, "palletDepotSettings#hideInactiveLines", PalletDepotAutoManager.personal.hideInactiveLines == true)
     saveXMLFile(xmlId)
     delete(xmlId)
 end
@@ -417,6 +418,7 @@ function PalletDepotAutoManager.loadPersonal()
     if fileExists(filename) then
         local xmlId = loadXMLFile("palletDepotSettings", filename)
         PalletDepotAutoManager.personal.hideInactiveSites = Utils.getNoNil(getXMLBool(xmlId, "palletDepotSettings#hideInactiveSites"), false)
+        PalletDepotAutoManager.personal.hideInactiveLines = Utils.getNoNil(getXMLBool(xmlId, "palletDepotSettings#hideInactiveLines"), false)
         delete(xmlId)
     end
 end

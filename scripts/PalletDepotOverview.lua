@@ -23,7 +23,6 @@ PalletDepotOverview.PAGE = {MAIN = 1, RECIPES = 2, FINANCES = 3, LOGISTICS = 4, 
 PalletDepotOverview.PER_LINE = 5               -- products per line on the productions page
 PalletDepotOverview.MIN_STOCK = 0.5            -- liters; below this a product counts as empty
 PalletDepotOverview.FULL_SHARE = 0.9           -- "Full" above 90 % of capacity
-PalletDepotOverview.hideInactive = false       -- logistics page, remembered for the session
 PalletDepotOverview.profilesLoaded = false
 
 local PAGE = PalletDepotOverview.PAGE
@@ -352,7 +351,7 @@ function PalletDepotOverview:getRecipes(facility, page)
     for _, production in ipairs(facility.productions) do
         local keep = true
         if page == PAGE.LOGISTICS then
-            keep = not PalletDepotOverview.hideInactive or isEnabled(production)
+            keep = not PalletDepotAutoManager.personal.hideInactiveLines or isEnabled(production)
         elseif facility.isDepot then
             local fillType = productFillType(production)
             keep = production.status == ProductionPoint.PROD_STATUS.RUNNING
@@ -817,7 +816,7 @@ function PalletDepotOverview:updateButtons()
     self.recipeButton:setText(text(self.showRecipes and "pdo_btnShowFillTypes" or "pdo_btnShowRecipes"))
     self.recipeButton:setInputAction(InputAction.MENU_EXTRA_2)
     self.inactiveButton:setVisible(page == PAGE.LOGISTICS)
-    self.inactiveButton:setText(text(PalletDepotOverview.hideInactive and "pdo_btnShowInactive" or "pdo_btnHideInactive"))
+    self.inactiveButton:setText(text(PalletDepotAutoManager.personal.hideInactiveLines and "pdo_btnShowInactive" or "pdo_btnHideInactive"))
     self.inactiveButton:setInputAction(InputAction.MENU_EXTRA_2)
 
     self.financesButton:setVisible(page == PAGE.MAIN or page == PAGE.RECIPES or page == PAGE.FINANCES)
@@ -896,7 +895,9 @@ function PalletDepotOverview:onClickLogistics()
 end
 
 function PalletDepotOverview:onClickHideInactive()
-    PalletDepotOverview.hideInactive = not PalletDepotOverview.hideInactive
+    local personal = PalletDepotAutoManager.personal
+    personal.hideInactiveLines = not personal.hideInactiveLines
+    PalletDepotAutoManager.savePersonal()
     self:rebuild()
 end
 
