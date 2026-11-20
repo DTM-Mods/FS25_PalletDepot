@@ -171,6 +171,171 @@ function PalletDepotGoodsLook.fitPlankStack(cargo, request, targetHeight)
         radius = select(4, getShapeBoundingSphere(shape))}
 end
 
+-- Other skinned cargo (barrels, crates, bags, ...): its bones carry positions and turns, and rigid parts
+-- (fruit, leaves, straps) hang off them. Scaling any bone or ancestor skews the skin, so the skeleton stays at
+-- unit scale; skinned meshes are scaled in the cargo's frame before skinning (shaders/skinnedCargoFit.xml) and
+-- the rigid parts move under one scaled node, keeping their pose and visibility.
+PalletDepotGoodsLook.fitMaterials = {}
+local function fitMaterial(original)
+    local diffuse = getMaterialDiffuseMapFilename(original) or ""
+    local normal = getMaterialNormalMapFilename(original) or ""
+    local gloss = getMaterialGlossMapFilename(original) or ""
+    local key = diffuse .. "|" .. normal .. "|" .. gloss
+    local cached = PalletDepotGoodsLook.fitMaterials[key]
+    if cached ~= nil then return cached end
+    if PalletDepotGoodsLook.fitCarrier == nil then
+        local template = g_i3DManager:loadSharedI3DFile(
+            PalletDepot.modDirectory .. "vehicles/skinnedCargoMaterial.i3d", false, false)
+        if template == nil or template == 0 then
+            Logging.warning("[PalletDepot] Could not load skinned cargo material")
+            PalletDepotGoodsLook.fitCarrier = false
+        else
+            -- kept for the session: the template owns the carrier material
+            PalletDepotGoodsLook.fitCarrier = getMaterial(getChildAt(template, 0), 0)
+            PalletDepotGoodsLook.fitTemplate = template
+        end
+    end
+    if not PalletDepotGoodsLook.fitCarrier then return nil end
+    local material = PalletDepotGoodsLook.fitCarrier
+    if diffuse ~= "" then material = setMaterialDiffuseMapFromFile(material, diffuse, true, true, false) end
+    if normal ~= "" then material = setMaterialNormalMapFromFile(material, normal, true, false, false) end
+    if gloss ~= "" then material = setMaterialGlossMapFromFile(material, gloss, true, true, false) end
+    PalletDepotGoodsLook.fitMaterials[key] = material
+    return material
+end
+
+local function frameOf(node, cargo)
+    return {t = {localToLocal(node, cargo, 0, 0, 0)},
+        c = {{localDirectionToLocal(node, cargo, 1, 0, 0)}, {localDirectionToLocal(node, cargo, 0, 1, 0)},
+             {localDirectionToLocal(node, cargo, 0, 0, 1)}}}
+end
+
+local function fitShape(cargo, shape, materials, inPlace)
+    for m, material in pairs(materials) do setMaterial(shape, material, m) end
+    local entry = frameOf(shape, cargo)
+    entry.shape, entry.inPlace = shape, inPlace
+    return entry
+end
+
+-- Native skinned cargo is one piece modelled at the mesh origin; its bones place the copies (measured on all
+-- 17 base-game models). Each piece is scaled in its own space by the shader and each bone is moved (never
+-- scaled) to its fitted spot. Visible non-skinned shapes that hold bones are scaled in place by the shader.
+-- Left on the old path at the user's request (goat milk never comes out of a depot).
+PalletDepotGoodsLook.SKIN_FIT_SKIP = {"/goatMilkCanPallet/goatMilkCanPallet.i3d"}
+
+function PalletDepotGoodsLook.prepareSkinFit(cargo, i3d)
+    for _, suffix in ipairs(PalletDepotGoodsLook.SKIN_FIT_SKIP) do
+        if i3d ~= nil and i3d:sub(-#suffix) == suffix then return nil end
+    end
+    local skins, keep = {}, {}
+    local function collect(node)
+        if getHasClassId(node, ClassIds.SHAPE) and getShapeIsSkinned(node) then table.insert(skins, node) end
+        for i = 0, getNumOfChildren(node) - 1 do collect(getChildAt(node, i)) end
+    end
+    collect(cargo)
+    if #skins == 0 then return nil end
+    local function mark(node)
+        while node ~= 0 and node ~= cargo and not keep[node] do keep[node] = true node = getParent(node) end
+    end
+    local bones, isBone = {}, {}
+    for _, skin in ipairs(skins) do
+        mark(skin)
+        for b = 0, getNumOfShapeBones(skin) - 1 do
+            local bone = getShapeBone(skin, b)
+            mark(bone)
+            if not isBone[bone] then isBone[bone] = true table.insert(bones, bone) end
+        end
+    end
+    local function materialsOf(shape, needMaps)
+        local list = {}
+        for m = 0, getNumOfMaterials(shape) - 1 do
+            local original = getMaterial(shape, m)
+            if needMaps and (getMaterialDiffuseMapFilename(original) or "") == "" then return nil end
+            local material = fitMaterial(original)
+            if material == nil then return false end
+            list[m] = material
+        end
+        return list
+    end
+    local skinMaterials, holders = {}, {}
+    for _, skin in ipairs(skins) do
+        skinMaterials[skin] = materialsOf(skin, false)
+        if not skinMaterials[skin] then return nil end
+    end
+    for node in pairs(keep) do
+        if getHasClassId(node, ClassIds.SHAPE) and not getShapeIsSkinned(node) then
+            local list = materialsOf(node, true)
+            if list == false then return nil end
+            if list ~= nil then holders[node] = list end
+        end
+    end
+    local function hidden(node)
+        node = getParent(node)
+        while node ~= 0 and node ~= cargo do
+            if not getVisibility(node) then return true end
+            node = getParent(node)
+        end
+        return false
+    end
+    local moving = {}
+    local function findMoving(node)
+        for i = 0, getNumOfChildren(node) - 1 do
+            local child = getChildAt(node, i)
+            if keep[child] then findMoving(child) else table.insert(moving, child) end
+        end
+    end
+    findMoving(cargo)
+    local rigid = createTransformGroup("palletDepotRigidCargo")
+    link(cargo, rigid)
+    for _, node in ipairs(moving) do
+        local x, y, z = localToLocal(node, cargo, 0, 0, 0)
+        local dx, dy, dz = localDirectionToLocal(node, cargo, 0, 0, 1)
+        local ux, uy, uz = localDirectionToLocal(node, cargo, 0, 1, 0)
+        local hide = hidden(node)
+        link(rigid, node)
+        setTranslation(node, x, y, z)
+        setDirection(node, dx, dy, dz, ux, uy, uz)
+        if hide then setVisibility(node, false) end
+    end
+    local fit = {rigid = rigid, cargo = cargo, shapes = {}, bones = {}}
+    -- parents before children, so each bone is placed from its parent's already fitted pose
+    local function depth(node) local d = 0 while node ~= cargo and node ~= 0 do d = d + 1 node = getParent(node) end return d end
+    table.sort(bones, function(l, r) return depth(l) < depth(r) end)
+    for _, bone in ipairs(bones) do table.insert(fit.bones, {node = bone, p = {localToLocal(bone, cargo, 0, 0, 0)}}) end
+    for _, skin in ipairs(skins) do table.insert(fit.shapes, fitShape(cargo, skin, skinMaterials[skin], false)) end
+    for node, list in pairs(holders) do table.insert(fit.shapes, fitShape(cargo, node, list, true)) end
+    return fit
+end
+
+-- Cargo frame: p -> (sx * x, dy + sy * y, sz * z), the fit the cargo root's scale gave before.
+-- c[j] = shape axis j in the cargo frame; shape-space vector of a cargo vector v = (c[1].v, c[2].v, c[3].v).
+function PalletDepotGoodsLook.applySkinFit(fit, sx, sy, sz, dy, centerY, radius)
+    setScale(fit.rigid, sx, sy, sz)
+    setTranslation(fit.rigid, 0, dy, 0)
+    for _, bone in ipairs(fit.bones) do
+        local p = bone.p
+        setTranslation(bone.node, localToLocal(fit.cargo, getParent(bone.node), sx * p[1], dy + sy * p[2], sz * p[3]))
+    end
+    for _, e in ipairs(fit.shapes) do
+        local c = e.c
+        local t = e.inPlace and e.t or {localToLocal(e.shape, fit.cargo, 0, 0, 0)}
+        local function back(v)
+            return c[1][1] * v[1] + c[1][2] * v[2] + c[1][3] * v[3],
+                c[2][1] * v[1] + c[2][2] * v[2] + c[2][3] * v[3],
+                c[3][1] * v[1] + c[3][2] * v[2] + c[3][3] * v[3]
+        end
+        local ox, oy, oz = 0, 0, 0
+        if e.inPlace then ox, oy, oz = back({(sx - 1) * t[1], dy + (sy - 1) * t[2], (sz - 1) * t[3]}) end
+        setShaderParameter(e.shape, "cargoScale", sx, sy, sz, 0, false)
+        setShaderParameter(e.shape, "cargoOffset", ox, oy, oz, 0, false)
+        setShaderParameter(e.shape, "cargoRow0", c[1][1], c[2][1], c[3][1], 0, false)
+        setShaderParameter(e.shape, "cargoRow1", c[1][2], c[2][2], c[3][2], 0, false)
+        setShaderParameter(e.shape, "cargoRow2", c[1][3], c[2][3], c[3][3], 0, false)
+        local bx, by, bz = back({-t[1], centerY - t[2], -t[3]})
+        setShapeBoundingSphere(e.shape, bx, by, bz, radius)
+    end
+end
+
 function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
     local vehicle = request.vehicle
     if scene == 0 or vehicle.isDeleted or vehicle.isDeleting
@@ -206,8 +371,14 @@ function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
             end
             link(layer.node, cargo)
             local sy = pitch / sourcePitch
-            setScale(cargo, sx, sy, sz)
-            setTranslation(cargo, 0, deck + (index - 1) * pitch - (center - sourcePitch / 2) * sy, 0)
+            local dy = deck + (index - 1) * pitch - (center - sourcePitch / 2) * sy
+            local fit = PalletDepotGoodsLook.prepareSkinFit(cargo, request.i3d)
+            if fit ~= nil then
+                PalletDepotGoodsLook.applySkinFit(fit, sx, sy, sz, dy, deck + (index - 0.5) * pitch, 1.5)
+            else
+                setScale(cargo, sx, sy, sz)
+                setTranslation(cargo, 0, dy, 0)
+            end
             table.insert(vehicle.palletDepotGoodsNodes, cargo)
         end
     else
@@ -218,7 +389,9 @@ function PalletDepotGoodsLook.onLoaded(request, scene, failedReason)
         link(layers[1].node, cargo)
         local sy = targetHeight / math.max(0.01, request.height - deck)
         local whole = PalletDepotGoodsLook.fitPlankStack(cargo, request, targetHeight)
-            or {sx = sx, sy = sy, sz = sz}
+        if whole == nil then
+            whole = {sx = sx, sy = sy, sz = sz, fit = PalletDepotGoodsLook.prepareSkinFit(cargo, request.i3d)}
+        end
         whole.node = cargo
         vehicle.palletDepotGoodsWhole = whole
         table.insert(vehicle.palletDepotGoodsNodes, cargo)
@@ -249,6 +422,9 @@ function PalletDepotGoodsLook.update(vehicle, fillTypeIndex)
                     whole.radius * math.max(whole.sx, sy, whole.sz))
                 setTranslation(whole.node, -whole.centerX * whole.sx,
                     PalletDepotGoodsLook.DECK - whole.baseY * sy, -whole.centerZ * whole.sz)
+            elseif whole.fit ~= nil then
+                PalletDepotGoodsLook.applySkinFit(whole.fit, whole.sx, sy, whole.sz,
+                    PalletDepotGoodsLook.DECK * (1 - sy), vehicle.size.height / 2, 1.5)
             else
                 setScale(whole.node, whole.sx, sy, whole.sz)
                 setTranslation(whole.node, 0, PalletDepotGoodsLook.DECK * (1 - sy), 0)

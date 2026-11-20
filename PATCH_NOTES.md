@@ -1,3 +1,10 @@
+# 1.6.1.0 - 2026-11-20 - Skewed cargo on depot pallets
+
+- Fixes the skewed / sheared goods on depot pallets for barrel, bucket, butter, canola oil, cement bags, cheese, chocolate, egg boxes, lettuce, potato chips, prefab walls, silage additive, soup cans, strawberries, tomatoes and wool (the game's pallets whose goods are one skinned piece placed by bones). Planks keep their 1.5.6.0 fit; goat milk is left as it was (it never comes out of a depot).
+- Cause: the whole native model was scaled to our 1.20 x 0.80 m pallet, and scaled bones distort skinned meshes.
+- Now no bone or bone parent is scaled. Each piece is stretched in its own space by a new shader (shaders/skinnedCargoFit.xml, the product's own diffuse/normal/specular maps through vehicles/skinnedCargoMaterial.i3d), each bone is moved to its fitted spot, and rigid parts (fruit, leaves, straps) sit under one scaled node with their pose and visibility kept.
+- Verified in GIANTS Editor: all 16 products at 5,000 L full and half and at 1,000 L on a moved, turned pallet, before/after. 51 offline tests pass (new: bones never scaled and moved to their fitted height, goat milk unchanged). Untested in game.
+
 # 1.6.0.0 - 2026-11-18 - Auto spawn
 
 - Logistics page: AUTO column with a tick box for every Logistics Hub product (clicked with the mouse), and the farm's AUTO SPAWN on/off button in the page strip (ADAddOn's ON/OFF button). Only on the Logistics page; only hubs (our 5,000 L pallet exists there only).

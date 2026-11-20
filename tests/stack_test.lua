@@ -113,6 +113,15 @@ function tests.realJoinStreamRestoresPartialLayersAndProductLook()
     assertEqual(client.palletDepotGoodsFillType, 5, 'joining client product look')
 end
 
+-- The fixture's crate holder: the native root's child without geometry (rigid parts may move away from the root).
+local function nativeContent(scene)
+    local root = getChildAt(scene, 0)
+    for i = 0, getNumOfChildren(root) - 1 do
+        local child = getChildAt(root, i)
+        if not NATIVE_NODES[child].shape then return child end
+    end
+end
+
 function tests.nativeGeometryKeepsMaterialsAndChangesWithTheProduct()
     local butter = layeredPallet(1000)
     local cheese = layeredPallet(1000)
@@ -120,7 +129,7 @@ function tests.nativeGeometryKeepsMaterialsAndChangesWithTheProduct()
     cheese:addFillUnitFillLevel(1, 1, 1000, 6, 0)
     local a = butter.palletDepotGoodsNodes[1]
     local b = cheese.palletDepotGoodsNodes[1]
-    local function firstBox(scene) return getChildAt(getChildAt(getChildAt(scene, 0), 1), 0) end
+    local function firstBox(scene) return getChildAt(nativeContent(scene), 0) end
     assertEqual(NATIVE_NODES[firstBox(a)].material, 305, 'original product material')
     assertEqual(NATIVE_NODES[firstBox(b)].material, 306, 'other original material')
     butter:addFillUnitFillLevel(1, 1, -1000, 5, 0)
@@ -179,8 +188,7 @@ function tests.nativeClonesKeepSkinGraphAndOnlyBottomRow()
     v:addFillUnitFillLevel(1, 1, 2500, 5, 0)
     assertEqual(#v.palletDepotGoodsNodes, 3, 'one native row per depot layer')
     for _, scene in ipairs(v.palletDepotGoodsNodes) do
-        local root = getChildAt(scene, 0)
-        local content = getChildAt(root, 1)
+        local content = nativeContent(scene)
         local first = getChildAt(content, 0)
         assertEqual(#NATIVE_NODES[first].skin, 12, 'all original skin joints retained')
         for i = 0, 11 do
@@ -276,6 +284,55 @@ function tests.plankSkinFitsEveryLayerWithoutScalingItsSkeleton()
         assertEqual(NATIVE_NODES[old].deleted, true, 'old plank skeleton removed on product change')
     end
     NATIVE_RAW_FILENAME_BY_TYPE[5] = nil
+end
+
+function tests.skinnedCargoMovesBonesAndNeverScalesThem()
+    -- Real base-game skinned cargo is one piece at the mesh origin, placed by its bones (barrels, crates, bags).
+    for _, size in ipairs({1000, 2500, 5000}) do
+        local v = layeredPallet(size)
+        v:addFillUnitFillLevel(1, 1, size, 5, 0)
+        local layers = #v.spec_pallet.contents[1].objects
+        assertEqual(#v.palletDepotGoodsNodes, layers, 'one native row per depot layer')
+        for _, cargo in ipairs(v.palletDepotGoodsNodes) do
+            close((NODE_SCALE[cargo] or {1, 1, 1})[2], 1, 'cargo root is not scaled')
+            local content = nativeContent(cargo)
+            local skin = getChildAt(content, 0)
+            local scale = NATIVE_NODES[skin].cargoScale
+            assert(scale, 'skinned piece fitted by the shader')
+            close(scale[1], 1.2 / 1.3, 'piece width')
+            close(scale[3], 0.8 / 0.9, 'piece length')
+            local offset = NATIVE_NODES[skin].cargoOffset
+            for axis = 1, 3 do close(offset[axis], 0, 'pieces scale about their own origin') end
+            local rigid
+            for i = 0, getNumOfChildren(cargo) - 1 do
+                local child = getChildAt(cargo, i)
+                if getName(child) == 'palletDepotRigidCargo' then rigid = child end
+            end
+            assert(rigid, 'rigid parts collected under one scaled node')
+            close(NODE_SCALE[rigid][2], scale[2], 'rigid parts follow the same height fit')
+            local dy = NATIVE_NODES[rigid].translation[2]
+            for i = 0, 11 do
+                local bone = getChildAt(content, i)
+                local node = bone
+                while NATIVE_NODES[node] do
+                    local s = NODE_SCALE[node] or {1, 1, 1}
+                    for axis = 1, 3 do close(s[axis], 1, 'bones and their ancestors keep unit scale') end
+                    node = NATIVE_NODES[node].parent
+                end
+                local original = 0.144 + math.floor(i / 4) * 0.22
+                local _, y = localToLocal(bone, cargo, 0, 0, 0)
+                close(y, dy + scale[2] * original, 'bone moved to its fitted height')
+                assertEqual(getNumOfChildren(bone), 0, 'rigid tension mesh moved off the bone')
+            end
+        end
+    end
+    NATIVE_RAW_FILENAME_BY_TYPE[5] = '$data/objects/pallets/goatMilkCanPallet/goatMilkCanPallet.i3d'
+    local goat = layeredPallet(1000)
+    goat:addFillUnitFillLevel(1, 1, 1000, 5, 0)
+    NATIVE_RAW_FILENAME_BY_TYPE[5] = nil
+    local cargo = goat.palletDepotGoodsNodes[1]
+    assert(NODE_SCALE[cargo], 'goat milk keeps its previous fit')
+    assertEqual(NATIVE_NODES[getChildAt(nativeContent(cargo), 0)].cargoScale, nil, 'goat milk not changed')
 end
 
 function tests.legacyProductPalletsKeepTheGamesOwnGeometry()

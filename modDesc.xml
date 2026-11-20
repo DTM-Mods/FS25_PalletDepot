@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="116">
     <author>DTM Mods, Fennell, PropaineX</author>
-    <version>1.6.0.0</version>
+    <version>1.6.1.0</version>
 
     <title>
         <en>Logistics Hub</en>
@@ -51,6 +51,7 @@ Pallets only: bulk goods, field crops and bales are not accepted.
 Sign lettering set in Inter (SIL Open Font License).
 
 Changelog:
+1.6.1.0 - Fix: barrels, buckets, butter, canola oil, cement bags, cheese, chocolate, eggs, lettuce, potato chips, prefab walls, silage additive, soup cans, strawberries, tomatoes and wool no longer come out skewed on depot pallets. They now sit square and fill the pallet at every size and fill level.
 1.6.0.0 - New: Auto spawn on the Logistics page. Tick a Logistics Hub product (AUTO column, mouse) and switch AUTO SPAWN on: full 5,000 L pallets of it keep coming out at the hub's pickup lanes, the next ones as soon as a truck has taken the last away. It works down the ticked products in list order and takes each tick off when that product is done. The product's output (Storing, Distributing, Selling) is not changed.
 1.5.8.5 - The Logistics page remembers "Hide inactive" (C) between sessions.
 1.5.8.4 - With ModMux installed, the farm's auto-management and alert settings and "Hide sites without active productions" are also on ModMux's LIVE tab. Farm settings still need the right to manage productions.
@@ -155,6 +156,7 @@ Nur Paletten: Schüttgut, Feldfrüchte und Ballen werden nicht angenommen.
 Schild-Schrift: Inter (SIL Open Font License).
 
 Changelog:
+1.6.1.0 - Behoben: Fässer, Eimer, Butter, Rapsöl, Zementsäcke, Käse, Schokolade, Eier, Salat, Kartoffelchips, Fertigwände, Siliermittel, Suppendosen, Erdbeeren, Tomaten und Wolle sind auf Depot-Paletten nicht mehr verzerrt. Sie stehen gerade und füllen die Palette bei jeder Größe und jedem Füllstand.
 1.6.0.0 - Neu: Auto-Spawn auf der Logistik-Seite. Ein Produkt eines Logistik-Hubs ankreuzen (Spalte AUTO, Maus) und AUTO-SPAWN einschalten: volle 5.000-L-Paletten davon kommen laufend an den Abholspuren des Hubs heraus, die nächsten, sobald ein LKW die letzten abgeholt hat. Die angekreuzten Produkte werden der Reihe nach abgearbeitet, das Häkchen verschwindet, sobald ein Produkt fertig ist. Die Ausgabe des Produkts (Lagern, Verteilen, Verkaufen) bleibt unverändert.
 1.5.8.5 - Die Logistik-Seite merkt sich "Inaktive ausblenden" (C) auch nach einem Neustart.
 1.5.8.4 - Mit ModMux stehen die automatische Verwaltung, die Hinweise des Hofs und "Standorte ohne aktive Produktionen ausblenden" auch im Reiter LIVE von ModMux. Hof-Einstellungen brauchen weiter das Recht, Produktionen zu verwalten.

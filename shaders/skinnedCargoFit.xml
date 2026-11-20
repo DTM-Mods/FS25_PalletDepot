@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fits skinned native cargo to a depot pallet without scaling any bone: each vertex is scaled in the
+     cargo's frame BEFORE skinning (after skinning the engine gives world positions). Bones are in bind pose,
+     so the mesh-to-cargo transform is the same for every bone. cargoRow0..2 = rows of the shape-to-cargo rotation,
+     cargoScale = per-axis scale in the cargo frame, cargoOffset = resulting shift in shape space. -->
+<CustomShader version="5">
+    <Parameters>
+        <Parameter name="cargoScale" target="cargoScale" type="float3" group="base" defaultValue="1 1 1" minValue="0.001 0.001 0.001" maxValue="100 100 100"/>
+        <Parameter name="cargoOffset" target="cargoOffset" type="float3" group="base" defaultValue="0 0 0" minValue="-100 -100 -100" maxValue="100 100 100"/>
+        <Parameter name="cargoRow0" target="cargoRow0" type="float3" group="base" defaultValue="1 0 0" minValue="-1 -1 -1" maxValue="1 1 1"/>
+        <Parameter name="cargoRow1" target="cargoRow1" type="float3" group="base" defaultValue="0 1 0" minValue="-1 -1 -1" maxValue="1 1 1"/>
+        <Parameter name="cargoRow2" target="cargoRow2" type="float3" group="base" defaultValue="0 0 1" minValue="-1 -1 -1" maxValue="1 1 1"/>
+    </Parameters>
+    <UvUsages>
+        <UvUsage textureName="baseMap" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="normalMap" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="glossMap" uvType="uv0" uvScale="1.0"/>
+    </UvUsages>
+    <Textures/>
+    <VertexAttributes/>
+    <Variations/>
+    <LodLevel startDistance="0">
+        <CodeInjections>
+            <CodeInjection position="OBJECT_PARAMETERS"><![CDATA[
+                float3 cargoScale;
+                float3 cargoOffset;
+                float3 cargoRow0;
+                float3 cargoRow1;
+                float3 cargoRow2;
+            ]]></CodeInjection>
+            <CodeInjection position="LIB_FUNCTION_VS"><![CDATA[
+                float3 cargoToFrame(float3 v, ObjectParameters& object)
+                {
+                    return float3(dot(object.cargoRow0, v), dot(object.cargoRow1, v), dot(object.cargoRow2, v));
+                }
+                float3 cargoFromFrame(float3 q, ObjectParameters& object)
+                {
+                    return q.x * object.cargoRow0 + q.y * object.cargoRow1 + q.z * object.cargoRow2;
+                }
+                float3 cargoFitPoint(float3 p, ObjectParameters& object)
+                {
+                    return cargoFromFrame(cargoToFrame(p, object) * object.cargoScale, object) + object.cargoOffset;
+                }
+            ]]></CodeInjection>
+            <CodeInjection position="GET_POSITION_VS"><![CDATA[
+                float3 position = cargoFitPoint(In.position.xyz, object);
+                #if defined(SKINNING)
+                    return skinPoint(position, In, instance, object);
+                #else
+                    return position;
+                #endif
+            ]]></CodeInjection>
+            <CodeInjection position="GET_PREV_POSITION_VS"><![CDATA[
+                float3 position = cargoFitPoint(In.position.xyz, object);
+                #if defined(SKINNING)
+                    return skinPrevPoint(position, In, instance, object);
+                #else
+                    return position;
+                #endif
+            ]]></CodeInjection>
+            <CodeInjection position="GET_NORMAL_VS"><![CDATA[
+                float3 normal = normalize(cargoFromFrame(cargoToFrame(In.normal.xyz, object) / object.cargoScale, object));
+                #if defined(SKINNING)
+                    return skinVector(normal, In, instance, object);
+                #else
+                    return normal;
+                #endif
+            ]]></CodeInjection>
+            <CodeInjection position="GET_TANGENT_VS"><![CDATA[
+                float3 tangent = normalize(cargoFromFrame(cargoToFrame(In.tangent.xyz, object) * object.cargoScale, object));
+                #if defined(SKINNING)
+                    return skinVector(tangent, In, instance, object);
+                #else
+                    return tangent;
+                #endif
+            ]]></CodeInjection>
+            <CodeInjection position="GET_BITANGENT_VS"><![CDATA[
+                return cross(getNormal(In, instance, object), getTangent(In, instance, object)) * getBitangentSide(In, object);
+            ]]></CodeInjection>
+        </CodeInjections>
+    </LodLevel>
+</CustomShader>

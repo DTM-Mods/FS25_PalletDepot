@@ -23,15 +23,26 @@ function setIsCompoundChild(n, v) NATIVE_NODES[n].compound = v end
 function setRigidBodyType(n, v) NATIVE_NODES[n].body = v end
 function setCollisionFilter(n, group) NATIVE_NODES[n].filter = group end
 function setTranslation(n, x, y, z) NATIVE_NODES[n].translation = {x, y, z} end
-function localToLocal(n, root, x, y, z)
-    while n ~= root do
-        local p = NATIVE_NODES[n]
-        x, y, z = x + p.translation[1], y + p.translation[2], z + p.translation[3]
-        n = p.parent
+-- Fixture nodes only translate (no rotation or scale), so any frame change is a difference of origins.
+local function origin(n)
+    local x, y, z = 0, 0, 0
+    while NATIVE_NODES[n] do
+        local t = NATIVE_NODES[n].translation
+        x, y, z = x + t[1], y + t[2], z + t[3]
+        n = NATIVE_NODES[n].parent
     end
     return x, y, z
 end
+function localToLocal(n, root, x, y, z)
+    local ax, ay, az = origin(n)
+    local bx, by, bz = origin(root)
+    return x + ax - bx, y + ay - by, z + az - bz
+end
 function link(parent, child)
+    local old = NATIVE_NODES[NATIVE_NODES[child].parent]
+    if old then
+        for i, c in ipairs(old.children) do if c == child then table.remove(old.children, i) break end end
+    end
     NATIVE_NODES[child].parent = parent
     if NATIVE_NODES[parent] then table.insert(NATIVE_NODES[parent].children, child) end
 end
@@ -143,7 +154,8 @@ function finishNativeLoad(id, failed)
 end
 g_i3DManager = {
     loadSharedI3DFile = function(_, filename, callOnCreate, physics)
-        assert(filename:match('/vehicles/plankCargoMaterial%.i3d$'), 'only our material carrier is loaded')
+        assert(filename:match('/vehicles/plankCargoMaterial%.i3d$') or filename:match('/vehicles/skinnedCargoMaterial%.i3d$'),
+            'only our material carriers are loaded')
         assertEqual(callOnCreate, false, 'material carrier cannot run onCreate')
         assertEqual(physics, false, 'material carrier cannot enter physics')
         nextRequest = nextRequest + 1
@@ -176,3 +188,18 @@ function setShaderParameter(n, name, x, y, z)
     NATIVE_NODES[n][name] = {x, y, z}
 end
 function setShapeBoundingSphere(n, x, y, z, r) NATIVE_NODES[n].sphere = {x, y, z, r} end
+-- Skinning, material and pose interfaces used by the skinned cargo fit (all exist in the game's Lua).
+function getShapeIsSkinned(n) return NATIVE_NODES[n].skin ~= nil end
+function getNumOfShapeBones(n) return #NATIVE_NODES[n].skin end
+function getShapeBone(n, i) return NATIVE_NODES[n].skin[i + 1] end
+function getNumOfMaterials() return 1 end
+function getVisibility(n) return NODE_VISIBLE[n] ~= false end
+function createTransformGroup(name) local id = node() NATIVE_NODES[id].name = name return id end
+function localDirectionToLocal(_, _, x, y, z) return x, y, z end
+function setDirection(n, dx, dy, dz, ux, uy, uz) NATIVE_NODES[n].direction = {dx, dy, dz, ux, uy, uz} end
+function getMaterialDiffuseMapFilename(m) return '/tex/' .. tostring(m) .. '_diffuse.dds' end
+function getMaterialNormalMapFilename(m) return '/tex/' .. tostring(m) .. '_normal.dds' end
+function getMaterialGlossMapFilename(m) return '/tex/' .. tostring(m) .. '_specular.dds' end
+local mapMaterial = 5000
+function setMaterialNormalMapFromFile(_, texture) mapMaterial = mapMaterial + 1 MATERIAL_TEXTURE[mapMaterial] = texture return mapMaterial end
+function setMaterialGlossMapFromFile(_, texture) mapMaterial = mapMaterial + 1 MATERIAL_TEXTURE[mapMaterial] = texture return mapMaterial end
